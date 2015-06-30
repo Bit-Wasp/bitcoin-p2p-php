@@ -1,0 +1,19 @@
+language: php
+
+php:
+  - 5.4
+  - 5.5
+  - 5.6
+  - hhvm
+  - nightly
+
+install:
+    - composer update --prefer-source
+
+script:
+  - php $EXT_SECP256K1 vendor/bin/phpunit
+  - php vendor/bin/phpcs -n --standard=PSR1,PSR2 --report=full src/
+
+after_script:
+   - wget https://scrutinizer-ci.com/ocular.phar
+   - sh -c 'if [ "$TRAVIS_PHP_VERSION" != "hhvm" ] && [ "$TRAVIS_PHP_VERSION" != "nightly" ]; then php ocular.phar code-coverage:upload --format=php-clover build/docs/clover.xml; fi;'

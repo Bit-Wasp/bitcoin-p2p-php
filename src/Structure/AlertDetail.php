@@ -2,9 +2,8 @@
 
 namespace BitWasp\Bitcoin\Network\Structure;
 
-use BitWasp\Bitcoin\Serializer\Network\Structure\AlertDetailSerializer;
+use BitWasp\Bitcoin\Network\Serializer\Structure\AlertDetailSerializer;
 use BitWasp\Buffertools\Buffer;
-use BitWasp\Buffertools\Parser;
 use BitWasp\Bitcoin\Serializable;
 use BitWasp\Bitcoin\SerializableInterface;
 

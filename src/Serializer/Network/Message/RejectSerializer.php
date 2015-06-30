@@ -1,6 +1,6 @@
 <?php
 
-namespace BitWasp\Bitcoin\Serializer\Network\Message;
+namespace BitWasp\Bitcoin\Network\Serializer\Message;
 
 use BitWasp\Bitcoin\Network\Messages\Reject;
 use BitWasp\Buffertools\Parser;

@@ -2,7 +2,7 @@
 
 namespace BitWasp\Bitcoin\Network\Structure;
 
-use BitWasp\Bitcoin\Serializer\Network\Structure\NetworkAddressTimestampSerializer;
+use BitWasp\Bitcoin\Network\Serializer\Structure\NetworkAddressTimestampSerializer;
 use BitWasp\Buffertools\Buffer;
 
 class NetworkAddressTimestamp extends NetworkAddress

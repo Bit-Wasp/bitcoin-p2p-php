@@ -10,7 +10,6 @@ use BitWasp\Buffertools\Buffer;
 use \Exception;
 use React\EventLoop\LoopInterface;
 use React\Promise\Deferred;
-use React\Promise\Promise;
 use React\SocketClient\Connector;
 
 class PeerLocator

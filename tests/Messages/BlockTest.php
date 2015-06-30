@@ -1,12 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: thomas
- * Date: 27/03/15
- * Time: 01:09
- */
 
-namespace BitWasp\Bitcoin\Test\Network\Messages;
+namespace BitWasp\Bitcoin\Network\Tests\Messages;
 
 use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Block\BlockFactory;
@@ -14,7 +8,7 @@ use BitWasp\Bitcoin\Crypto\Random\Random;
 use BitWasp\Bitcoin\Network\MessageFactory;
 use BitWasp\Bitcoin\Network\Messages\Block;
 use BitWasp\Bitcoin\Serializer\Network\NetworkMessageSerializer;
-use BitWasp\Bitcoin\Tests\AbstractTestCase;
+use BitWasp\Bitcoin\Network\Tests\AbstractTestCase;
 
 class BlockTest extends AbstractTestCase
 {

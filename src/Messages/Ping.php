@@ -2,10 +2,9 @@
 
 namespace BitWasp\Bitcoin\Network\Messages;
 
-use BitWasp\Bitcoin\Crypto\Random\Random;
+
 use BitWasp\Bitcoin\Network\NetworkSerializable;
-use BitWasp\Bitcoin\Serializer\Network\Message\PingSerializer;
-use BitWasp\Buffertools\Parser;
+use BitWasp\Bitcoin\Network\Serializer\Message\PingSerializer;
 use BitWasp\Buffertools\Buffer;
 
 class Ping extends NetworkSerializable

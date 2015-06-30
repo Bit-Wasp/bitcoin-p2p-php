@@ -6,12 +6,12 @@
  * Time: 05:17
  */
 
-namespace BitWasp\Bitcoin\Test\Network\Structure;
+namespace BitWasp\Bitcoin\Network\Tests\Structure;
 
+use BitWasp\Bitcoin\Network\Tests\AbstractTestCase;
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Bitcoin\Network\Structure\NetworkAddress;
 use BitWasp\Bitcoin\Network\Structure\NetworkAddressTimestamp;
-use BitWasp\Bitcoin\Tests\AbstractTestCase;
 
 class NetworkAddressTest extends AbstractTestCase
 {

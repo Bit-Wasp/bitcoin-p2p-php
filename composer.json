@@ -25,8 +25,7 @@
     "php": ">=5.4.0",
     "ext-gmp": "*",
     "ext-json": "*",
-    "bitwasp/bitcoin": "~0.0",
-    "lastguest/murmurhash": "~1.0"
+    "bitwasp/bitcoin": "~0.0"
   },
   "require-dev": {
     "bitwasp/testing-php": "~0.0",

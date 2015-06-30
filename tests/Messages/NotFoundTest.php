@@ -1,6 +1,6 @@
 <?php
 
-namespace BitWasp\Bitcoin\Tests\Network\Messages;
+namespace BitWasp\Bitcoin\Network\Tests\Messages;
 
 use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Crypto\Random\Random;
@@ -9,7 +9,7 @@ use BitWasp\Bitcoin\Serializer\Network\NetworkMessageSerializer;
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Bitcoin\Network\Messages\NotFound;
 use BitWasp\Bitcoin\Network\Structure\InventoryVector;
-use BitWasp\Bitcoin\Tests\AbstractTestCase;
+use BitWasp\Bitcoin\Network\Tests\AbstractTestCase;
 
 class NotFoundTest extends AbstractTestCase
 {

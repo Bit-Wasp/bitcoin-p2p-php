@@ -1,6 +1,6 @@
 <?php
 
-namespace BitWasp\Bitcoin\Test\Network\Messages;
+namespace BitWasp\Bitcoin\Network\Tests\Messages;
 
 use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Crypto\Hash;
@@ -9,7 +9,7 @@ use BitWasp\Bitcoin\Network\Messages\Version;
 use BitWasp\Bitcoin\Network\NetworkFactory;
 use BitWasp\Bitcoin\Network\Structure\NetworkAddress;
 use BitWasp\Bitcoin\Serializer\Network\NetworkMessageSerializer;
-use BitWasp\Bitcoin\Tests\AbstractTestCase;
+use BitWasp\Bitcoin\Network\Tests\AbstractTestCase;
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Buffertools\Buffertools;
 

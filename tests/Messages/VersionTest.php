@@ -6,7 +6,7 @@
  * Time: 05:17
  */
 
-namespace BitWasp\Bitcoin\Test\Network\Messages;
+namespace BitWasp\Bitcoin\Network\Tests\Messages;
 
 use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Crypto\Random\Random;
@@ -15,7 +15,7 @@ use BitWasp\Bitcoin\Serializer\Network\NetworkMessageSerializer;
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Bitcoin\Network\Messages\Version;
 use BitWasp\Bitcoin\Network\Structure\NetworkAddress;
-use BitWasp\Bitcoin\Tests\AbstractTestCase;
+use BitWasp\Bitcoin\Network\Tests\AbstractTestCase;
 
 class VersionTest extends AbstractTestCase
 {

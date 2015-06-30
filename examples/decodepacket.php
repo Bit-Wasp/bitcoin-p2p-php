@@ -9,6 +9,6 @@ if (!isset($argv[1])) {
 }
 
 $hex = $argv[1];
-$net = new \BitWasp\Bitcoin\Serializer\Network\NetworkMessageSerializer(\BitWasp\Bitcoin\Bitcoin::getDefaultNetwork());
+$net = new \BitWasp\Bitcoin\Network\Serializer\NetworkMessageSerializer(\BitWasp\Bitcoin\Bitcoin::getDefaultNetwork());
 
 print_r($net->parse(Buffer::hex($hex)));

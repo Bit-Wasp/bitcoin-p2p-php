@@ -3,7 +3,7 @@
 namespace BitWasp\Bitcoin\Network\Messages;
 
 use BitWasp\Bitcoin\Network\NetworkSerializable;
-use BitWasp\Bitcoin\Serializer\Network\Message\GetBlocksSerializer;
+use BitWasp\Bitcoin\Network\Serializer\Message\GetBlocksSerializer;
 use BitWasp\Buffertools\Buffer;
 
 class GetBlocks extends NetworkSerializable

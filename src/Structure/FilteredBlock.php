@@ -8,8 +8,8 @@ use BitWasp\Bitcoin\Network\BloomFilter;
 use BitWasp\Bitcoin\Network\PartialMerkleTree;
 use BitWasp\Bitcoin\Serializable;
 use BitWasp\Bitcoin\Serializer\Block\HexBlockHeaderSerializer;
-use BitWasp\Bitcoin\Serializer\Network\Structure\FilteredBlockSerializer;
-use BitWasp\Bitcoin\Serializer\Network\PartialMerkleTreeSerializer;
+use BitWasp\Bitcoin\Network\Serializer\Structure\FilteredBlockSerializer;
+use BitWasp\Bitcoin\Network\Serializer\PartialMerkleTreeSerializer;
 use BitWasp\Buffertools\Buffer;
 
 class FilteredBlock extends Serializable

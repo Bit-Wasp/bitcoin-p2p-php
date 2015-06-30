@@ -1,15 +1,14 @@
 <?php
 
-namespace BitWasp\Bitcoin\Test\Network\Structure;
+namespace BitWasp\Bitcoin\Network\Tests\Structure;
 
 use BitWasp\Bitcoin\Network\Structure\AlertDetail;
+use BitWasp\Bitcoin\Network\Tests\AbstractTestCase;
 use BitWasp\Bitcoin\Serializer\Network\Structure\AlertDetailSerializer;
-use BitWasp\Bitcoin\Tests\AbstractTestCase;
 use BitWasp\Buffertools\Buffer;
 
 class AlertDetailTest extends AbstractTestCase
 {
-
     public function testSerializer()
     {
         $version = '1';

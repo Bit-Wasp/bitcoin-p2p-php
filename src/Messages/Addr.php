@@ -2,9 +2,8 @@
 
 namespace BitWasp\Bitcoin\Network\Messages;
 
-use BitWasp\Bitcoin\Serializer\Network\Message\AddrSerializer;
-use BitWasp\Bitcoin\Serializer\Network\Structure\NetworkAddressTimestampSerializer;
-use BitWasp\Buffertools\Parser;
+use BitWasp\Bitcoin\Network\Serializer\Message\AddrSerializer;
+use BitWasp\Bitcoin\Network\Serializer\Structure\NetworkAddressTimestampSerializer;
 use BitWasp\Bitcoin\Network\NetworkSerializable;
 use BitWasp\Bitcoin\Network\Structure\NetworkAddressTimestamp;
 use InvalidArgumentException;

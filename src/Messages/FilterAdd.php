@@ -3,7 +3,7 @@
 namespace BitWasp\Bitcoin\Network\Messages;
 
 use BitWasp\Bitcoin\Network\NetworkSerializable;
-use BitWasp\Bitcoin\Serializer\Network\Message\FilterAddSerializer;
+use BitWasp\Bitcoin\Network\Serializer\Message\FilterAddSerializer;
 use BitWasp\Buffertools\Buffer;
 
 class FilterAdd extends NetworkSerializable

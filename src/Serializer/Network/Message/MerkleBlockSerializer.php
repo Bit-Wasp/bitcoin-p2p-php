@@ -1,9 +1,9 @@
 <?php
 
-namespace BitWasp\Bitcoin\Serializer\Network\Message;
+namespace BitWasp\Bitcoin\Network\Serializer\Message;
 
 use BitWasp\Bitcoin\Network\Messages\MerkleBlock;
-use BitWasp\Bitcoin\Serializer\Network\Structure\FilteredBlockSerializer;
+use BitWasp\Bitcoin\Network\Serializer\Structure\FilteredBlockSerializer;
 use BitWasp\Buffertools\Parser;
 
 class MerkleBlockSerializer

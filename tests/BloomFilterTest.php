@@ -1,6 +1,6 @@
 <?php
 
-namespace BitWasp\Bitcoin\Tests;
+namespace BitWasp\Bitcoin\Network\Tests;
 
 use BitWasp\Bitcoin\Block\BlockFactory;
 use BitWasp\Bitcoin\Crypto\Random\Random;

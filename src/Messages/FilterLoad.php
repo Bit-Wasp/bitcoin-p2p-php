@@ -1,18 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: thomas
- * Date: 25/06/15
- * Time: 04:29
- */
 
 namespace BitWasp\Bitcoin\Network\Messages;
 
-use BitWasp\Bitcoin\Flags;
 use BitWasp\Bitcoin\Network\BloomFilter;
 use BitWasp\Bitcoin\Network\NetworkSerializable;
-use BitWasp\Bitcoin\Serializer\Network\BloomFilterSerializer;
-use BitWasp\Bitcoin\Serializer\Network\Message\FilterLoadSerializer;
+use BitWasp\Bitcoin\Network\Serializer\BloomFilterSerializer;
+use BitWasp\Bitcoin\Network\Serializer\Message\FilterLoadSerializer;
 use BitWasp\Buffertools\Buffer;
 
 class FilterLoad extends NetworkSerializable

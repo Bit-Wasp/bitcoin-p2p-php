@@ -5,9 +5,10 @@ namespace BitWasp\Bitcoin\Network\Messages;
 use BitWasp\Bitcoin\Network\Structure\FilteredBlock;
 use BitWasp\Bitcoin\Network\NetworkSerializable;
 use BitWasp\Bitcoin\Serializer\Block\HexBlockHeaderSerializer;
-use BitWasp\Bitcoin\Serializer\Network\Message\MerkleBlockSerializer;
-use BitWasp\Bitcoin\Serializer\Network\PartialMerkleTreeSerializer;
-use BitWasp\Bitcoin\Serializer\Network\Structure\FilteredBlockSerializer;
+use BitWasp\Bitcoin\Network\Serializer\Message\MerkleBlockSerializer;
+use BitWasp\Bitcoin\Network\Serializer\PartialMerkleTreeSerializer;
+use BitWasp\Bitcoin\Network\Serializer\Structure\FilteredBlockSerializer;
+
 
 class MerkleBlock extends NetworkSerializable
 {

@@ -8,7 +8,7 @@ use BitWasp\Bitcoin\Math\Math;
 use BitWasp\Bitcoin\Script\Classifier\ScriptClassifierInterface;
 use BitWasp\Bitcoin\Script\ScriptFactory;
 use BitWasp\Bitcoin\Serializable;
-use BitWasp\Bitcoin\Serializer\Network\BloomFilterSerializer;
+use BitWasp\Bitcoin\Network\Serializer\BloomFilterSerializer;
 use BitWasp\Bitcoin\Transaction\TransactionInterface;
 use BitWasp\Buffertools\Buffer;
 

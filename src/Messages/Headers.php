@@ -5,7 +5,7 @@ namespace BitWasp\Bitcoin\Network\Messages;
 use BitWasp\Bitcoin\Block\BlockHeaderInterface;
 use BitWasp\Bitcoin\Network\NetworkSerializable;
 use BitWasp\Bitcoin\Serializer\Block\HexBlockHeaderSerializer;
-use BitWasp\Bitcoin\Serializer\Network\Message\HeadersSerializer;
+use BitWasp\Bitcoin\Network\Serializer\Message\HeadersSerializer;
 
 class Headers extends NetworkSerializable implements \Countable
 {

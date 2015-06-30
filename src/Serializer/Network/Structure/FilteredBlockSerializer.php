@@ -1,10 +1,10 @@
 <?php
 
-namespace BitWasp\Bitcoin\Serializer\Network\Structure;
+namespace BitWasp\Bitcoin\Network\Serializer\Structure;
 
 use BitWasp\Bitcoin\Network\Structure\FilteredBlock;
+use BitWasp\Bitcoin\Network\Serializer\PartialMerkleTreeSerializer;
 use BitWasp\Bitcoin\Serializer\Block\HexBlockHeaderSerializer;
-use BitWasp\Bitcoin\Serializer\Network\PartialMerkleTreeSerializer;
 use BitWasp\Buffertools\Buffertools;
 use BitWasp\Buffertools\Parser;
 

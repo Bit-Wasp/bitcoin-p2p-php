@@ -2,7 +2,7 @@
 
 namespace BitWasp\Bitcoin\Network\Structure;
 
-use BitWasp\Bitcoin\Serializer\Network\Structure\NetworkAddressSerializer;
+use BitWasp\Bitcoin\Network\Serializer\Structure\NetworkAddressSerializer;
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Bitcoin\Serializable;
 

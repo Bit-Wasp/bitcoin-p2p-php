@@ -1,10 +1,9 @@
 <?php
 
-namespace BitWasp\Bitcoin\Serializer\Network\Message;
+namespace BitWasp\Bitcoin\Network\Serializer\Message;
 
 use BitWasp\Bitcoin\Network\Messages\Alert;
-use BitWasp\Bitcoin\Network\Structure\AlertDetail;
-use BitWasp\Bitcoin\Serializer\Network\Structure\AlertDetailSerializer;
+use BitWasp\Bitcoin\Network\Serializer\Structure\AlertDetailSerializer;
 use BitWasp\Bitcoin\Signature\Signature;
 use BitWasp\Buffertools\Buffertools;
 use BitWasp\Buffertools\Parser;

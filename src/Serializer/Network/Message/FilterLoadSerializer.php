@@ -1,12 +1,10 @@
 <?php
 
-namespace BitWasp\Bitcoin\Serializer\Network\Message;
+namespace BitWasp\Bitcoin\Network\Serializer\Message;
 
-use BitWasp\Bitcoin\Flags;
 use BitWasp\Bitcoin\Network\Messages\FilterLoad;
-use BitWasp\Bitcoin\Serializer\Network\BloomFilterSerializer;
+use BitWasp\Bitcoin\Network\Serializer\BloomFilterSerializer;
 use BitWasp\Buffertools\Parser;
-use BitWasp\Buffertools\TemplateFactory;
 
 class FilterLoadSerializer
 {

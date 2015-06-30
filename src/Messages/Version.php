@@ -4,8 +4,8 @@ namespace BitWasp\Bitcoin\Network\Messages;
 
 use BitWasp\Bitcoin\Network\Structure\NetworkAddressInterface;
 use BitWasp\Bitcoin\Network\Structure\NetworkAddressTimestamp;
-use BitWasp\Bitcoin\Serializer\Network\Message\VersionSerializer;
-use BitWasp\Bitcoin\Serializer\Network\Structure\NetworkAddressSerializer;
+use BitWasp\Bitcoin\Network\Serializer\Message\VersionSerializer;
+use BitWasp\Bitcoin\Network\Serializer\Structure\NetworkAddressSerializer;
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Bitcoin\Crypto\Random\Random;
 use BitWasp\Bitcoin\Network\NetworkSerializable;

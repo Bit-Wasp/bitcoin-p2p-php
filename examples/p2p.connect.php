@@ -56,7 +56,7 @@ $peer->on('send', function ($msg) {
     echo " [ sending " . $msg->getCommand() . " ]\n";
 });
 
-$peer->on('version', function ($msg) {
+$peer->on('version', function (Peer $peer, \BitWasp\Bitcoin\Network\NetworkMessage $msg) {
     echo $msg->getNetworkMessage()->getHex() . "\n";
 });
 

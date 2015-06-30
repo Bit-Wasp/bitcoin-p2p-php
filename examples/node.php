@@ -2,7 +2,6 @@
 
 require_once "../vendor/autoload.php";
 
-use BitWasp\Bitcoin\Network\Structure\InventoryVector;
 use BitWasp\Bitcoin\Network\Structure\NetworkAddress;
 use BitWasp\Bitcoin\Chain\Blockchain;
 use BitWasp\Bitcoin\Chain\BlockStorage;

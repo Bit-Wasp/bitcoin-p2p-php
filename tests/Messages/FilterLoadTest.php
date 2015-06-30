@@ -1,12 +1,12 @@
 <?php
 
-namespace BitWasp\Bitcoin\Test\Network\Messages;
+namespace BitWasp\Bitcoin\Network\Tests\Messages;
 
 use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Crypto\Random\Random;
 use BitWasp\Bitcoin\Flags;
 use BitWasp\Bitcoin\Network\BloomFilter;
-use BitWasp\Bitcoin\Tests\AbstractTestCase;
+use BitWasp\Bitcoin\Network\Tests\AbstractTestCase;
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Bitcoin\Network\MessageFactory;
 use BitWasp\Buffertools\Parser;

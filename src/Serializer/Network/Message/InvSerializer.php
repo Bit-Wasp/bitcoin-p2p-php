@@ -1,9 +1,9 @@
 <?php
 
-namespace BitWasp\Bitcoin\Serializer\Network\Message;
+namespace BitWasp\Bitcoin\Network\Serializer\Message;
 
 use BitWasp\Bitcoin\Network\Messages\Inv;
-use BitWasp\Bitcoin\Serializer\Network\Structure\InventoryVectorSerializer;
+use BitWasp\Bitcoin\Network\Serializer\Structure\InventoryVectorSerializer;
 use BitWasp\Buffertools\Parser;
 use BitWasp\Buffertools\TemplateFactory;
 

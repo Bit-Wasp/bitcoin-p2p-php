@@ -3,7 +3,7 @@
 namespace BitWasp\Bitcoin\Network;
 
 use BitWasp\Bitcoin\Serializable;
-use BitWasp\Bitcoin\Serializer\Network\PartialMerkleTreeSerializer;
+use BitWasp\Bitcoin\Network\Serializer\PartialMerkleTreeSerializer;
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Buffertools\Buffertools;
 

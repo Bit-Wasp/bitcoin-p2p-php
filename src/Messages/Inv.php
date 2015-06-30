@@ -2,8 +2,10 @@
 
 namespace BitWasp\Bitcoin\Network\Messages;
 
-use BitWasp\Bitcoin\Serializer\Network\Message\InvSerializer;
-use BitWasp\Bitcoin\Serializer\Network\Structure\InventoryVectorSerializer;
+
+
+use BitWasp\Bitcoin\Network\Serializer\Message\InvSerializer;
+use BitWasp\Bitcoin\Network\Serializer\Structure\InventoryVectorSerializer;
 
 class Inv extends AbstractInventory
 {

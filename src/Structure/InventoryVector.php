@@ -2,9 +2,8 @@
 
 namespace BitWasp\Bitcoin\Network\Structure;
 
-use BitWasp\Bitcoin\Serializer\Network\Structure\InventoryVectorSerializer;
+use BitWasp\Bitcoin\Network\Serializer\Structure\InventoryVectorSerializer;
 use BitWasp\Buffertools\Buffer;
-use BitWasp\Buffertools\Parser;
 use BitWasp\Bitcoin\Serializable;
 
 class InventoryVector extends Serializable

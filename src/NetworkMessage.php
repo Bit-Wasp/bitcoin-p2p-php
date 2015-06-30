@@ -5,7 +5,7 @@ namespace BitWasp\Bitcoin\Network;
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Bitcoin\Crypto\Hash;
 use BitWasp\Bitcoin\Serializable;
-use BitWasp\Bitcoin\Serializer\Network\NetworkMessageSerializer;
+use BitWasp\Bitcoin\Network\Serializer\NetworkMessageSerializer;
 
 class NetworkMessage extends Serializable
 {

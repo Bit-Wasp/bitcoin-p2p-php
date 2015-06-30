@@ -1,11 +1,11 @@
 <?php
 
-namespace BitWasp\Bitcoin\Test\Network\Structure;
+namespace BitWasp\Bitcoin\Network\Tests\Structure;
 
+use BitWasp\Bitcoin\Network\Tests\AbstractTestCase;
 use BitWasp\Bitcoin\Serializer\Network\Structure\InventoryVectorSerializer;
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Bitcoin\Network\Structure\InventoryVector;
-use BitWasp\Bitcoin\Tests\AbstractTestCase;
 
 class InventoryVectorTest extends AbstractTestCase
 {

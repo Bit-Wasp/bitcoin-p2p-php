@@ -2,8 +2,8 @@
 
 namespace BitWasp\Bitcoin\Network\Messages;
 
-use BitWasp\Bitcoin\Serializer\Network\Message\GetDataSerializer;
-use BitWasp\Bitcoin\Serializer\Network\Structure\InventoryVectorSerializer;
+use BitWasp\Bitcoin\Network\Serializer\Message\GetDataSerializer;
+use BitWasp\Bitcoin\Network\Serializer\Structure\InventoryVectorSerializer;
 
 class GetData extends AbstractInventory
 {

@@ -2,7 +2,8 @@
 
 namespace BitWasp\Bitcoin\Network\Messages;
 
-use BitWasp\Bitcoin\Serializer\Network\Message\RejectSerializer;
+
+use BitWasp\Bitcoin\Network\Serializer\Message\RejectSerializer;
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Bitcoin\Network\NetworkSerializable;
 

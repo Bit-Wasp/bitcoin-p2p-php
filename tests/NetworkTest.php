@@ -1,6 +1,6 @@
 <?php
 
-namespace BitWasp\Bitcoin\Tests;
+namespace BitWasp\Bitcoin\Network\Tests;
 
 use BitWasp\Bitcoin\Address\PayToPubKeyHashAddress;
 use BitWasp\Bitcoin\Address\ScriptHashAddress;

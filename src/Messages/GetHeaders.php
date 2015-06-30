@@ -3,7 +3,7 @@
 namespace BitWasp\Bitcoin\Network\Messages;
 
 use BitWasp\Bitcoin\Network\NetworkSerializable;
-use BitWasp\Bitcoin\Serializer\Network\Message\GetHeadersSerializer;
+use BitWasp\Bitcoin\Network\Serializer\Message\GetHeadersSerializer;
 use BitWasp\Buffertools\Buffer;
 
 class GetHeaders extends NetworkSerializable

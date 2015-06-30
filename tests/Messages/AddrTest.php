@@ -5,11 +5,11 @@ namespace BitWasp\Bitcoin\Test\Network\Messages;
 use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Crypto\Random\Random;
 use BitWasp\Bitcoin\Network\MessageFactory;
+use BitWasp\Bitcoin\Network\Tests\AbstractTestCase;
 use BitWasp\Bitcoin\Serializer\Network\NetworkMessageSerializer;
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Bitcoin\Network\Messages\Addr;
 use BitWasp\Bitcoin\Network\Structure\NetworkAddressTimestamp;
-use BitWasp\Bitcoin\Tests\AbstractTestCase;
 
 class AddrTest extends AbstractTestCase
 {

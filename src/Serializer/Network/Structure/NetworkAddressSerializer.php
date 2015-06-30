@@ -1,6 +1,6 @@
 <?php
 
-namespace BitWasp\Bitcoin\Serializer\Network\Structure;
+namespace BitWasp\Bitcoin\Network\Serializer\Structure;
 
 use BitWasp\Bitcoin\Network\Structure\NetworkAddress;
 use BitWasp\Buffertools\Buffer;

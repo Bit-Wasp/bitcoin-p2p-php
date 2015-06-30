@@ -1,9 +1,9 @@
 <?php
 
-namespace BitWasp\Bitcoin\Network\Messages;
+namespace BitWasp\Bitcoin\Networking\Messages;
 
-use BitWasp\Bitcoin\Network\NetworkSerializable;
-use BitWasp\Bitcoin\Network\Serializer\Message\GetHeadersSerializer;
+use BitWasp\Bitcoin\Networking\NetworkSerializable;
+use BitWasp\Bitcoin\Networking\Serializer\Message\GetHeadersSerializer;
 use BitWasp\Buffertools\Buffer;
 
 class GetHeaders extends NetworkSerializable

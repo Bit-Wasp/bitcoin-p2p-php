@@ -1,12 +1,12 @@
 <?php
 
-namespace BitWasp\Bitcoin\Network\Tests\P2P;
+namespace BitWasp\Bitcoin\Tests\Networking\P2P;
 
 use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Crypto\Random\Random;
-use BitWasp\Bitcoin\Network\MessageFactory;
-use BitWasp\Bitcoin\Network\P2P\Peer;
-use BitWasp\Bitcoin\Network\Structure\NetworkAddress;
+use BitWasp\Bitcoin\Networking\MessageFactory;
+use BitWasp\Bitcoin\Networking\P2P\Peer;
+use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
 use BitWasp\Bitcoin\Tests\AbstractTestCase;
 use BitWasp\Buffertools\Buffer;
 use React\EventLoop\StreamSelectLoop;

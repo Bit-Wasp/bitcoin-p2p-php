@@ -1,15 +1,15 @@
 <?php
 
-namespace BitWasp\Bitcoin\Network\Tests\Messages;
+namespace BitWasp\Bitcoin\Tests\Networking\Messages;
 
 use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Crypto\Hash;
 use BitWasp\Bitcoin\Crypto\Random\Random;
-use BitWasp\Bitcoin\Network\Messages\Version;
 use BitWasp\Bitcoin\Network\NetworkFactory;
-use BitWasp\Bitcoin\Network\Structure\NetworkAddress;
-use BitWasp\Bitcoin\Serializer\Network\NetworkMessageSerializer;
-use BitWasp\Bitcoin\Network\Tests\AbstractTestCase;
+use BitWasp\Bitcoin\Networking\Messages\Version;
+use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
+use BitWasp\Bitcoin\Networking\Serializer\NetworkMessageSerializer;
+use BitWasp\Bitcoin\Tests\Networking\AbstractTestCase;
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Buffertools\Buffertools;
 
@@ -17,7 +17,7 @@ class MessageTest extends AbstractTestCase
 {
     public function getMockPayload($command)
     {
-        $mock = $this->getMock('BitWasp\Bitcoin\Network\NetworkSerializable');
+        $mock = $this->getMock('BitWasp\Bitcoin\Networking\NetworkSerializable');
         $mock->expects($this->any())
             ->method('getNetworkCommand')
             ->willReturn($command);
@@ -32,7 +32,7 @@ class MessageTest extends AbstractTestCase
         $payload = $this->getMockPayload($command);
         $net = Bitcoin::getDefaultNetwork();
 
-        $msg = $this->getMock('BitWasp\Bitcoin\Network\NetworkMessage', [
+        $msg = $this->getMock('BitWasp\Bitcoin\Networking\NetworkMessage', [
             'getCommand', 'getPayload', 'getChecksum'
         ], [
             $net,

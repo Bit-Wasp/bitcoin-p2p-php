@@ -1,13 +1,13 @@
 <?php
 
-namespace BitWasp\Bitcoin\Network\Tests\Messages;
+namespace BitWasp\Bitcoin\Tests\Networking\Messages;
 
 use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Crypto\Random\Random;
-use BitWasp\Bitcoin\Network\MessageFactory;
-use BitWasp\Bitcoin\Network\Messages\VerAck;
-use BitWasp\Bitcoin\Serializer\Network\NetworkMessageSerializer;
-use BitWasp\Bitcoin\Network\Tests\AbstractTestCase;
+use BitWasp\Bitcoin\Networking\MessageFactory;
+use BitWasp\Bitcoin\Networking\Messages\VerAck;
+use BitWasp\Bitcoin\Networking\Serializer\NetworkMessageSerializer;
+use BitWasp\Bitcoin\Tests\Networking\AbstractTestCase;
 
 class VerAckTest extends AbstractTestCase
 {

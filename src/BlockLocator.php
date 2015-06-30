@@ -1,6 +1,6 @@
 <?php
 
-namespace BitWasp\Bitcoin\Network;
+namespace BitWasp\Bitcoin\Networking;
 
 use BitWasp\Bitcoin\Chain\BlockIndex;
 use BitWasp\Buffertools\Buffer;

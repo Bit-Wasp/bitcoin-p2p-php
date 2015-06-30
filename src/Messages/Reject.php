@@ -1,11 +1,10 @@
 <?php
 
-namespace BitWasp\Bitcoin\Network\Messages;
+namespace BitWasp\Bitcoin\Networking\Messages;
 
-
-use BitWasp\Bitcoin\Network\Serializer\Message\RejectSerializer;
+use BitWasp\Bitcoin\Networking\Serializer\Message\RejectSerializer;
 use BitWasp\Buffertools\Buffer;
-use BitWasp\Bitcoin\Network\NetworkSerializable;
+use BitWasp\Bitcoin\Networking\NetworkSerializable;
 
 class Reject extends NetworkSerializable
 {

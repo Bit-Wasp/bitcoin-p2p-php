@@ -1,10 +1,9 @@
 <?php
 
-namespace BitWasp\Bitcoin\Network\Messages;
+namespace BitWasp\Bitcoin\Networking\Messages;
 
-
-use BitWasp\Bitcoin\Network\NetworkSerializable;
-use BitWasp\Bitcoin\Network\Serializer\Message\PingSerializer;
+use BitWasp\Bitcoin\Networking\NetworkSerializable;
+use BitWasp\Bitcoin\Networking\Serializer\Message\PingSerializer;
 use BitWasp\Buffertools\Buffer;
 
 class Ping extends NetworkSerializable

@@ -1,17 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: thomas
- * Date: 26/03/15
- * Time: 05:17
- */
 
-namespace BitWasp\Bitcoin\Network\Tests\Structure;
+namespace BitWasp\Bitcoin\Tests\Networking\Structure;
 
-use BitWasp\Bitcoin\Network\Tests\AbstractTestCase;
+use BitWasp\Bitcoin\Tests\Networking\AbstractTestCase;
 use BitWasp\Buffertools\Buffer;
-use BitWasp\Bitcoin\Network\Structure\NetworkAddress;
-use BitWasp\Bitcoin\Network\Structure\NetworkAddressTimestamp;
+use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
+use BitWasp\Bitcoin\Networking\Structure\NetworkAddressTimestamp;
 
 class NetworkAddressTest extends AbstractTestCase
 {

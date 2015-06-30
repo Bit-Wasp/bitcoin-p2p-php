@@ -4,12 +4,12 @@ namespace BitWasp\Bitcoin\Test\Network\Messages;
 
 use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Crypto\Random\Random;
-use BitWasp\Bitcoin\Network\MessageFactory;
-use BitWasp\Bitcoin\Network\Tests\AbstractTestCase;
-use BitWasp\Bitcoin\Serializer\Network\NetworkMessageSerializer;
+use BitWasp\Bitcoin\Tests\Networking\AbstractTestCase;
+use BitWasp\Bitcoin\Networking\MessageFactory;
+use BitWasp\Bitcoin\Networking\Serializer\NetworkMessageSerializer;
 use BitWasp\Buffertools\Buffer;
-use BitWasp\Bitcoin\Network\Messages\Addr;
-use BitWasp\Bitcoin\Network\Structure\NetworkAddressTimestamp;
+use BitWasp\Bitcoin\Networking\Messages\Addr;
+use BitWasp\Bitcoin\Networking\Structure\NetworkAddressTimestamp;
 
 class AddrTest extends AbstractTestCase
 {

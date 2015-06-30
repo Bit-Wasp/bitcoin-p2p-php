@@ -1,14 +1,15 @@
 <?php
 
-namespace BitWasp\Bitcoin\Network\Tests\Messages;
+namespace BitWasp\Bitcoin\Tests\Networking\Messages;
 
 use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Crypto\Random\Random;
-use BitWasp\Bitcoin\Network\MessageFactory;
-use BitWasp\Bitcoin\Network\Messages\Ping;
-use BitWasp\Bitcoin\Network\Messages\Pong;
-use BitWasp\Bitcoin\Serializer\Network\NetworkMessageSerializer;
-use BitWasp\Bitcoin\Network\Tests\AbstractTestCase;
+use BitWasp\Bitcoin\Math\Math;
+use BitWasp\Bitcoin\Networking\MessageFactory;
+use BitWasp\Bitcoin\Networking\Messages\Ping;
+use BitWasp\Bitcoin\Networking\Messages\Pong;
+use BitWasp\Bitcoin\Networking\Serializer\NetworkMessageSerializer;
+use BitWasp\Bitcoin\Tests\Networking\AbstractTestCase;
 
 class PongTest extends AbstractTestCase
 {
@@ -34,7 +35,7 @@ class PongTest extends AbstractTestCase
         $this->assertEquals('pong', $pong->getNetworkCommand());
         $this->assertTrue($ping->getNonce() == $pong->getNonce());
 
-        $math = $this->safeMath();
+        $math = new Math();
         $this->assertEquals(str_pad($math->decHex($ping->getNonce()), 16, '0', STR_PAD_LEFT), $pong->getHex());
     }
 

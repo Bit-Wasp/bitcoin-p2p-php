@@ -1,12 +1,12 @@
 <?php
 
-namespace BitWasp\Bitcoin\Network\P2P;
+namespace BitWasp\Bitcoin\Networking\P2P;
 
-use BitWasp\Bitcoin\Network\BlockLocator;
+use BitWasp\Bitcoin\Networking\BlockLocator;
 use BitWasp\Bitcoin\Chain\Headerchain;
 use BitWasp\Bitcoin\Chain\Blockchain;
-use BitWasp\Bitcoin\Network\Messages\Inv;
-use BitWasp\Bitcoin\Network\Structure\NetworkAddress;
+use BitWasp\Bitcoin\Networking\Messages\Inv;
+use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
 
 class Node
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace BitWasp\Bitcoin\Network\Structure;
+namespace BitWasp\Bitcoin\Networking\Structure;
 
-use BitWasp\Bitcoin\Network\Serializer\Structure\InventoryVectorSerializer;
+use BitWasp\Bitcoin\Networking\Serializer\Structure\InventoryVectorSerializer;
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Bitcoin\Serializable;
 

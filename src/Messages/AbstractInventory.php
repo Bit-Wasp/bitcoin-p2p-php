@@ -1,9 +1,9 @@
 <?php
 
-namespace BitWasp\Bitcoin\Network\Messages;
+namespace BitWasp\Bitcoin\Networking\Messages;
 
-use BitWasp\Bitcoin\Network\NetworkSerializable;
-use BitWasp\Bitcoin\Network\Structure\InventoryVector;
+use BitWasp\Bitcoin\Networking\NetworkSerializable;
+use BitWasp\Bitcoin\Networking\Structure\InventoryVector;
 
 abstract class AbstractInventory extends NetworkSerializable implements \Countable
 {

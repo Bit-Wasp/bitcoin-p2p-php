@@ -1,11 +1,12 @@
 <?php
 
-namespace BitWasp\Bitcoin\Network;
+namespace BitWasp\Bitcoin\Networking;
 
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Bitcoin\Crypto\Hash;
 use BitWasp\Bitcoin\Serializable;
-use BitWasp\Bitcoin\Network\Serializer\NetworkMessageSerializer;
+use BitWasp\Bitcoin\Network\NetworkInterface;
+use BitWasp\Bitcoin\Networking\Serializer\NetworkMessageSerializer;
 
 class NetworkMessage extends Serializable
 {

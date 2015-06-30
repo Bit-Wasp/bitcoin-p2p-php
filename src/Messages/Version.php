@@ -1,15 +1,15 @@
 <?php
 
-namespace BitWasp\Bitcoin\Network\Messages;
+namespace BitWasp\Bitcoin\Networking\Messages;
 
-use BitWasp\Bitcoin\Network\Structure\NetworkAddressInterface;
-use BitWasp\Bitcoin\Network\Structure\NetworkAddressTimestamp;
-use BitWasp\Bitcoin\Network\Serializer\Message\VersionSerializer;
-use BitWasp\Bitcoin\Network\Serializer\Structure\NetworkAddressSerializer;
+use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
+use BitWasp\Bitcoin\Networking\Structure\NetworkAddressTimestamp;
+use BitWasp\Bitcoin\Networking\Serializer\Message\VersionSerializer;
+use BitWasp\Bitcoin\Networking\Serializer\Structure\NetworkAddressSerializer;
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Bitcoin\Crypto\Random\Random;
-use BitWasp\Bitcoin\Network\NetworkSerializable;
-use BitWasp\Bitcoin\Network\Structure\NetworkAddress;
+use BitWasp\Bitcoin\Networking\NetworkSerializable;
+use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
 
 class Version extends NetworkSerializable
 {

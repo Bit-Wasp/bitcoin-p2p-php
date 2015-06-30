@@ -1,11 +1,11 @@
 <?php
 
-namespace BitWasp\Bitcoin\Network\Messages;
+namespace BitWasp\Bitcoin\Networking\Messages;
 
-use BitWasp\Bitcoin\Network\Serializer\Message\AddrSerializer;
-use BitWasp\Bitcoin\Network\Serializer\Structure\NetworkAddressTimestampSerializer;
-use BitWasp\Bitcoin\Network\NetworkSerializable;
-use BitWasp\Bitcoin\Network\Structure\NetworkAddressTimestamp;
+use BitWasp\Bitcoin\Networking\Serializer\Message\AddrSerializer;
+use BitWasp\Bitcoin\Networking\Serializer\Structure\NetworkAddressTimestampSerializer;
+use BitWasp\Bitcoin\Networking\NetworkSerializable;
+use BitWasp\Bitcoin\Networking\Structure\NetworkAddressTimestamp;
 use InvalidArgumentException;
 
 class Addr extends NetworkSerializable implements \Countable

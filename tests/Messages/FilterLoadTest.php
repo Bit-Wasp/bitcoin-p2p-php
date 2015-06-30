@@ -1,21 +1,22 @@
 <?php
 
-namespace BitWasp\Bitcoin\Network\Tests\Messages;
+namespace BitWasp\Bitcoin\Tests\Networking\Messages;
 
 use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Crypto\Random\Random;
 use BitWasp\Bitcoin\Flags;
-use BitWasp\Bitcoin\Network\BloomFilter;
-use BitWasp\Bitcoin\Network\Tests\AbstractTestCase;
+use BitWasp\Bitcoin\Math\Math;
+use BitWasp\Bitcoin\Networking\BloomFilter;
+use BitWasp\Bitcoin\Tests\Networking\AbstractTestCase;
 use BitWasp\Buffertools\Buffer;
-use BitWasp\Bitcoin\Network\MessageFactory;
+use BitWasp\Bitcoin\Networking\MessageFactory;
 use BitWasp\Buffertools\Parser;
 
 class FilterLoadTest extends AbstractTestCase
 {
     public function testNetworkSerialize()
     {
-        $math = $this->safeMath();
+        $math = new Math();
         $factory = new MessageFactory(Bitcoin::getDefaultNetwork(), new Random());
 
         $filter = BloomFilter::create($math, 10, 0.000001, 0, new Flags(BloomFilter::UPDATE_ALL));

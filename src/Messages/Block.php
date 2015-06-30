@@ -1,9 +1,9 @@
 <?php
 
-namespace BitWasp\Bitcoin\Network\Messages;
+namespace BitWasp\Bitcoin\Networking\Messages;
 
 use BitWasp\Bitcoin\Block\BlockInterface;
-use BitWasp\Bitcoin\Network\NetworkSerializable;
+use BitWasp\Bitcoin\Networking\NetworkSerializable;
 
 class Block extends NetworkSerializable
 {

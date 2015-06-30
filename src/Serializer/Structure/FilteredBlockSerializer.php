@@ -1,9 +1,9 @@
 <?php
 
-namespace BitWasp\Bitcoin\Network\Serializer\Structure;
+namespace BitWasp\Bitcoin\Networking\Serializer\Structure;
 
-use BitWasp\Bitcoin\Network\Structure\FilteredBlock;
-use BitWasp\Bitcoin\Network\Serializer\PartialMerkleTreeSerializer;
+use BitWasp\Bitcoin\Networking\Structure\FilteredBlock;
+use BitWasp\Bitcoin\Networking\Serializer\PartialMerkleTreeSerializer;
 use BitWasp\Bitcoin\Serializer\Block\HexBlockHeaderSerializer;
 use BitWasp\Buffertools\Buffertools;
 use BitWasp\Buffertools\Parser;

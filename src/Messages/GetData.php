@@ -1,9 +1,9 @@
 <?php
 
-namespace BitWasp\Bitcoin\Network\Messages;
+namespace BitWasp\Bitcoin\Networking\Messages;
 
-use BitWasp\Bitcoin\Network\Serializer\Message\GetDataSerializer;
-use BitWasp\Bitcoin\Network\Serializer\Structure\InventoryVectorSerializer;
+use BitWasp\Bitcoin\Networking\Serializer\Message\GetDataSerializer;
+use BitWasp\Bitcoin\Networking\Serializer\Structure\InventoryVectorSerializer;
 
 class GetData extends AbstractInventory
 {

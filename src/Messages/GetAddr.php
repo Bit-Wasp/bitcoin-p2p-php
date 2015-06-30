@@ -1,9 +1,9 @@
 <?php
 
-namespace BitWasp\Bitcoin\Network\Messages;
+namespace BitWasp\Bitcoin\Networking\Messages;
 
 use BitWasp\Buffertools\Buffer;
-use BitWasp\Bitcoin\Network\NetworkSerializable;
+use BitWasp\Bitcoin\Networking\NetworkSerializable;
 
 class GetAddr extends NetworkSerializable
 {

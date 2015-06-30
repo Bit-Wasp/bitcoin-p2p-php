@@ -1,8 +1,8 @@
 <?php
 
-namespace BitWasp\Bitcoin\Network\Serializer\Message;
+namespace BitWasp\Bitcoin\Networking\Serializer\Message;
 
-use BitWasp\Bitcoin\Network\Messages\Headers;
+use BitWasp\Bitcoin\Networking\Messages\Headers;
 use BitWasp\Bitcoin\Serializer\Block\HexBlockHeaderSerializer;
 use BitWasp\Buffertools\Parser;
 use BitWasp\Buffertools\TemplateFactory;

@@ -1,6 +1,6 @@
 <?php
 
-namespace BitWasp\Bitcoin\Network;
+namespace BitWasp\Bitcoin\Networking;
 
 use BitWasp\Bitcoin\SerializableInterface;
 

@@ -2,7 +2,7 @@
 
 require_once "../vendor/autoload.php";
 
-use BitWasp\Bitcoin\Network\Structure\NetworkAddress;
+use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
 use BitWasp\Bitcoin\Chain\Blockchain;
 use BitWasp\Bitcoin\Chain\BlockStorage;
 use Doctrine\Common\Cache\ArrayCache;
@@ -12,8 +12,8 @@ use BitWasp\Bitcoin\Chain\BlockIndex;
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Bitcoin\Utxo\UtxoSet;
 use BitWasp\Bitcoin\Crypto\Random\Random;
-use BitWasp\Bitcoin\Network\MessageFactory;
-use BitWasp\Bitcoin\Network\P2P\Peer;
+use BitWasp\Bitcoin\Networking\MessageFactory;
+use BitWasp\Bitcoin\Networking\P2P\Peer;
 use BitWasp\Bitcoin\Rpc\RpcFactory;
 
 $network = BitWasp\Bitcoin\Bitcoin::getDefaultNetwork();
@@ -48,7 +48,7 @@ $blockchain = new Blockchain(
 );
 
 
-$locator = new \BitWasp\Bitcoin\Network\BlockLocator();
+$locator = new \BitWasp\Bitcoin\Networking\BlockLocator();
 
 $host = new NetworkAddress(
     Buffer::hex('01', 16),
@@ -68,19 +68,19 @@ $factory = new MessageFactory(
 );
 
 
-$locator = new \BitWasp\Bitcoin\Network\P2P\PeerLocator(
+$locator = new \BitWasp\Bitcoin\Networking\P2P\PeerLocator(
     $local,
     $factory,
     $connector,
     $loop
 );
 
-$node = new \BitWasp\Bitcoin\Network\P2P\Node($local, $blockchain, $locator);
+$node = new \BitWasp\Bitcoin\Networking\P2P\Node($local, $blockchain, $locator);
 
 $locator
     ->discoverPeers()
     ->then(
-        function (\BitWasp\Bitcoin\Network\P2P\PeerLocator $locator) {
+        function (\BitWasp\Bitcoin\Networking\P2P\PeerLocator $locator) {
             return $locator->connectNextPeer();
         },
         function ($error) {
@@ -95,7 +95,7 @@ $locator
             });
 
             $inboundBlocks = 0;
-            $peer->on('block', function (Peer $peer, \BitWasp\Bitcoin\Network\Messages\Block $block) use ($node, &$inboundBlocks) {
+            $peer->on('block', function (Peer $peer, \BitWasp\Bitcoin\Networking\Messages\Block $block) use ($node, &$inboundBlocks) {
                 $blk = $block->getBlock();
                 $node->chain()->process($blk);
 

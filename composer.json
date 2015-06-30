@@ -13,12 +13,12 @@
   ],
   "autoload": {
     "psr-4": {
-      "BitWasp\\Bitcoin\\Network\\": "src/"
+      "BitWasp\\Bitcoin\\Networking\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "BitWasp\\Bitcoin\\Network\\Tests\\": "tests/"
+      "BitWasp\\Bitcoin\\Tests\\Networking\\": "tests/"
     }
   },
   "require": {

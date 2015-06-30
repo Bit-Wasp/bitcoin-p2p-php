@@ -3,14 +3,14 @@
 require_once "../vendor/autoload.php";
 
 
-use BitWasp\Bitcoin\Network\Structure\NetworkAddress;
+use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
 use BitWasp\Bitcoin\Chain\BlockHashIndex;
 use BitWasp\Bitcoin\Chain\BlockHeightIndex;
 use BitWasp\Bitcoin\Chain\BlockIndex;
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Bitcoin\Crypto\Random\Random;
-use BitWasp\Bitcoin\Network\MessageFactory;
-use BitWasp\Bitcoin\Network\P2P\Peer;
+use BitWasp\Bitcoin\Networking\MessageFactory;
+use BitWasp\Bitcoin\Networking\P2P\Peer;
 use BitWasp\Bitcoin\Rpc\RpcFactory;
 
 $network = BitWasp\Bitcoin\Bitcoin::getDefaultNetwork();
@@ -53,7 +53,7 @@ $headerchain = new \BitWasp\Bitcoin\Chain\Headerchain(
     )
 );
 
-$peers = new \BitWasp\Bitcoin\Network\BlockLocator();
+$peers = new \BitWasp\Bitcoin\Networking\BlockLocator();
 
 $host = new NetworkAddress(
     Buffer::hex('01', 16),
@@ -72,13 +72,13 @@ $factory = new MessageFactory(
     new Random()
 );
 
-$peers = new \BitWasp\Bitcoin\Network\P2P\PeerLocator($local, $factory, $connector, $loop);
-$node = new \BitWasp\Bitcoin\Network\P2P\Node($local, $headerchain, $peers);
+$peers = new \BitWasp\Bitcoin\Networking\P2P\PeerLocator($local, $factory, $connector, $loop);
+$node = new \BitWasp\Bitcoin\Networking\P2P\Node($local, $headerchain, $peers);
 
 $peers
 ->discoverPeers()
 ->then(
-    function (\BitWasp\Bitcoin\Network\P2P\PeerLocator $locator) {
+    function (\BitWasp\Bitcoin\Networking\P2P\PeerLocator $locator) {
         return $locator->connectNextPeer();
     },
     function ($error) {
@@ -87,7 +87,7 @@ $peers
     })
 ->then(
     function (Peer $peer) use (&$node) {
-        $peer->on('inv', function (Peer $peer, \BitWasp\Bitcoin\Network\Messages\Inv $inv) use (&$node) {
+        $peer->on('inv', function (Peer $peer, \BitWasp\Bitcoin\Networking\Messages\Inv $inv) use (&$node) {
             $missedBlock = false;
             foreach ($inv->getItems() as $item) {
                 if ($item->isBlock()) {
@@ -103,14 +103,14 @@ $peers
             }
         });
 
-        $peer->on('block', function (Peer $peer, \BitWasp\Bitcoin\Network\Messages\Block $block) use ($node) {
+        $peer->on('block', function (Peer $peer, \BitWasp\Bitcoin\Networking\Messages\Block $block) use ($node) {
             $header = $block->getBlock()->getHeader();
             if (!$node->chain()->index()->hash()->contains($header->getBlockHash())) {
                 $node->chain()->process($header);
             }
         });
 
-        $peer->on('headers', function (Peer $peer, \BitWasp\Bitcoin\Network\Messages\Headers $headers) use ($node) {
+        $peer->on('headers', function (Peer $peer, \BitWasp\Bitcoin\Networking\Messages\Headers $headers) use ($node) {
             $vHeaders = $headers->getHeaders();
             $cHeaders = count($vHeaders);
             for ($i = 0; $i < $cHeaders; $i++) {

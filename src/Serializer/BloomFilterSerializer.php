@@ -1,11 +1,11 @@
 <?php
 
-namespace BitWasp\Bitcoin\Network\Serializer;
+namespace BitWasp\Bitcoin\Networking\Serializer;
 
 use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Flags;
 use BitWasp\Bitcoin\Math\Math;
-use BitWasp\Bitcoin\Network\BloomFilter;
+use BitWasp\Bitcoin\Networking\BloomFilter;
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Buffertools\Parser;
 use BitWasp\Buffertools\TemplateFactory;

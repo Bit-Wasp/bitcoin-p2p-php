@@ -1,11 +1,11 @@
 <?php
 
-namespace BitWasp\Bitcoin\Network\Messages;
+namespace BitWasp\Bitcoin\Networking\Messages;
 
-use BitWasp\Bitcoin\Network\NetworkSerializable;
-use BitWasp\Bitcoin\Network\Structure\AlertDetail;
-use BitWasp\Bitcoin\Network\Serializer\Message\AlertSerializer;
-use BitWasp\Bitcoin\Network\Serializer\Structure\AlertDetailSerializer;
+use BitWasp\Bitcoin\Networking\NetworkSerializable;
+use BitWasp\Bitcoin\Networking\Structure\AlertDetail;
+use BitWasp\Bitcoin\Networking\Serializer\Message\AlertSerializer;
+use BitWasp\Bitcoin\Networking\Serializer\Structure\AlertDetailSerializer;
 use BitWasp\Bitcoin\Signature\SignatureInterface;
 
 class Alert extends NetworkSerializable

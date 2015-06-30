@@ -1,9 +1,9 @@
 <?php
 
-namespace BitWasp\Bitcoin\Network\Serializer\Message;
+namespace BitWasp\Bitcoin\Networking\Serializer\Message;
 
-use BitWasp\Bitcoin\Network\Messages\Addr;
-use BitWasp\Bitcoin\Network\Serializer\Structure\NetworkAddressTimestampSerializer;
+use BitWasp\Bitcoin\Networking\Messages\Addr;
+use BitWasp\Bitcoin\Networking\Serializer\Structure\NetworkAddressTimestampSerializer;
 use BitWasp\Buffertools\Parser;
 use BitWasp\Buffertools\TemplateFactory;
 

@@ -1,19 +1,19 @@
 <?php
 
-namespace BitWasp\Bitcoin\Network\P2P;
+namespace BitWasp\Bitcoin\Networking\P2P;
 
 use BitWasp\Bitcoin\Block\BlockInterface;
-use BitWasp\Bitcoin\Network\BloomFilter;
-use BitWasp\Bitcoin\Network\Structure\FilteredBlock;
-use BitWasp\Bitcoin\Network\MessageFactory;
-use BitWasp\Bitcoin\Network\Messages\FilterAdd;
-use BitWasp\Bitcoin\Network\Messages\FilterLoad;
-use BitWasp\Bitcoin\Network\Messages\Ping;
-use BitWasp\Bitcoin\Network\NetworkMessage;
-use BitWasp\Bitcoin\Network\NetworkSerializable;
-use BitWasp\Bitcoin\Network\Structure\AlertDetail;
-use BitWasp\Bitcoin\Network\Structure\InventoryVector;
-use BitWasp\Bitcoin\Network\Structure\NetworkAddressInterface;
+use BitWasp\Bitcoin\Networking\BloomFilter;
+use BitWasp\Bitcoin\Networking\Structure\FilteredBlock;
+use BitWasp\Bitcoin\Networking\MessageFactory;
+use BitWasp\Bitcoin\Networking\Messages\FilterAdd;
+use BitWasp\Bitcoin\Networking\Messages\FilterLoad;
+use BitWasp\Bitcoin\Networking\Messages\Ping;
+use BitWasp\Bitcoin\Networking\NetworkMessage;
+use BitWasp\Bitcoin\Networking\NetworkSerializable;
+use BitWasp\Bitcoin\Networking\Structure\AlertDetail;
+use BitWasp\Bitcoin\Networking\Structure\InventoryVector;
+use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
 use BitWasp\Bitcoin\Script\Interpreter\InterpreterInterface;
 use BitWasp\Bitcoin\Signature\SignatureInterface;
 use BitWasp\Bitcoin\Transaction\TransactionInterface;
@@ -307,7 +307,7 @@ class Peer extends EventEmitter
     }
 
     /**
-     * @return \BitWasp\Bitcoin\Network\Messages\Version
+     * @return \BitWasp\Bitcoin\Networking\Messages\Version
      */
     public function version()
     {
@@ -400,7 +400,7 @@ class Peer extends EventEmitter
 
     /**
      * @param Buffer[] $locatorHashes
-     * @return \BitWasp\Bitcoin\Network\Messages\GetHeaders
+     * @return \BitWasp\Bitcoin\Networking\Messages\GetHeaders
      */
     public function getheaders(array $locatorHashes)
     {

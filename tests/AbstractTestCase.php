@@ -1,7 +1,6 @@
 <?php
 
-namespace BitWasp\Bitcoin\Network\Tests;
-
+namespace BitWasp\Bitcoin\Tests\Networking;
 
 class AbstractTestCase extends \PHPUnit_Framework_TestCase
 {

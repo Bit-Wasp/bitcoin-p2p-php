@@ -1,11 +1,11 @@
 <?php
 
-namespace BitWasp\Bitcoin\Network\Messages;
+namespace BitWasp\Bitcoin\Networking\Messages;
 
 use BitWasp\Bitcoin\Block\BlockHeaderInterface;
-use BitWasp\Bitcoin\Network\NetworkSerializable;
+use BitWasp\Bitcoin\Networking\NetworkSerializable;
 use BitWasp\Bitcoin\Serializer\Block\HexBlockHeaderSerializer;
-use BitWasp\Bitcoin\Network\Serializer\Message\HeadersSerializer;
+use BitWasp\Bitcoin\Networking\Serializer\Message\HeadersSerializer;
 
 class Headers extends NetworkSerializable implements \Countable
 {

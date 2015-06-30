@@ -1,8 +1,8 @@
 <?php
 
-namespace BitWasp\Bitcoin\Network\Messages;
+namespace BitWasp\Bitcoin\Networking\Messages;
 
-use BitWasp\Bitcoin\Network\NetworkSerializable;
+use BitWasp\Bitcoin\Networking\NetworkSerializable;
 use BitWasp\Buffertools\Buffer;
 
 class FilterClear extends NetworkSerializable

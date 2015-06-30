@@ -2,12 +2,12 @@
 
 require_once "../vendor/autoload.php";
 
-use BitWasp\Bitcoin\Network\Structure\NetworkAddress;
+use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Bitcoin\Crypto\Random\Random;
-use BitWasp\Bitcoin\Network\MessageFactory;
-use BitWasp\Bitcoin\Network\P2P\Peer;
-use BitWasp\Bitcoin\Network\Messages\Addr;
+use BitWasp\Bitcoin\Networking\MessageFactory;
+use BitWasp\Bitcoin\Networking\P2P\Peer;
+use BitWasp\Bitcoin\Networking\Messages\Addr;
 
 $network = BitWasp\Bitcoin\Bitcoin::getDefaultNetwork();
 
@@ -56,7 +56,7 @@ $peer->on('send', function ($msg) {
     echo " [ sending " . $msg->getCommand() . " ]\n";
 });
 
-$peer->on('version', function (Peer $peer, \BitWasp\Bitcoin\Network\NetworkMessage $msg) {
+$peer->on('version', function (Peer $peer, \BitWasp\Bitcoin\Networking\NetworkMessage $msg) {
     echo $msg->getNetworkMessage()->getHex() . "\n";
 });
 

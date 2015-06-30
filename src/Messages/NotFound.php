@@ -1,9 +1,9 @@
 <?php
 
-namespace BitWasp\Bitcoin\Network\Messages;
+namespace BitWasp\Bitcoin\Networking\Messages;
 
-use BitWasp\Bitcoin\Network\Serializer\Message\NotFoundSerializer;
-use BitWasp\Bitcoin\Network\Serializer\Structure\InventoryVectorSerializer;
+use BitWasp\Bitcoin\Networking\Serializer\Message\NotFoundSerializer;
+use BitWasp\Bitcoin\Networking\Serializer\Structure\InventoryVectorSerializer;
 
 class NotFound extends AbstractInventory
 {

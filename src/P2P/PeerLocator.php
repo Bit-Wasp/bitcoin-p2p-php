@@ -1,11 +1,11 @@
 <?php
 
-namespace BitWasp\Bitcoin\Network\P2P;
+namespace BitWasp\Bitcoin\Networking\P2P;
 
-use BitWasp\Bitcoin\Network\MessageFactory;
-use BitWasp\Bitcoin\Network\Messages\Addr;
-use BitWasp\Bitcoin\Network\Structure\NetworkAddress;
-use BitWasp\Bitcoin\Network\Structure\NetworkAddressInterface;
+use BitWasp\Bitcoin\Networking\MessageFactory;
+use BitWasp\Bitcoin\Networking\Messages\Addr;
+use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
+use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
 use BitWasp\Buffertools\Buffer;
 use \Exception;
 use React\EventLoop\LoopInterface;

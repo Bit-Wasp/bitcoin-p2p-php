@@ -1,14 +1,14 @@
 <?php
 
-namespace BitWasp\Bitcoin\Network\Tests\Messages;
+namespace BitWasp\Bitcoin\Tests\Networking\Messages;
 
 use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Block\BlockHeaderFactory;
 use BitWasp\Bitcoin\Crypto\Random\Random;
-use BitWasp\Bitcoin\Network\Messages\Headers;
-use BitWasp\Bitcoin\Serializer\Network\NetworkMessageSerializer;
-use BitWasp\Bitcoin\Network\Tests\AbstractTestCase;
-use BitWasp\Bitcoin\Network\MessageFactory;
+use BitWasp\Bitcoin\Networking\Messages\Headers;
+use BitWasp\Bitcoin\Networking\Serializer\NetworkMessageSerializer;
+use BitWasp\Bitcoin\Tests\Networking\AbstractTestCase;
+use BitWasp\Bitcoin\Networking\MessageFactory;
 
 class HeadersTest extends AbstractTestCase
 {

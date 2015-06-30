@@ -1,6 +1,6 @@
 <?php
 
-namespace BitWasp\Bitcoin\Network\Structure;
+namespace BitWasp\Bitcoin\Networking\Structure;
 
 interface NetworkAddressInterface
 {

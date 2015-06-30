@@ -1,8 +1,8 @@
 <?php
 
-namespace BitWasp\Bitcoin\Network\Serializer\Structure;
+namespace BitWasp\Bitcoin\Networking\Serializer\Structure;
 
-use BitWasp\Bitcoin\Network\Structure\AlertDetail;
+use BitWasp\Bitcoin\Networking\Structure\AlertDetail;
 use BitWasp\Buffertools\Parser;
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Buffertools\TemplateFactory;

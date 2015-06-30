@@ -1,9 +1,9 @@
 <?php
 
-namespace BitWasp\Bitcoin\Network;
+namespace BitWasp\Bitcoin\Networking;
 
 use BitWasp\Bitcoin\Serializable;
-use BitWasp\Bitcoin\Network\Serializer\PartialMerkleTreeSerializer;
+use BitWasp\Bitcoin\Networking\Serializer\PartialMerkleTreeSerializer;
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Buffertools\Buffertools;
 

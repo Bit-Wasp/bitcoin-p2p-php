@@ -1,13 +1,13 @@
 <?php
 
-namespace BitWasp\Bitcoin\Network\Serializer\Structure;
+namespace BitWasp\Bitcoin\Networking\Serializer\Structure;
 
-use BitWasp\Bitcoin\Network\Structure\NetworkAddressTimestamp;
+use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Buffertools\Parser;
 use BitWasp\Buffertools\TemplateFactory;
 
-class NetworkAddressTimestampSerializer
+class NetworkAddressSerializer
 {
     /**
      * @return \BitWasp\Buffertools\Template
@@ -15,7 +15,6 @@ class NetworkAddressTimestampSerializer
     private function getTemplate()
     {
         return (new TemplateFactory())
-            ->uint32()
             ->bytestringle(8)
             ->bytestring(16)
             ->uint16()
@@ -35,25 +34,6 @@ class NetworkAddressTimestampSerializer
         return $buffer;
     }
 
-    /**
-     * @param NetworkAddressTimestamp $addr
-     * @return Buffer
-     */
-    public function serialize(NetworkAddressTimestamp $addr)
-    {
-        return $this->getTemplate()->write([
-            $addr->getTimestamp(),
-            $addr->getServices(),
-            $this->getIpBuffer($addr->getIp()),
-            $addr->getPort()
-        ]);
-    }
-
-    /**
-     * @param Buffer $ip
-     * @return string
-     * @throws \Exception
-     */
     private function parseIpBuffer(Buffer $ip)
     {
         $end = $ip->slice(12, 4);
@@ -70,17 +50,38 @@ class NetworkAddressTimestampSerializer
     }
 
     /**
+     * @param NetworkAddress $addr
+     * @return Buffer
+     */
+    public function serialize(NetworkAddress $addr)
+    {
+        return $this->getTemplate()->write([
+            $addr->getServices(),
+            $this->getIpBuffer($addr->getIp()),
+            $addr->getPort()
+        ]);
+    }
+
+    /**
      * @param Parser $parser
-     * @return NetworkAddressTimestamp
+     * @return NetworkAddress
      */
     public function fromParser(Parser & $parser)
     {
-        list ($timestamp, $services, $ipBuffer, $port) = $this->getTemplate()->parse($parser);
-        return new NetworkAddressTimestamp(
-            $timestamp,
+        list ($services, $ipBuffer, $port) = $this->getTemplate()->parse($parser);
+        return new NetworkAddress(
             $services,
             $this->parseIpBuffer($ipBuffer),
             $port
         );
+    }
+
+    /**
+     * @param $data
+     * @return NetworkAddress
+     */
+    public function parse($data)
+    {
+        return $this->fromParser(new Parser($data));
     }
 }

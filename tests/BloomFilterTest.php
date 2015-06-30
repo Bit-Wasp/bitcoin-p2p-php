@@ -1,14 +1,14 @@
 <?php
 
-namespace BitWasp\Bitcoin\Network\Tests;
+namespace BitWasp\Bitcoin\Tests\Networking;
 
 use BitWasp\Bitcoin\Block\BlockFactory;
 use BitWasp\Bitcoin\Crypto\Random\Random;
 use BitWasp\Bitcoin\Flags;
 use BitWasp\Bitcoin\Key\PrivateKeyFactory;
 use BitWasp\Bitcoin\Math\Math;
-use BitWasp\Bitcoin\Network\BloomFilter;
-use BitWasp\Bitcoin\Network\Structure\FilteredBlock;
+use BitWasp\Bitcoin\Networking\BloomFilter;
+use BitWasp\Bitcoin\Networking\Structure\FilteredBlock;
 use BitWasp\Bitcoin\Transaction\TransactionFactory;
 use BitWasp\Buffertools\Buffer;
 
@@ -51,6 +51,7 @@ class BloomFilterTest extends AbstractTestCase
 
         $random = new Random();
         $bytes = $random->bytes(32);
+
 
         foreach ($buff as $buf) {
             $filter->insertData($buf);

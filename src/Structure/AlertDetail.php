@@ -1,8 +1,8 @@
 <?php
 
-namespace BitWasp\Bitcoin\Network\Structure;
+namespace BitWasp\Bitcoin\Networking\Structure;
 
-use BitWasp\Bitcoin\Network\Serializer\Structure\AlertDetailSerializer;
+use BitWasp\Bitcoin\Networking\Serializer\Structure\AlertDetailSerializer;
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Bitcoin\Serializable;
 use BitWasp\Bitcoin\SerializableInterface;

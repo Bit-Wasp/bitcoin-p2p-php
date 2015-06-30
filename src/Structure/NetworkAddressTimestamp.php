@@ -1,8 +1,8 @@
 <?php
 
-namespace BitWasp\Bitcoin\Network\Structure;
+namespace BitWasp\Bitcoin\Networking\Structure;
 
-use BitWasp\Bitcoin\Network\Serializer\Structure\NetworkAddressTimestampSerializer;
+use BitWasp\Bitcoin\Networking\Serializer\Structure\NetworkAddressTimestampSerializer;
 use BitWasp\Buffertools\Buffer;
 
 class NetworkAddressTimestamp extends NetworkAddress
@@ -13,10 +13,10 @@ class NetworkAddressTimestamp extends NetworkAddress
     private $time;
 
     /**
-     * @param $time
+     * @param int $time
      * @param Buffer $services
-     * @param $ip
-     * @param $port
+     * @param string ip
+     * @param int|string $port
      */
     public function __construct($time, Buffer $services, $ip, $port)
     {

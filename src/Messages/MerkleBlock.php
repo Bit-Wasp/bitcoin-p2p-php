@@ -1,14 +1,13 @@
 <?php
 
-namespace BitWasp\Bitcoin\Network\Messages;
+namespace BitWasp\Bitcoin\Networking\Messages;
 
-use BitWasp\Bitcoin\Network\Structure\FilteredBlock;
-use BitWasp\Bitcoin\Network\NetworkSerializable;
+use BitWasp\Bitcoin\Networking\Structure\FilteredBlock;
+use BitWasp\Bitcoin\Networking\NetworkSerializable;
 use BitWasp\Bitcoin\Serializer\Block\HexBlockHeaderSerializer;
-use BitWasp\Bitcoin\Network\Serializer\Message\MerkleBlockSerializer;
-use BitWasp\Bitcoin\Network\Serializer\PartialMerkleTreeSerializer;
-use BitWasp\Bitcoin\Network\Serializer\Structure\FilteredBlockSerializer;
-
+use BitWasp\Bitcoin\Networking\Serializer\Message\MerkleBlockSerializer;
+use BitWasp\Bitcoin\Networking\Serializer\PartialMerkleTreeSerializer;
+use BitWasp\Bitcoin\Networking\Serializer\Structure\FilteredBlockSerializer;
 
 class MerkleBlock extends NetworkSerializable
 {

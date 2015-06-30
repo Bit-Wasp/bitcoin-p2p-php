@@ -1,9 +1,9 @@
 <?php
 
-namespace BitWasp\Bitcoin\Network\Serializer\Message;
+namespace BitWasp\Bitcoin\Networking\Serializer\Message;
 
-use BitWasp\Bitcoin\Network\Messages\FilterLoad;
-use BitWasp\Bitcoin\Network\Serializer\BloomFilterSerializer;
+use BitWasp\Bitcoin\Networking\Messages\FilterLoad;
+use BitWasp\Bitcoin\Networking\Serializer\BloomFilterSerializer;
 use BitWasp\Buffertools\Parser;
 
 class FilterLoadSerializer

@@ -1,0 +1,34 @@
+{
+  "name": "bitwasp/bitcoin-p2p",
+  "description": "Implementation of the bitcoin protocol using ReactPHP",
+  "type": "library",
+  "homepage": "https://github.com/bit-wasp/bitcoin-php",
+  "license": "Unlicence",
+  "authors": [
+    {
+      "name": "Thomas Kerin",
+      "homepage": "https://thomaskerin.io",
+      "role": "Author"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "BitWasp\\Bitcoin\\Network\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "BitWasp\\Bitcoin\\Network\\Tests\\": "tests/"
+    }
+  },
+  "require": {
+    "php": ">=5.4.0",
+    "ext-gmp": "*",
+    "ext-json": "*",
+    "bitwasp/bitcoin": "~0.0"
+  },
+  "require-dev": {
+    "bitwasp/testing-php": "~0.0",
+    "symfony/yaml": "~2.6"
+  }
+}

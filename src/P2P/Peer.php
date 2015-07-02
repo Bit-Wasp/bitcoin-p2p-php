@@ -96,7 +96,16 @@ class Peer extends EventEmitter
      */
     private $lastPongTime;
 
-    private $shouldRelay = false;
+    /**
+     * Whether we want this peer to relay tx's to us.
+     * @var bool
+     */
+    private $relayToUs = false;
+
+    /**
+     * @var bool
+     */
+    private $relayToPeer = false;
 
     /**
      * @param NetworkAddressInterface $addr
@@ -137,11 +146,30 @@ class Peer extends EventEmitter
     }
 
     /**
+     * Set to true by calling requestRelay()
      * @return bool
      */
-    public function shouldRelay()
+    public function checkWeRequestedRelay()
     {
-        return $this->shouldRelay;
+        return $this->relayToUs;
+    }
+
+    /**
+     * Check if peer sent version message requesting relay, or, set a filter.
+     * @return bool
+     */
+    public function checkPeerRequestedRelay()
+    {
+        return $this->relayToPeer;
+    }
+
+    /**
+     * Must be called before connect(). This tells the remote node to relay transactions to us.
+     */
+    public function requestRelay()
+    {
+        $this->relayToUs = true;
+        return $this;
     }
 
     /**
@@ -265,7 +293,7 @@ class Peer extends EventEmitter
                     $filter = $filterLoad->getFilter();
 
                     $this->filter = $filter;
-                    $this->shouldRelay = true;
+                    $this->relayToPeer = true;
                 });
 
                 $this->on('filteradd', function (Peer $peer, FilterAdd $filterAdd) {
@@ -287,7 +315,7 @@ class Peer extends EventEmitter
                     'filterclear',
                     function () {
                         $this->filter = null;
-                        $this->shouldRelay = true;
+                        $this->relayToPeer = true;
                     }
                 );
 
@@ -335,7 +363,7 @@ class Peer extends EventEmitter
             $this->localAddr,
             new Buffer(self::USER_AGENT),
             0,
-            false
+            $this->relayToUs
         ));
     }
 

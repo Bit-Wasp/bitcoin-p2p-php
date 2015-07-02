@@ -29,7 +29,8 @@ $locator = new PeerLocator(
     $local,
     $msgs,
     $connector,
-    $loop
+    $loop,
+    false // dont request relay
 );
 
 $locator->discoverPeers()->then(function () use ($locator, &$loop) {

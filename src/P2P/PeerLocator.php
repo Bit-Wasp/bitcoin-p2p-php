@@ -35,6 +35,11 @@ class PeerLocator
     private $msgs;
 
     /**
+     * @var bool
+     */
+    private $requestRelay;
+
+    /**
      * @var NetworkAddress[]
      */
     private $knownAddresses = [];
@@ -44,17 +49,20 @@ class PeerLocator
      * @param MessageFactory $messageFactory
      * @param Connector $connector
      * @param LoopInterface $loop
+     * @param bool $requestRelay
      */
     public function __construct(
         NetworkAddress $localAddr,
         MessageFactory $messageFactory,
         Connector $connector,
-        LoopInterface $loop
+        LoopInterface $loop,
+        $requestRelay = false
     ) {
         $this->local = $localAddr;
         $this->msgs = $messageFactory;
         $this->connector = $connector;
         $this->loop = $loop;
+        $this->requestRelay = $requestRelay;
     }
 
     /**
@@ -64,21 +72,17 @@ class PeerLocator
     {
         $seeds = [
             'seed.bitcoin.sipa.be',
-            'dnsseed.bluematt.me',
             'dnsseed.bitcoin.dashjr.org',
             'seed.bitcoinstats.com',
-            "bitseed.xf2.org",
+            'seed.bitnodes.io',
             "seed.bitcoin.jonasschnelli.ch"
         ];
+
         shuffle($seeds);
         return $seeds;
     }
 
-    /**
-     * @param NetworkAddressInterface $remoteAddr
-     * @return Peer
-     */
-    public function createPeer(NetworkAddressInterface $remoteAddr)
+    public function getPeer(NetworkAddressInterface $remoteAddr)
     {
         return new Peer(
             $remoteAddr,
@@ -87,6 +91,20 @@ class PeerLocator
             $this->msgs,
             $this->loop
         );
+    }
+
+    /**
+     * @param NetworkAddressInterface $remoteAddr
+     * @return Peer
+     */
+    public function getRelayPeer(NetworkAddressInterface $remoteAddr)
+    {
+        $peer = $this->getPeer($remoteAddr);
+        if ($this->requestRelay) {
+            $peer->requestRelay();
+        }
+
+        return $peer;
     }
 
     /**
@@ -123,7 +141,7 @@ class PeerLocator
         $peers = [];
         $resolved = false;
         foreach ($seeds as $seed) {
-            $this->createPeer($this->getAddress($seed))
+            $this->getPeer($this->getAddress($seed))
                 ->connect()
                 ->then(function (Peer $peer) use (&$numSeeds, &$connections, &$peers, &$resolved) {
                     if ($resolved) {
@@ -219,7 +237,7 @@ class PeerLocator
         $deferred = new Deferred();
 
         $this
-            ->createPeer($this->popAddress())
+            ->getRelayPeer($this->popAddress())
             ->connect()
             ->then(
                 function ($peer) use (&$deferred, &$timer) {

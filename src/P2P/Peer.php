@@ -21,6 +21,7 @@ use BitWasp\Buffertools\Buffer;
 use BitWasp\Buffertools\Parser;
 use Evenement\EventEmitter;
 use React\EventLoop\LoopInterface;
+use React\EventLoop\Timer\Timer;
 use React\Promise\Deferred;
 use React\SocketClient\Connector;
 use React\Stream\Stream;
@@ -239,7 +240,8 @@ class Peer extends EventEmitter
                     if ($this->exchangedVersion == false) {
                         $this->exchangedVersion = true;
                         $this->loop->addPeriodicTimer($this->pingInterval, function (\React\EventLoop\Timer\Timer $timer) {
-                            if (null === $this->stream) {
+                            if (!$this->stream->isReadable()) {
+                                echo "cancel ping timer\n";
                                 $timer->cancel();
                             }
                             $this->ping();
@@ -290,11 +292,25 @@ class Peer extends EventEmitter
                 );
 
                 $this->version();
+                $this->loop->addPeriodicTimer(20, function (Timer $timer) {
+                    if (!$this->exchangedVersion) {
+                        echo "havent exchanged version with " . $this->remoteAddr->getIp() . "\n";
+                        $this->intentionalClose();
+                    }
+                    $timer->cancel();
+                });
             }, function ($error) use ($deferred) {
                 $deferred->reject($error);
             });
 
         return $deferred->promise();
+    }
+
+    public function intentionalClose()
+    {
+        $this->stream->end();
+        $this->stream->close();
+        $this->emit('intentionaldisconnect', [$this]);
     }
 
     /**

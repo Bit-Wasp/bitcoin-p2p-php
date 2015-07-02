@@ -11,6 +11,11 @@ use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
 class Node
 {
     /**
+     * @var NetworkAddress
+     */
+    private $local;
+
+    /**
      * @var Headerchain|Blockchain
      */
     private $chain;
@@ -32,7 +37,6 @@ class Node
      */
     public function __construct(NetworkAddress $local, $chain, PeerLocator $peers)
     {
-        $this->version = 70002;
         $this->local = $local;
         $this->chain = $chain;
         $this->peers = $peers;

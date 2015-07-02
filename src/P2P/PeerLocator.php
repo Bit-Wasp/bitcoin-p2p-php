@@ -105,6 +105,8 @@ class PeerLocator
     }
 
     /**
+     * Connect to $numSeeds DNS seeds
+     *
      * @param $numSeeds
      * @return \React\Promise\Promise|\React\Promise\PromiseInterface
      */
@@ -140,6 +142,8 @@ class PeerLocator
     }
 
     /**
+     * Discover peers by connecting to DNS seeds and wait for an Addr message
+     *
      * @return \React\Promise\PromiseInterface|static
      */
     public function discoverPeers()
@@ -165,9 +169,9 @@ class PeerLocator
             });
 
         return $deferred->promise()->then(
-            function ($peerAddrs) {
+            function (array $peerAddrs) {
                 foreach ($peerAddrs as $set) {
-                    shuffle($set);
+                    //shuffle($set);
                     $this->knownAddresses = array_merge($this->knownAddresses, $set);
                 }
 
@@ -185,6 +189,8 @@ class PeerLocator
     }
 
     /**
+     * Pop an address from the discovered peers
+     *
      * @return NetworkAddressInterface
      * @throws Exception
      */
@@ -195,7 +201,6 @@ class PeerLocator
         }
 
         $address = array_pop($this->knownAddresses);
-        echo $address->getIp() . " --- " .$address->getServices()->getInt() . "\n";
         if ($address->getIp() == '0.0.0.0') {
             return $this->popAddress();
         }
@@ -204,24 +209,23 @@ class PeerLocator
     }
 
     /**
+     * Connect to the next known address. If it fails, initiate another attempt.
+     *
      * @return \React\Promise\Promise|\React\Promise\PromiseInterface
      * @throws \Exception
      */
     public function connectNextPeer()
     {
-        echo 'connectNext';
         $deferred = new Deferred();
-        $addr = $this->popAddress();
 
-        $this->createPeer($addr)
+        $this
+            ->createPeer($this->popAddress())
             ->connect()
             ->then(
                 function ($peer) use (&$deferred, &$timer) {
-                    echo "connected to next peer\n";
                     $deferred->resolve($peer);
                 },
                 function () use (&$deferred, &$retryAnotherPeer) {
-                    echo "rejected\n";
                     $deferred->reject();
                 }
             );
@@ -229,6 +233,7 @@ class PeerLocator
         return $deferred->promise()->then(function (Peer $peer) {
             return $peer;
         }, function () {
+            // TODO: Should have error checking here
             return $this->connectNextPeer();
         });
     }

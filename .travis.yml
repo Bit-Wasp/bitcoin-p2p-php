@@ -11,7 +11,7 @@ install:
     - composer update --prefer-source
 
 script:
-  - php $EXT_SECP256K1 vendor/bin/phpunit
+  - php vendor/bin/phpunit
   - php vendor/bin/phpcs -n --standard=PSR1,PSR2 --report=full src/
 
 after_script:

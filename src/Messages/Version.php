@@ -2,6 +2,7 @@
 
 namespace BitWasp\Bitcoin\Networking\Messages;
 
+use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressTimestamp;
 use BitWasp\Bitcoin\Networking\Serializer\Message\VersionSerializer;
@@ -13,6 +14,9 @@ use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
 
 class Version extends NetworkSerializable
 {
+    const NODE_NETWORK = 1;
+    const NODE_GETUTXOS = 2;
+
     /**
      * @var int|string
      */
@@ -111,6 +115,12 @@ class Version extends NetworkSerializable
     public function getNetworkCommand()
     {
         return 'version';
+    }
+
+    public function hasBlockchain()
+    {
+        $math = Bitcoin::getMath();
+        return $math->cmp($math->bitwiseAnd($this->services->getInt(), self::NODE_NETWORK), self::NODE_NETWORK) == 0;
     }
 
     /**

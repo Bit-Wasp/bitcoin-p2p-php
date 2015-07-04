@@ -45,6 +45,32 @@ class VersionTest extends AbstractTestCase
         $this->assertEquals($lastBlock, $version->getStartHeight());
         $this->assertInternalType('string', $version->getNonce());
         $this->assertTrue($version->getRelay());
+        $this->assertTrue($version->hasBlockchain());
+    }
+
+    public function testVersionWithoutBlockchain()
+    {
+        $factory = new MessageFactory(Bitcoin::getDefaultNetwork(), new Random());
+        $v = '60002';
+        $services = Buffer::hex('0000000000000000');
+        $time = (string)time();
+        $recipient = new NetworkAddress(Buffer::hex('1'), '10.0.0.1', '8332');
+        $sender = new NetworkAddress(Buffer::hex('1'), '10.0.0.2', '8332');
+        $userAgent = new Buffer("/Satoshi:0.7.2/");
+        $lastBlock = '212672';
+
+        $version = $factory->version(
+            $v,
+            $services,
+            $time,
+            $recipient,
+            $sender,
+            $userAgent,
+            $lastBlock,
+            true
+        );
+
+        $this->assertFalse($version->hasBlockchain());
     }
 
     /**

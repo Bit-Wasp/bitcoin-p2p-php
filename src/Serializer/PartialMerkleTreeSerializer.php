@@ -2,7 +2,10 @@
 
 namespace BitWasp\Bitcoin\Networking\Serializer;
 
+use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Networking\PartialMerkleTree;
+use BitWasp\Buffertools\Buffer;
+use BitWasp\Buffertools\Buffertools;
 use BitWasp\Buffertools\Parser;
 use BitWasp\Buffertools\TemplateFactory;
 
@@ -19,7 +22,7 @@ class PartialMerkleTreeSerializer
                 return $parser->readBytes(32, true);
             })
             ->vector(function (Parser & $parser) {
-                return$parser->readBytes(1);
+                return $parser->readBytes(1);
             })
             ->getTemplate();
     }
@@ -33,10 +36,54 @@ class PartialMerkleTreeSerializer
         list ($txCount, $vHash, $vBits) = $this->getTemplate()->parse($parser);
 
         return new PartialMerkleTree(
-            $txCount,
+            (int)$txCount,
             $vHash,
-            $vBits
+            $this->buffersToBitArray($txCount, $vBits)
         );
+    }
+
+    public function bitsToBuffers(array $bits)
+    {
+        $math = Bitcoin::getMath();
+        $vBytes = str_split(str_pad('', (count($bits)+7)/8, '0', STR_PAD_LEFT));
+        //$vBytes[]
+        $nBits = count($bits);
+
+        for ($p = 0; $p < $nBits; $p++) {
+            $index = (int)floor($p / 8);
+            $vBytes[$index] |= $bits[$p] << ($p % 8);
+        }
+
+        $results = array_map(
+            function ($value) use ($math) {
+                echo "value: $value\n";
+                return Buffer::hex($math->decHex($value));
+            },
+            $vBytes
+        );
+        return $results;
+    }
+
+    /**
+     * @param Buffer[] $vBytes
+     * @return array
+     */
+    public function buffersToBitArray($last, array $vBytes)
+    {
+        $size = count($vBytes) * 8;
+        //$vBits = str_split(str_pad('', $size, chr('0'), STR_PAD_LEFT), 1);
+
+        $vBits = [];
+
+        for ($p = 0; $p < $size; $p++) {
+            $byteIndex = (int)floor($p / 8);
+            $byte = ord($vBytes[$byteIndex]->getBinary());
+
+            $vBits[$p] = ($byte & (1 << ($p % 8))) != 0;
+        }
+
+        return array_slice($vBits, 0, $last);
+        return $vBits;
     }
 
     /**
@@ -54,10 +101,18 @@ class PartialMerkleTreeSerializer
      */
     public function serialize(PartialMerkleTree $tree)
     {
+        $flipped = array_map(
+            function (Buffer $value) {
+                return new Buffer(Buffertools::flipBytes($value->getBinary()));
+            },
+            $tree->getHashes()
+        );
+
+        $padded = $this->bitsToBuffers($tree->getFlagBits());
         return $this->getTemplate()->write([
             $tree->getTxCount(),
-            $tree->getHashes(),
-            $tree->getFlagBits()
+            $flipped,
+            $padded
         ]);
     }
 }

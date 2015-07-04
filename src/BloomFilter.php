@@ -33,7 +33,7 @@ class BloomFilter extends Serializable
     /**
      * @var bool
      */
-    private $isEmpty = false;
+    private $isEmpty = true;
 
     /**
      * @var bool
@@ -69,6 +69,7 @@ class BloomFilter extends Serializable
         $this->numHashFuncs = $numHashFuncs;
         $this->nTweak = $nTweak;
         $this->flags = $flags;
+        $this->updateEmptyFull();
     }
 
     /**
@@ -99,6 +100,39 @@ class BloomFilter extends Serializable
             $nTweak,
             $flags
         );
+    }
+
+    /**
+     * @param $flag
+     * @return bool
+     */
+    public function checkFlag($flag)
+    {
+        return $this->math->cmp($this->math->bitwiseAnd($this->flags->getFlags(), self::UPDATE_MASK), $flag) == 0;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isUpdateNone()
+    {
+        return $this->checkFlag(self::UPDATE_NONE);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isUpdateAll()
+    {
+        return $this->checkFlag(self::UPDATE_ALL);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isUpdatePubKeyOnly()
+    {
+        return $this->checkFlag(self::UPDATE_P2PUBKEY_ONLY);
     }
 
     /**
@@ -217,7 +251,7 @@ class BloomFilter extends Serializable
             $this->data[$index >> 3] |= (1 << (7 & $index));
         }
 
-        $this->isEmpty = false;
+        $this->updateEmptyFull();
     }
 
     /**
@@ -310,7 +344,6 @@ class BloomFilter extends Serializable
             $found = true;
         }
 
-        $nFlags = $this->flags->getFlags() & self::UPDATE_MASK;
         $outputs = $tx->getOutputs();
 
         // Check for relevant output scripts. We add the outpoint to the filter if found.
@@ -321,9 +354,9 @@ class BloomFilter extends Serializable
                 if ($pushdata instanceof Buffer && $pushdata->getSize() > 0 && $this->containsData($pushdata)) {
                     $found = true;
 
-                    if (self::UPDATE_ALL === $nFlags) {
+                    if ($this->isUpdateAll()) {
                         $this->insertOutpoint($txHash, $i);
-                    } else if (self::UPDATE_P2PUBKEY_ONLY === $nFlags) {
+                    } else if ($this->isUpdatePubKeyOnly()) {
                         $type = ScriptFactory::scriptPubKey()->classify($script);
                         if ($type === ScriptClassifierInterface::MULTISIG || $type === ScriptClassifierInterface::PAYTOPUBKEY) {
                             $this->insertOutpoint($txHash, $i);

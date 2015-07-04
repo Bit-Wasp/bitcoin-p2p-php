@@ -18,7 +18,7 @@ $connector = new React\SocketClient\Connector($loop, $dns);
 
 $host = new NetworkAddress(
     Buffer::hex('01', 16),
-    '192.168.192.101',
+    '192.168.192.10',
     8333
 );
 
@@ -40,8 +40,9 @@ $peer = new Peer(
 );
 
 $peer->on('ready', function (Peer $peer) use ($factory) {
+    echo "connected\n";
     $peer->send($factory->getaddr());
-    $peer->on('addr', function (Peer $peer, Addr $addr) {
+    $peer->on('addr', function (Addr $addr) {
         echo "Nodes: \n";
         foreach ($addr->getAddresses() as $address)
         {
@@ -49,10 +50,5 @@ $peer->on('ready', function (Peer $peer) use ($factory) {
         }
     });
 });
-
-$peer->on('version', function (Peer $peer, \BitWasp\Bitcoin\Networking\Messages\Version $msg) {
-    echo $msg->getNetworkMessage()->getHex() . "\n";
-});
-
 $peer->connect($connector, $host);
 $loop->run();

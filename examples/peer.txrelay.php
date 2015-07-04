@@ -18,7 +18,7 @@ $network = Bitcoin::getDefaultNetwork();
 
 $local = new NetworkAddress(
     Buffer::hex('01', 16),
-    '192.168.192.39',
+    '192.168.192.10',
     32301
 );
 
@@ -42,17 +42,18 @@ function decodeInv(Peer $peer, \BitWasp\Bitcoin\Networking\Messages\Inv $inv)
         }
         $loc[] = $item->getHash();
     }
-
     echo " [txs: " . count($txs) . ", blocks: " . count($blks) . ", filtered: " . count($filtered) . "]\n";
 }
 
-$locator->discoverPeers()->then(function (PeerLocator $locator) {
-    $manager = new \BitWasp\Bitcoin\Networking\P2P\PeerManager($locator);
-    $manager->connectToPeers(1)->then(function ($peers) {
-        $peer = $peers[0];
-        /** @var Peer $peer */
-        $peer->on('inv', 'decodeInv');
-    });
-});
+$locator->discoverPeers()->then(
+    function (PeerLocator $locator) {
+        $manager = new \BitWasp\Bitcoin\Networking\P2P\PeerManager($locator);
+        $manager->connectToPeers(1)->then(function ($peers) {
+            $peer = $peers[0];
+            /** @var Peer $peer */
+            $peer->on('inv', 'decodeInv');
+        });
+    }
+);
 
 $loop->run();

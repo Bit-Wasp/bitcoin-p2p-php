@@ -82,24 +82,24 @@ class PeerLocator
         return $seeds;
     }
 
-    public function getPeer(NetworkAddressInterface $remoteAddr)
+    /**
+     * @return Peer
+     */
+    public function getPeer()
     {
         return new Peer(
-            $remoteAddr,
             $this->local,
-            $this->connector,
             $this->msgs,
             $this->loop
         );
     }
 
     /**
-     * @param NetworkAddressInterface $remoteAddr
      * @return Peer
      */
-    public function getRelayPeer(NetworkAddressInterface $remoteAddr)
+    public function getRelayPeer()
     {
-        $peer = $this->getPeer($remoteAddr);
+        $peer = $this->getPeer();
         if ($this->requestRelay) {
             $peer->requestRelay();
         }
@@ -141,10 +141,11 @@ class PeerLocator
         $peers = [];
         $resolved = false;
         foreach ($seeds as $seed) {
-            $this->getPeer($this->getAddress($seed))
-                ->connect()
+            $this->getPeer()
+                ->connect($this->connector, $this->getAddress($seed))
                 ->then(function (Peer $peer) use (&$numSeeds, &$connections, &$peers, &$resolved) {
                     if ($resolved) {
+                        echo "nxt happend\n";
                         $peer->close();
                         return;
                     }
@@ -237,10 +238,11 @@ class PeerLocator
         $deferred = new Deferred();
 
         $this
-            ->getRelayPeer($this->popAddress())
-            ->connect()
+            ->getRelayPeer()
+            ->connect($this->connector, $this->popAddress())
             ->then(
                 function ($peer) use (&$deferred, &$timer) {
+                    echo "connected\n";
                     $deferred->resolve($peer);
                 },
                 function () use (&$deferred, &$retryAnotherPeer) {

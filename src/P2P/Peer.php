@@ -55,11 +55,6 @@ class Peer extends EventEmitter
     private $filter;
 
     /**
-     * @var Connector
-     */
-    private $connector;
-
-    /**
      * @var LoopInterface
      */
     private $loop;
@@ -82,7 +77,7 @@ class Peer extends EventEmitter
     /**
      * @var int
      */
-    private $pingInterval = '600';
+    private $pingInterval = 600;
 
     /**
      * @var int
@@ -204,11 +199,16 @@ class Peer extends EventEmitter
     public function send(NetworkSerializable $msg)
     {
         $net = $msg->getNetworkMessage();
-        echo "sending something\n";
         $this->stream->write($net->getBinary());
         $this->emit('send', [$net]);
     }
 
+    /**
+     * Handler for incoming data. Buffers possibly fragmented packets since they arrive sequentially.
+     * Before finishing the version exchange, this will only emit Version and VerAck messages.
+     *
+     * @param string $data
+     */
     public function onData($data)
     {
         $this->buffer .= $data;
@@ -218,9 +218,9 @@ class Peer extends EventEmitter
             while ($parser->getPosition() !== $length && $message = $this->msgs->parse($parser)) {
                 $this->buffer = $parser->getBuffer()->slice($parser->getPosition())->getBinary();
                 $command = $message->getCommand();
-                //if ($this->exchangedVersion || ($command == 'version' || $command == 'verack')) {
+                if ($this->exchangedVersion || ($command == 'version' || $command == 'verack')) {
                     $this->emit('msg', [$this, $message]);
-                //}
+                }
             }
         } catch (\Exception $e) {
             if ($data == "") {
@@ -231,58 +231,12 @@ class Peer extends EventEmitter
     }
 
     /**
-     * @param Connection $connection
-     * @return \React\Promise\Promise|\React\Promise\PromiseInterface
+     * Initializes basic peer functionality - used in server and client contexts
      */
-    public function inboundConnection(Connection $connection)
-    {
-        $this->stream = $connection;
-        $deferred = new Deferred();
-
-        $connection->on('data', [$this, 'onData']);
-
-        $this->setupConnection();
-
-        echo "setup\n";
-        $this->on('version', function (Peer $peer, Version $version) {
-            $this->remoteAddr = $version->getSenderAddress();
-
-            echo "received version from someone\n";
-            echo "[ip: ".$this->remoteAddr->getIp().", port: ". $this->remoteAddr->getPort() . ", services: " . $this->remoteAddr->getServices()->getHex() . "\n";
-            $this->version();
-            $this->verack();
-            
-            $this->exchangedVersion = true;
-        });
-
-        $this->on('verack', function () use ($deferred) {
-            echo 'verack';
-            if ($this->exchangedVersion == false) {
-                $this->exchangedVersion = true;
-                $this->loop->addPeriodicTimer($this->pingInterval, function (\React\EventLoop\Timer\Timer $timer) {
-                    if (!$this->stream->isReadable()) {
-                        echo "cancel ping timer\n";
-                        $timer->cancel();
-                    }
-                    $this->ping();
-                    if ($this->lastPongTime > time() - ($this->pingInterval + $this->pingInterval * 0.20)) {
-                        $this->missedPings++;
-                    }
-                    if ($this->missedPings > $this->maxMissedPings) {
-                        $this->close();
-                    }
-                });
-                $this->verack();
-                $this->emit('ready', [$this]);
-                $deferred->resolve($this);
-            }
-        });
-
-        return $this;
-    }
-
     private function setupConnection()
     {
+        $this->stream->on('data', [$this, 'onData']);
+
         $this->on('msg', function (Peer $peer, NetworkMessage $msg) {
             if ($this->exchangedVersion) {
                 echo " [ received " . $msg->getCommand() . " - " . $this->getRemoteAddr()->getIp() . "]\n";
@@ -346,6 +300,55 @@ class Peer extends EventEmitter
             $timer->cancel();
         });
     }
+
+    /**
+     *
+     */
+    public function setupPing()
+    {
+        $this->loop->addPeriodicTimer($this->pingInterval, function (\React\EventLoop\Timer\Timer $timer) {
+            if (!$this->stream->isReadable()) {
+                echo "cancel ping timer\n";
+                $timer->cancel();
+            }
+            $this->ping();
+            if ($this->lastPongTime > time() - ($this->pingInterval + $this->pingInterval * 0.20)) {
+                $this->missedPings++;
+            }
+            if ($this->missedPings > $this->maxMissedPings) {
+                $this->close();
+            }
+        });
+    }
+
+    /**
+     * @param Connection $connection
+     * @return \React\Promise\Promise|\React\Promise\PromiseInterface
+     */
+    public function inboundConnection(Connection $connection)
+    {
+        $this->stream = $connection;
+        $this->setupConnection();
+        $deferred = new Deferred();
+
+        $this->on('version', function (Peer $peer, Version $version) {
+            $this->remoteAddr = $version->getSenderAddress();
+            $this->version();
+        });
+
+        $this->on('verack', function () use ($deferred) {
+            if ($this->exchangedVersion == false) {
+                $this->exchangedVersion = true;
+                $this->setupPing();
+                $this->verack();
+                $this->emit('ready', [$this]);
+                $deferred->resolve($this);
+            }
+        });
+
+        return $this;
+    }
+
     /**
      * @return \React\Promise\RejectedPromise|static
      */
@@ -369,19 +372,7 @@ class Peer extends EventEmitter
                 $this->on('verack', function () use ($deferred) {
                     if ($this->exchangedVersion == false) {
                         $this->exchangedVersion = true;
-                        $this->loop->addPeriodicTimer($this->pingInterval, function (\React\EventLoop\Timer\Timer $timer) {
-                            if (!$this->stream->isReadable()) {
-                                echo "cancel ping timer\n";
-                                $timer->cancel();
-                            }
-                            $this->ping();
-                            if ($this->lastPongTime > time() - ($this->pingInterval + $this->pingInterval * 0.20)) {
-                                $this->missedPings++;
-                            }
-                            if ($this->missedPings > $this->maxMissedPings) {
-                                $this->close();
-                            }
-                        });
+                        $this->setupPing();
                         $this->emit('ready', [$this]);
                         $deferred->resolve($this);
                     }
@@ -396,11 +387,14 @@ class Peer extends EventEmitter
         return $deferred->promise();
     }
 
+    /**
+     *
+     */
     public function intentionalClose()
     {
+        $this->emit('intentionaldisconnect', [$this]);
         $this->stream->end();
         $this->stream->close();
-        $this->emit('intentionaldisconnect', [$this]);
     }
 
     /**

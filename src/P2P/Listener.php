@@ -2,7 +2,6 @@
 
 namespace BitWasp\Bitcoin\Networking\P2P;
 
-
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
 use BitWasp\Bitcoin\Networking\MessageFactory;

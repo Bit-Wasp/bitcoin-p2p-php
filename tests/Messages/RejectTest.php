@@ -29,4 +29,20 @@ class RejectTest extends AbstractTestCase
 
         $this->assertEquals($reject, $parsed);
     }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Invalid code provided to reject message
+     */
+    public function testWithInvalidCode()
+    {
+        $net = Bitcoin::getDefaultNetwork();
+        $factory = new MessageFactory($net, new Random());
+        $factory->reject(
+            new Buffer(),
+            10,
+            new Buffer(),
+            new Buffer()
+        );
+    }
 }

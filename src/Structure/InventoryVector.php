@@ -52,6 +52,14 @@ class InventoryVector extends Serializable
     /**
      * @return bool
      */
+    public function isError()
+    {
+        return $this->type === self::MSG_ERROR;
+    }
+
+    /**
+     * @return bool
+     */
     public function isTx()
     {
         return $this->type === self::MSG_TX;

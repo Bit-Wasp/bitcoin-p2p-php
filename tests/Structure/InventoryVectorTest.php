@@ -20,11 +20,13 @@ class InventoryVectorTest extends AbstractTestCase
         $this->assertTrue($inv->isTx());
         $this->assertFalse($inv->isBlock());
         $this->assertFalse($inv->isFilteredBlock());
+        $this->assertFalse($inv->isError());
 
         $inv = new InventoryVector(InventoryVector::MSG_BLOCK, $buffer);
         $this->assertEquals(2, $inv->getType());
         $this->assertTrue($inv->isBlock());
         $this->assertFalse($inv->isTx());
+        $this->assertFalse($inv->isError());
         $this->assertFalse($inv->isFilteredBlock());
 
         $inv = new InventoryVector(InventoryVector::MSG_FILTERED_BLOCK, $buffer);
@@ -32,6 +34,10 @@ class InventoryVectorTest extends AbstractTestCase
         $this->assertTrue($inv->isFilteredBlock());
         $this->assertFalse($inv->isBlock());
         $this->assertFalse($inv->isTx());
+        $this->assertFalse($inv->isError());
+
+        $inv = new InventoryVector(InventoryVector::ERROR, $buffer);
+        $this->assertTrue($inv->isError());
 
         $this->assertEquals($buffer, $inv->getHash());
     }

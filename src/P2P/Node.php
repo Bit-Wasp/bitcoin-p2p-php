@@ -61,31 +61,4 @@ class Node
     {
         return $this->chain;
     }
-
-    /**
-     * @param Peer $peer
-     * @param Inv $vInv
-     */
-    public function processInv(Peer $peer, Inv $vInv)
-    {
-        $vDontHave = [];
-        foreach ($vInv->getItems() as $vector) {
-            $key = $vector->getHash()->getHex();
-            if ($vector->isBlock()) {
-                if (!$this->chain->index()->height()->contains($key)) {
-                    $vDontHave[] = $vector;
-                }
-            } elseif ($vector->isTx()) {
-            } elseif ($vector->isFilteredBlock()) {
-                if (!$this->chain->index()->height()->contains($key)) {
-                    $vDontHave[] = $vector;
-                }
-            }
-        }
-
-        if (count($vDontHave) > 0) {
-            echo "send getdata\n";
-            $peer->getdata($vDontHave);
-        }
-    }
 }

@@ -55,6 +55,7 @@ class BloomFilter extends Serializable
      */
     private $nTweak;
 
+
     /**
      * @param Math $math
      * @param array $vFilter

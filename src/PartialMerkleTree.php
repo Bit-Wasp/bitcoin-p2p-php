@@ -195,22 +195,18 @@ class PartialMerkleTree extends Serializable
         $nTx = $this->getTxCount();
         if (0 == $nTx) {
             throw new \Exception('ntx = 0');
-            return new Buffer();
         }
 
         if ($nTx > BlockInterface::MAX_BLOCK_SIZE / 60) {
             throw new \Exception('ntx > bound size');
-            return new Buffer();
         }
 
         if (count($this->vHashes) > $nTx) {
             throw new \Exception('nHashes > nTx');
-            return new Buffer();
         }
 
         if (count($this->vFlagBits) < count($this->vHashes)) {
-            //throw new \Exception('nBits < nHashes');
-            return new Buffer();
+            throw new \Exception('nBits < nHashes');
         }
 
         $height = $this->calcTreeHeight();
@@ -220,17 +216,14 @@ class PartialMerkleTree extends Serializable
         $merkleRoot = $this->traverseAndExtract($height, 0, $nBitsUsed, $nHashesUsed, $vMatch);
         if ($this->fBad) {
             throw new \Exception('bad data');
-            return new Buffer();
         }
 
         if (($nBitsUsed + 7)/8 != (count($this->vFlagBits)+7)/8) {
             throw new \Exception('Not all bits consumed');
-            return new Buffer();
         }
 
         if ($nHashesUsed !== count($this->vHashes)) {
             throw new \Exception('Not al hashes consumed');
-            return new Buffer();
         }
 
         return $merkleRoot;

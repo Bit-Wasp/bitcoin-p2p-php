@@ -385,6 +385,8 @@ class BloomFilter extends Serializable
 
             $script = $txIn->getScript();
             $parser = $script->getScriptParser();
+            $opCode = null;
+            $pushData = null;
             while ($parser->next($opCode, $pushData)) {
                 if ($pushData instanceof Buffer && $pushData->getSize() > 0 && $this->containsData($pushData)) {
                     return true;

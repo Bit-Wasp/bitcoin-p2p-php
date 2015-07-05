@@ -273,7 +273,7 @@ class Peer extends EventEmitter
             echo "Connection was closed\n";
         });
 
-        $this->on('peerdisconnect', function (Peer $peer) {
+        $this->on('peerdisconnect', function () {
             echo 'peer disconnected';
         });
 

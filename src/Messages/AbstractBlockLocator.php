@@ -2,6 +2,7 @@
 
 namespace BitWasp\Bitcoin\Networking\Messages;
 
+use BitWasp\Bitcoin\Networking\BlockLocator;
 use BitWasp\Bitcoin\Networking\NetworkSerializable;
 use BitWasp\Buffertools\Buffer;
 
@@ -13,26 +14,20 @@ abstract class AbstractBlockLocator extends NetworkSerializable
     private $version;
 
     /**
-     * @var Buffer[]
+     * @var BlockLocator
      */
-    private $hashes;
-
-    /**
-     * @var Buffer
-     */
-    private $hashStop;
+    private $locator;
 
     /**
      * @param int $version
-     * @param Buffer[] $hashes
+     * @param BlockLocator $locator
      */
     public function __construct(
         $version,
-        array $hashes
+        BlockLocator $locator
     ) {
         $this->version = $version;
-        $this->hashes = array_slice($hashes, 0, count($hashes) - 1);
-        $this->hashStop = end($hashes);
+        $this->locator = $locator;
     }
 
     /**
@@ -44,18 +39,10 @@ abstract class AbstractBlockLocator extends NetworkSerializable
     }
 
     /**
-     * @return Buffer[]
+     * @return BlockLocator
      */
-    public function getHashes()
+    public function getLocator()
     {
-        return $this->hashes;
-    }
-
-    /**
-     * @return Buffer
-     */
-    public function getHashStop()
-    {
-        return $this->hashStop;
+        return $this->locator;
     }
 }

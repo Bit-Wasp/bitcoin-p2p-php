@@ -20,6 +20,25 @@ $network = BitWasp\Bitcoin\Bitcoin::getDefaultNetwork();
 $math = BitWasp\Bitcoin\Bitcoin::getMath();
 
 $rpc = RpcFactory::bitcoind('192.168.192.101',8332, 'bitcoinrpc', 'rda0digjjfgsujushenbgtjegvrnrdybmvdkerb');
+function decodeInv(Peer $peer, \BitWasp\Bitcoin\Networking\Messages\Inv $inv)
+{
+    $txs = [];
+    $filtered = [];
+    $blks = [];
+
+    foreach ($inv->getItems() as $item) {
+        $loc = null;
+        if ($item->isBlock()) {
+            $loc = &$blks;
+        } else if ($item->isTx()) {
+            $loc = &$txs;
+        } else if ($item->isFilteredBlock()) {
+            $loc = &$filtered;
+        }
+        $loc[] = $item->getHash();
+    }
+    echo " [txs: " . count($txs) . ", blocks: " . count($blks) . ", filtered: " . count($filtered) . "]\n";
+}
 
 $loop = React\EventLoop\Factory::create();
 $dnsResolverFactory = new React\Dns\Resolver\Factory();
@@ -46,9 +65,6 @@ $blockchain = new Blockchain(
     ),
     new UtxoSet(new ArrayCache())
 );
-
-
-$locator = new \BitWasp\Bitcoin\Networking\BlockLocator();
 
 $host = new NetworkAddress(
     Buffer::hex('01', 16),
@@ -91,11 +107,15 @@ $locator
         function (Peer $peer) use ($node, $loop) {
             echo 'asdf';
             $loop->addPeriodicTimer(60, function () use ($node, $peer) {
+                echo "send periodic getblocks\n";
                 $peer->getblocks($node->locator(true));
             });
 
+            $peer->on('inv', 'decodeInv');
+
             $inboundBlocks = 0;
             $peer->on('block', function (Peer $peer, \BitWasp\Bitcoin\Networking\Messages\Block $block) use ($node, &$inboundBlocks) {
+                echo "received block\n";
                 $blk = $block->getBlock();
                 $node->chain()->process($blk);
 

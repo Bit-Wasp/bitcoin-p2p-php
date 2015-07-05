@@ -138,23 +138,23 @@ class MessageFactory
     }
 
     /**
-     * @param int $version
-     * @param Buffer[] $hashes
+     * @param $version
+     * @param BlockLocator $blockLocator
      * @return GetBlocks
      */
-    public function getblocks($version, array $hashes)
+    public function getblocks($version, BlockLocator $blockLocator)
     {
-        return new GetBlocks($version, $hashes);
+        return new GetBlocks($version, $blockLocator);
     }
 
     /**
-     * @param int $version
-     * @param Buffer[] $hashes
+     * @param $version
+     * @param BlockLocator $blockLocator
      * @return GetHeaders
      */
-    public function getheaders($version, array $hashes)
+    public function getheaders($version, BlockLocator $blockLocator)
     {
-        return new GetHeaders($version, $hashes);
+        return new GetHeaders($version, $blockLocator);
     }
 
     /**

@@ -26,11 +26,6 @@ class Node
     private $peers;
 
     /**
-     * @var BlockLocator
-     */
-    private $locator;
-
-    /**
      * @param NetworkAddress $local
      * @param $chain
      * @param PeerLocator $peers
@@ -40,7 +35,15 @@ class Node
         $this->local = $local;
         $this->chain = $chain;
         $this->peers = $peers;
-        $this->locator = new BlockLocator();
+    }
+
+    /**
+     * @param bool $all
+     * @return BlockLocator
+     */
+    public function locator($all = false)
+    {
+        return BlockLocator::create($this->chain()->currentHeight(), $this->chain()->index(), $all);
     }
 
     /**
@@ -57,15 +60,6 @@ class Node
     public function chain()
     {
         return $this->chain;
-    }
-
-    /**
-     * @param bool|false $all
-     * @return array
-     */
-    public function locator($all = false)
-    {
-        return $this->locator->hashes($this->chain->currentHeight(), $this->chain->index(), $all);
     }
 
     /**

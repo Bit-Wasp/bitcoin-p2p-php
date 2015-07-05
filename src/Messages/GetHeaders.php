@@ -4,6 +4,7 @@ namespace BitWasp\Bitcoin\Networking\Messages;
 
 use BitWasp\Bitcoin\Networking\NetworkSerializable;
 use BitWasp\Bitcoin\Networking\Serializer\Message\GetHeadersSerializer;
+use BitWasp\Bitcoin\Networking\Serializer\Structure\BlockLocatorSerializer;
 use BitWasp\Buffertools\Buffer;
 
 class GetHeaders extends AbstractBlockLocator
@@ -21,6 +22,6 @@ class GetHeaders extends AbstractBlockLocator
      */
     public function getBuffer()
     {
-        return (new GetHeadersSerializer())->serialize($this);
+        return (new GetHeadersSerializer(new BlockLocatorSerializer()))->serialize($this);
     }
 }

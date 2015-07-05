@@ -106,7 +106,7 @@ class BloomFilter extends Serializable
     }
 
     /**
-     * @param int|string $flag
+     * @param int $flag
      * @return bool
      */
     public function checkFlag($flag)
@@ -230,7 +230,7 @@ class BloomFilter extends Serializable
     /**
      * @param int $nHashNum
      * @param Buffer $data
-     * @return Int
+     * @return int|string
      */
     public function hash($nHashNum, Buffer $data)
     {

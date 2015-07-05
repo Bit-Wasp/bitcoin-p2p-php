@@ -40,8 +40,8 @@ class GetHeadersSerializer
      */
     public function fromParser(Parser & $parser)
     {
-        list ($version) = $this->getVersionTemplate()->parse($parsed);
-        list ($locator) = $this->locator->parse($parser);
+        list ($version) = $this->getVersionTemplate()->parse($parser);
+        $locator = $this->locator->fromParser($parser);
 
         return new GetHeaders(
             $version,

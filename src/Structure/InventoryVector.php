@@ -54,7 +54,7 @@ class InventoryVector extends Serializable
      */
     public function isError()
     {
-        return $this->type === self::MSG_ERROR;
+        return $this->type === self::ERROR;
     }
 
     /**

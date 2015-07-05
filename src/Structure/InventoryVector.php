@@ -8,10 +8,10 @@ use BitWasp\Bitcoin\Serializable;
 
 class InventoryVector extends Serializable
 {
-    const ERROR = '0';
-    const MSG_TX = '1';
-    const MSG_BLOCK = '2';
-    const MSG_FILTERED_BLOCK = '3';
+    const ERROR = 0;
+    const MSG_TX = 1;
+    const MSG_BLOCK = 2;
+    const MSG_FILTERED_BLOCK = 3;
 
     /**
      * @var int
@@ -54,7 +54,7 @@ class InventoryVector extends Serializable
      */
     public function isError()
     {
-        return $this->type === self::ERROR;
+        return $this->type == self::ERROR;
     }
 
     /**
@@ -62,7 +62,7 @@ class InventoryVector extends Serializable
      */
     public function isTx()
     {
-        return $this->type === self::MSG_TX;
+        return $this->type == self::MSG_TX;
     }
 
     /**
@@ -70,7 +70,7 @@ class InventoryVector extends Serializable
      */
     public function isBlock()
     {
-        return $this->type === self::MSG_BLOCK;
+        return $this->type == self::MSG_BLOCK;
     }
 
     /**
@@ -78,7 +78,7 @@ class InventoryVector extends Serializable
      */
     public function isFilteredBlock()
     {
-        return $this->type === self::MSG_FILTERED_BLOCK;
+        return $this->type == self::MSG_FILTERED_BLOCK;
     }
 
     /**
@@ -95,7 +95,7 @@ class InventoryVector extends Serializable
      */
     private function checkType($type)
     {
-        return (true === in_array($type, [self::ERROR, self::MSG_TX, self::MSG_BLOCK, self::MSG_FILTERED_BLOCK]));
+        return in_array($type, [self::ERROR, self::MSG_TX, self::MSG_BLOCK, self::MSG_FILTERED_BLOCK]);
     }
 
     /**

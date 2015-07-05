@@ -14,12 +14,24 @@ class InventoryVectorTest extends AbstractTestCase
         $buffer = Buffer::hex('4141414141414141414141414141414141414141414141414141414141414141');
         $inv = new InventoryVector(InventoryVector::ERROR, $buffer);
         $this->assertEquals(0, $inv->getType());
+
         $inv = new InventoryVector(InventoryVector::MSG_TX, $buffer);
         $this->assertEquals(1, $inv->getType());
+        $this->assertTrue($inv->isTx());
+        $this->assertFalse($inv->isBlock());
+        $this->assertFalse($inv->isFilteredBlock());
+
         $inv = new InventoryVector(InventoryVector::MSG_BLOCK, $buffer);
         $this->assertEquals(2, $inv->getType());
+        $this->assertTrue($inv->isBlock());
+        $this->assertFalse($inv->isTx());
+        $this->assertFalse($inv->isFilteredBlock());
+
         $inv = new InventoryVector(InventoryVector::MSG_FILTERED_BLOCK, $buffer);
         $this->assertEquals(3, $inv->getType());
+        $this->assertTrue($inv->isFilteredBlock());
+        $this->assertFalse($inv->isBlock());
+        $this->assertFalse($inv->isTx());
 
         $this->assertEquals($buffer, $inv->getHash());
     }

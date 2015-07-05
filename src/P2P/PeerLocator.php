@@ -242,7 +242,6 @@ class PeerLocator
             ->connect($this->connector, $this->popAddress())
             ->then(
                 function ($peer) use (&$deferred, &$timer) {
-                    echo "connected\n";
                     $deferred->resolve($peer);
                 },
                 function () use (&$deferred, &$retryAnotherPeer) {

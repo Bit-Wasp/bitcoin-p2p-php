@@ -162,16 +162,13 @@ class PartialMerkleTree extends Serializable
     {
         if ($nBitsUsed >= count($this->vFlagBits)) {
             $this->fBad = true;
-            echo "weird nbits\n";
             return new Buffer();
         }
 
         $parent = $this->vFlagBits[$nBitsUsed++];
         if (0 == $height || !$parent) {
-            echo "extract: end\n";
             if ($nHashUsed >= count($this->vHashes)) {
                 $this->fBad = true;
-                echo "weird hash used\n";
                 return new Buffer();
             }
             $hash = $this->vHashes[$nHashUsed++];
@@ -180,7 +177,6 @@ class PartialMerkleTree extends Serializable
             }
             return $hash;
         } else {
-            echo "extract: further\n";
             $left = $this->traverseAndExtract($height - 1, $position * 2, $nBitsUsed, $nHashUsed, $vMatch);
             if (($position * 2 + 1) < $this->calcTreeWidth($height - 1)) {
                 $right = $this->traverseAndExtract($height - 1, ($position * 2 + 1), $nBitsUsed, $nHashUsed, $vMatch);

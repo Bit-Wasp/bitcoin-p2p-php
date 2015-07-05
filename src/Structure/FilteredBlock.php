@@ -63,17 +63,12 @@ class FilteredBlock extends Serializable
         $txns = $block->getTransactions();
         for ($i = 0, $txCount = count($txns); $i < $txCount; $i++) {
             $tx = $txns->getTransaction($i);
-            if ($filter->isRelevantAndUpdate($tx)) {
-                $vMatch[] = true;
-            } else {
-                $vMatch[] = false;
-            }
+            $vMatch[] = $filter->isRelevantAndUpdate($tx);
 
             $txid = $tx->getTransactionId();
             $vHashes[] = Buffer::hex($txid);
         }
 
-        echo "Create the filtered block and partial tree\n";
         return new FilteredBlock(
             $block->getHeader(),
             PartialMerkleTree::create($txCount, $vHashes, $vMatch)

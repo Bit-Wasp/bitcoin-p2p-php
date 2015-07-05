@@ -31,6 +31,7 @@ use BitWasp\Bitcoin\Networking\Structure\FilteredBlock;
 use BitWasp\Bitcoin\Networking\Structure\InventoryVector;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
 use BitWasp\Bitcoin\Networking\Serializer\NetworkMessageSerializer;
+use BitWasp\Bitcoin\Networking\Structure\NetworkAddressTimestamp;
 use BitWasp\Bitcoin\Signature\SignatureInterface;
 use BitWasp\Bitcoin\Transaction\TransactionInterface;
 use BitWasp\Buffertools\Buffer;
@@ -101,7 +102,7 @@ class MessageFactory
     }
 
     /**
-     * @param InventoryVector[] $addrs
+     * @param NetworkAddressTimestamp[] $addrs
      * @return Addr
      */
     public function addr(array $addrs)
@@ -137,25 +138,23 @@ class MessageFactory
     }
 
     /**
-     * @param int $version
-     * @param Buffer[] $hashes
-     * @param Buffer|null $hashStop
+     * @param $version
+     * @param BlockLocator $blockLocator
      * @return GetBlocks
      */
-    public function getblocks($version, array $hashes, Buffer $hashStop = null)
+    public function getblocks($version, BlockLocator $blockLocator)
     {
-        return new GetBlocks($version, $hashes, $hashStop);
+        return new GetBlocks($version, $blockLocator);
     }
 
     /**
-     * @param int $version
-     * @param Buffer[] $hashes
-     * @param Buffer|null $hashStop
+     * @param $version
+     * @param BlockLocator $blockLocator
      * @return GetHeaders
      */
-    public function getheaders($version, array $hashes, Buffer $hashStop = null)
+    public function getheaders($version, BlockLocator $blockLocator)
     {
-        return new GetHeaders($version, $hashes, $hashStop);
+        return new GetHeaders($version, $blockLocator);
     }
 
     /**

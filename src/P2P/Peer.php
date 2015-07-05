@@ -3,6 +3,7 @@
 namespace BitWasp\Bitcoin\Networking\P2P;
 
 use BitWasp\Bitcoin\Block\BlockInterface;
+use BitWasp\Bitcoin\Networking\BlockLocator;
 use BitWasp\Bitcoin\Networking\BloomFilter;
 use BitWasp\Bitcoin\Networking\Messages\Version;
 use BitWasp\Bitcoin\Networking\Structure\FilteredBlock;
@@ -32,7 +33,7 @@ use React\Stream\Stream;
 class Peer extends EventEmitter
 {
     const USER_AGENT = "bitcoin-php/v0.1";
-    const PROTOCOL_VERSION = "70003";
+    const PROTOCOL_VERSION = "70000";
 
     /**
      * @var string
@@ -224,6 +225,10 @@ class Peer extends EventEmitter
                 }
             }
         } catch (\Exception $e) {
+            if ($this->buffer == $data) {
+                var_Dump(bin2hex($data));
+            }
+
             if ($data == "") {
                 echo "EMPTY PACKET!";
             }
@@ -268,7 +273,7 @@ class Peer extends EventEmitter
             echo "Connection was closed\n";
         });
 
-        $this->on('peerdisconnect', function (Peer $peer) {
+        $this->on('peerdisconnect', function () {
             echo 'peer disconnected';
         });
 
@@ -313,7 +318,7 @@ class Peer extends EventEmitter
         );
 
         $this->loop->addPeriodicTimer(30, function (Timer $timer) {
-            if (!$this->exchangedVersion) {
+            if (false === $this->exchangedVersion) {
                 echo "havent exchanged version with peer \n";
                 $this->intentionalClose();
             }
@@ -337,7 +342,7 @@ class Peer extends EventEmitter
         });
 
         $this->on('verack', function () use ($deferred) {
-            if ($this->exchangedVersion == false) {
+            if (false === $this->exchangedVersion) {
                 $this->exchangedVersion = true;
                 $this->verack();
                 $this->emit('ready', [$this]);
@@ -372,7 +377,7 @@ class Peer extends EventEmitter
                 });
 
                 $this->on('verack', function () use ($deferred) {
-                    if ($this->exchangedVersion == false) {
+                    if (false === $this->exchangedVersion) {
                         $this->exchangedVersion = true;
                         $this->emit('ready', [$this]);
                         $deferred->resolve($this);
@@ -497,25 +502,24 @@ class Peer extends EventEmitter
     }
 
     /**
-     * @param array $locatorHashes
+     * @param BlockLocator $locator
      */
-    public function getblocks(array $locatorHashes)
+    public function getblocks(BlockLocator $locator)
     {
         $this->send($this->msgs->getblocks(
             self::PROTOCOL_VERSION,
-            $locatorHashes
+            $locator
         ));
     }
 
     /**
-     * @param Buffer[] $locatorHashes
-     * @return \BitWasp\Bitcoin\Networking\Messages\GetHeaders
+     * @param BlockLocator $locator
      */
-    public function getheaders(array $locatorHashes)
+    public function getheaders(BlockLocator $locator)
     {
         $this->send($this->msgs->getheaders(
             self::PROTOCOL_VERSION,
-            $locatorHashes
+            $locator
         ));
     }
 

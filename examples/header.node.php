@@ -53,8 +53,6 @@ $headerchain = new \BitWasp\Bitcoin\Chain\Headerchain(
     )
 );
 
-$peers = new \BitWasp\Bitcoin\Networking\BlockLocator();
-
 $host = new NetworkAddress(
     Buffer::hex('01', 16),
     '91.146.57.187',

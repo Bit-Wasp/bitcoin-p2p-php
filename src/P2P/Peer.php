@@ -210,7 +210,7 @@ class Peer extends EventEmitter
      *
      * @param string $data
      */
-    public function onData($data)
+    private function onData($data)
     {
         $this->buffer .= $data;
         $length = strlen($this->buffer);
@@ -225,14 +225,7 @@ class Peer extends EventEmitter
                 }
             }
         } catch (\Exception $e) {
-            if ($this->buffer == $data) {
-                var_Dump(bin2hex($data));
-            }
-
-            if ($data == "") {
-                echo "EMPTY PACKET!";
-            }
-            echo ".";
+            // Do nothing - it was probably a fragmented message
         }
     }
 
@@ -287,23 +280,26 @@ class Peer extends EventEmitter
 
         $this->on('filterload', function (Peer $peer, FilterLoad $filterLoad) {
             $filter = $filterLoad->getFilter();
-
+            if (false === $filter->hasAcceptableSize()) {
+                $this->close();
+                return;
+            }
             $this->filter = $filter;
             $this->relayToPeer = true;
         });
 
         $this->on('filteradd', function (Peer $peer, FilterAdd $filterAdd) {
             if (!$this->hasFilter()) {
-                echo "misbehaving - close\n";
                 // misbehaving
                 $this->close();
+                return;
             }
 
             $data = $filterAdd->getData();
             if ($data->getSize() > InterpreterInterface::MAX_SCRIPT_ELEMENT_SIZE) {
-                echo "misbehaving - close\n";
                 // misbehaving
                 $this->close();
+                return;
             }
 
             $this->filter->insertData($data);

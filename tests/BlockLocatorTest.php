@@ -36,7 +36,9 @@ class BlockLocatorTest extends AbstractTestCase
         // Locator should be smaller than 20, since step function kicks in after the latest ten blocks.
         $locator = BlockLocator::create($index->height()->height(), $index, true);
         $this->assertTrue(20 > count($locator->getHashes()));
-        $this->assertEquals($genesis->getBlockHash(), end($locator->getHashes())->getHex());
+        $hashes = $locator->getHashes();
+
+        $this->assertEquals($genesis->getBlockHash(), end($hashes)->getHex());
     }
 
     public function testGenesisNoHashStop()

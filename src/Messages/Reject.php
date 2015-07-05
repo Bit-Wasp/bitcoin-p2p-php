@@ -41,7 +41,7 @@ class Reject extends NetworkSerializable
      * @param Buffer $message
      * @param int $ccode
      * @param Buffer $reason
-     * @param Buffer $data
+     * @param Buffer|null $data - can be any data, but Bitcoin Core only uses this for a missed hash
      */
     public function __construct(
         Buffer $message,
@@ -68,7 +68,7 @@ class Reject extends NetworkSerializable
     }
 
     /**
-     * @param $code
+     * @param int $code
      * @return bool
      */
     private function checkCCode($code)

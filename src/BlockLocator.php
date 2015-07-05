@@ -58,7 +58,7 @@ class BlockLocator
      * @param int $height
      * @param BlockIndex $index
      * @param bool $all
-     * @return array
+     * @return BlockLocator
      */
     public static function create($height, BlockIndex $index, $all = false)
     {
@@ -79,11 +79,13 @@ class BlockLocator
             }
         }
 
+        $hashStop = $all
+            ? Buffer::hex('00', 32)
+            : array_pop($hashes);
+
         return new self(
             $hashes,
-            $all
-            ? Buffer::hex('00', 32)
-            : array_pop($hashes)
+            $hashStop
         );
     }
 }

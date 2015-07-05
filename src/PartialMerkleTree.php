@@ -28,7 +28,7 @@ class PartialMerkleTree extends Serializable
     /**
      * @var bool
      */
-    private $fBad;
+    private $fBad = false;
 
     /**
      * Takes array of hashes and flag array only. Use PartialMerkleTree::create() instead of creating instante directly..
@@ -44,6 +44,8 @@ class PartialMerkleTree extends Serializable
     }
 
     /**
+     * Construct the merkle tree
+     *
      * @param int $txCount
      * @param array $vTxHashes
      * @param array $vMatch
@@ -51,14 +53,15 @@ class PartialMerkleTree extends Serializable
      */
     public static function create($txCount, array $vTxHashes, array $vMatch)
     {
-        $tree = new self;
-        $tree->txCount = $txCount;
+        $tree = new self($txCount);
         $treeHeight = $tree->calcTreeHeight();
         $tree->traverseAndBuild($treeHeight, 0, $vTxHashes, $vMatch);
         return $tree;
     }
 
     /**
+     * Calculate the tree height.
+     *
      * @return int
      */
     public function calcTreeHeight()
@@ -96,6 +99,8 @@ class PartialMerkleTree extends Serializable
     }
 
     /**
+     * Calculate tree width for a given height.
+     *
      * @param int $height
      * @return int
      */
@@ -105,6 +110,8 @@ class PartialMerkleTree extends Serializable
     }
 
     /**
+     * Calculate the hash for a given height/position
+     *
      * @param int $height
      * @param int $position
      * @param array $vTxid
@@ -127,10 +134,12 @@ class PartialMerkleTree extends Serializable
     }
 
     /**
+     * Construct the list of Merkle Tree hashes
+     *
      * @param int $height
      * @param int $position
-     * @param array $vTxid
-     * @param array $vMatch
+     * @param array $vTxid - array of Txid's in the block
+     * @param array $vMatch - reference to array to populate
      */
     public function traverseAndBuild($height, $position, array $vTxid, array &$vMatch)
     {
@@ -157,6 +166,16 @@ class PartialMerkleTree extends Serializable
         }
     }
 
+    /**
+     * Traverse the Merkle Tree hashes and extract those which have a matching bit.
+     *
+     * @param int $height
+     * @param int $position
+     * @param int $nBitsUsed
+     * @param int $nHashUsed
+     * @param Buffer[] $vMatch
+     * @return Buffer
+     */
     public function traverseAndExtract($height, $position, &$nBitsUsed, &$nHashUsed, &$vMatch)
     {
         if ($nBitsUsed >= count($this->vFlagBits)) {
@@ -190,7 +209,14 @@ class PartialMerkleTree extends Serializable
         }
     }
 
-    public function extractMatches($vMatch)
+    /**
+     * Extract matches from the tree into provided $vMatch reference.
+     *
+     * @param Buffer[] $vMatch - reference to array of extracted 'matching' hashes
+     * @return Buffer - this will be the merkle root
+     * @throws \Exception
+     */
+    public function extractMatches(array &$vMatch)
     {
         $nTx = $this->getTxCount();
         if (0 == $nTx) {
@@ -210,7 +236,6 @@ class PartialMerkleTree extends Serializable
         }
 
         $height = $this->calcTreeHeight();
-
         $nBitsUsed = 0;
         $nHashesUsed = 0;
         $merkleRoot = $this->traverseAndExtract($height, 0, $nBitsUsed, $nHashesUsed, $vMatch);

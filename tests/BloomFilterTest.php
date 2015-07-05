@@ -74,9 +74,7 @@ class BloomFilterTest extends AbstractTestCase
             Buffer::hex('b9300670b4c5366e95b2699e8b18bc75e5f729c5')
         ];
 
-        $random = new Random();
-        $bytes = $random->bytes(32);
-
+        $bytes = Buffer::hex('4141414141414141414141414141414141414141414141414141414141414141');
 
         foreach ($buff as $buf) {
             $filter->insertData($buf);
@@ -85,6 +83,47 @@ class BloomFilterTest extends AbstractTestCase
         }
 
         $this->assertEquals('03ce4299050000000100008001', $filter->getBuffer()->getHex());
+    }
+
+    public function testForAFalsePositive()
+    {
+        /*
+         * This test serves to ensure the behaviour of bloom filters.
+         * 3 known values are inserted into the filter.
+         * 2 values are checked against the filter - however these are obviously false positives.
+         * 2 values are checked against the filter, which returns a definite no.
+         */
+
+        $math = new Math();
+        $flags = new Flags(BloomFilter::UPDATE_ALL);
+        $filter = BloomFilter::create($math, 3, 0.01, 2147483649, $flags);
+
+        foreach ([
+                     Buffer::hex('99108ad8ed9bb6274d3980bab5a85c048f0950c8'),
+                     Buffer::hex('b5a2c786d9ef4658287ced5914b37a1b4aa32eee'),
+                     Buffer::hex('b9300670b4c5366e95b2699e8b18bc75e5f729c5')
+                 ] as $buf) {
+            $filter->insertData($buf);
+            $this->assertTrue($filter->containsData($buf));
+        }
+
+        $falsePositives = [
+            Buffer::hex('a408413bbc084c4875f73149052cc343aa00d0c913fe54d7f6d3821d432fceef'),
+            Buffer::hex('f7ef30d3f2371e402a1533892155112fb14f783ac7d622e5f4648ad5b61161cf')
+        ];
+
+        foreach ($falsePositives as $buf) {
+            $this->assertTrue($filter->containsData($buf));
+        }
+
+        $returnsNotFound = [
+            Buffer::hex('4a1'),
+            Buffer::hex('4190'),
+        ];
+
+        foreach ($returnsNotFound as $buf) {
+            $this->assertFalse($filter->containsData($buf));
+        }
     }
 
     public function testInsertKey()

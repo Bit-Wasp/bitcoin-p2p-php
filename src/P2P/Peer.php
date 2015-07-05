@@ -352,13 +352,10 @@ class Peer extends EventEmitter
 
         return $this;
     }
-
-    /**
-     * @return \React\Promise\RejectedPromise|static
-     */
+    
     /**
      * @param Connector $connector
-     * @param $remoteAddr
+     * @param NetworkAddressInterface $remoteAddr
      * @return \React\Promise\Promise|\React\Promise\PromiseInterface
      */
     public function connect(Connector $connector, NetworkAddressInterface $remoteAddr)

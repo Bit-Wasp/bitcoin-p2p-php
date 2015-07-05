@@ -55,7 +55,6 @@ class BloomFilter extends Serializable
      */
     private $nTweak;
 
-
     /**
      * @param Math $math
      * @param array $vFilter
@@ -74,7 +73,7 @@ class BloomFilter extends Serializable
     }
 
     /**
-     * @param $size
+     * @param int $size
      * @return array
      */
     public static function emptyFilter($size)
@@ -107,7 +106,7 @@ class BloomFilter extends Serializable
     }
 
     /**
-     * @param $flag
+     * @param int|string $flag
      * @return bool
      */
     public function checkFlag($flag)

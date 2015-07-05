@@ -28,7 +28,7 @@ class PartialMerkleTree extends Serializable
     /**
      * @var bool
      */
-    private $fBad;
+    private $fBad = false;
 
     /**
      * Takes array of hashes and flag array only. Use PartialMerkleTree::create() instead of creating instante directly..
@@ -53,8 +53,7 @@ class PartialMerkleTree extends Serializable
      */
     public static function create($txCount, array $vTxHashes, array $vMatch)
     {
-        $tree = new self;
-        $tree->txCount = $txCount;
+        $tree = new self($txCount);
         $treeHeight = $tree->calcTreeHeight();
         $tree->traverseAndBuild($treeHeight, 0, $vTxHashes, $vMatch);
         return $tree;

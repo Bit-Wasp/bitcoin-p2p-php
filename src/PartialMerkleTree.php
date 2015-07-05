@@ -101,8 +101,7 @@ class PartialMerkleTree extends Serializable
      */
     public function calcTreeWidth($height)
     {
-        $w = (($this->txCount + (1 << $height) - 1) >> $height);
-        return $w;
+        return ($this->txCount + (1 << $height) - 1) >> $height;
     }
 
     /**

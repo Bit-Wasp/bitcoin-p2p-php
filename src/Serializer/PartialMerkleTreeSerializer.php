@@ -46,7 +46,6 @@ class PartialMerkleTreeSerializer
     {
         $math = Bitcoin::getMath();
         $vBytes = str_split(str_pad('', (count($bits)+7)/8, '0', STR_PAD_LEFT));
-        //$vBytes[]
         $nBits = count($bits);
 
         for ($p = 0; $p < $nBits; $p++) {
@@ -56,7 +55,6 @@ class PartialMerkleTreeSerializer
 
         $results = array_map(
             function ($value) use ($math) {
-                echo "value: $value\n";
                 return Buffer::hex($math->decHex($value));
             },
             $vBytes

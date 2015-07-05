@@ -66,7 +66,7 @@ class PeerLocator
     }
 
     /**
-     * @return NetworkAddress[]
+     * @return string[]
      */
     public function dnsSeedHosts()
     {

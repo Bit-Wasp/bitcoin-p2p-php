@@ -147,7 +147,7 @@ class BloomFilter extends Serializable
     }
 
     /**
-     * @return float
+     * @return int
      */
     public function getNumHashFuncs()
     {

@@ -41,14 +41,14 @@ class BloomFilter extends Serializable
     private $isFull = false;
 
     /**
-     * @var float
+     * @var int
      */
     private $numHashFuncs;
 
     /**
      * @var array
      */
-    private $data = [];
+    private $vFilter = [];
 
     /**
      * @var int|string
@@ -59,13 +59,13 @@ class BloomFilter extends Serializable
      * @param Math $math
      * @param array $vFilter
      * @param int $numHashFuncs
-     * @param int $nTweak
+     * @param int|string $nTweak
      * @param Flags $flags
      */
     public function __construct(Math $math, array $vFilter, $numHashFuncs, $nTweak, Flags $flags)
     {
         $this->math = $math;
-        $this->data = $vFilter;
+        $this->vFilter = $vFilter;
         $this->numHashFuncs = $numHashFuncs;
         $this->nTweak = $nTweak;
         $this->flags = $flags;
@@ -82,9 +82,12 @@ class BloomFilter extends Serializable
     }
 
     /**
+     * Create the Bloom Filter given the number of elements, a false positive rate,
+     * and the flags governing how the filter should be updated.
+     *
      * @param Math $math
      * @param int $nElements
-     * @param int $nFpRate
+     * @param float $nFpRate
      * @param int $nTweak
      * @param Flags $flags
      * @return BloomFilter
@@ -140,7 +143,7 @@ class BloomFilter extends Serializable
      */
     public function getData()
     {
-        return $this->data;
+        return $this->vFilter;
     }
 
     /**
@@ -169,12 +172,12 @@ class BloomFilter extends Serializable
 
     /**
      * @param int $nElements
-     * @param double $fpRate
-     * @return float
+     * @param float $fpRate
+     * @return int
      */
     public static function idealSize($nElements, $fpRate)
     {
-        return floor(
+        return (int) floor(
             bcdiv(
                 min(
                     bcmul(
@@ -200,7 +203,7 @@ class BloomFilter extends Serializable
     /**
      * @param int $filterSize
      * @param int $nElements
-     * @return float
+     * @return int
      */
     public static function idealNumHashFuncs($filterSize, $nElements)
     {
@@ -233,7 +236,7 @@ class BloomFilter extends Serializable
     {
         return $this->math->mod(
             Hash::murmur3($data, ($nHashNum * self::TWEAK_START + $this->nTweak) & 0xffffffff)->getInt(),
-            count($this->data) * 8
+            count($this->vFilter) * 8
         );
     }
 
@@ -248,7 +251,7 @@ class BloomFilter extends Serializable
 
         for ($i = 0; $i < $this->numHashFuncs; $i++) {
             $index = $this->hash($i, $data);
-            $this->data[$index >> 3] |= (1 << (7 & $index));
+            $this->vFilter[$index >> 3] |= (1 << (7 & $index));
         }
 
         $this->updateEmptyFull();
@@ -288,7 +291,7 @@ class BloomFilter extends Serializable
         for ($i = 0; $i < $this->numHashFuncs; $i++) {
             $index = $this->hash($i, $data);
 
-            if (!($this->data[($index >> 3)] & (1 << (7 & $index)))) {
+            if (!($this->vFilter[($index >> 3)] & (1 << (7 & $index)))) {
                 return false;
             }
         }
@@ -320,7 +323,7 @@ class BloomFilter extends Serializable
      */
     public function hasAcceptableSize()
     {
-        return count($this->data) <= self::MAX_FILTER_SIZE && $this->numHashFuncs <= self::MAX_HASH_FUNCS;
+        return count($this->vFilter) <= self::MAX_FILTER_SIZE && $this->numHashFuncs <= self::MAX_HASH_FUNCS;
     }
 
     /**
@@ -396,9 +399,9 @@ class BloomFilter extends Serializable
     {
         $full = true;
         $empty = true;
-        for ($i = 0, $size = count($this->data); $i < $size; $i++) {
-            $full &= ($this->data[$i] == 0xff);
-            $empty &= ($this->data[$i] == 0x0);
+        for ($i = 0, $size = count($this->vFilter); $i < $size; $i++) {
+            $full &= ($this->vFilter[$i] == 0xff);
+            $empty &= ($this->vFilter[$i] == 0x0);
         }
 
         $this->isFull = $full;

@@ -318,7 +318,7 @@ class Peer extends EventEmitter
         );
 
         $this->loop->addPeriodicTimer(30, function (Timer $timer) {
-            if (!$this->exchangedVersion) {
+            if (false === $this->exchangedVersion) {
                 echo "havent exchanged version with peer \n";
                 $this->intentionalClose();
             }
@@ -342,7 +342,7 @@ class Peer extends EventEmitter
         });
 
         $this->on('verack', function () use ($deferred) {
-            if ($this->exchangedVersion == false) {
+            if (false === $this->exchangedVersion) {
                 $this->exchangedVersion = true;
                 $this->verack();
                 $this->emit('ready', [$this]);
@@ -377,7 +377,7 @@ class Peer extends EventEmitter
                 });
 
                 $this->on('verack', function () use ($deferred) {
-                    if ($this->exchangedVersion == false) {
+                    if (false === $this->exchangedVersion) {
                         $this->exchangedVersion = true;
                         $this->emit('ready', [$this]);
                         $deferred->resolve($this);

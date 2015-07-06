@@ -324,7 +324,7 @@ class Peer extends EventEmitter
 
     /**
      * @param Connection $connection
-     * @return \React\Promise\Promise|\React\Promise\PromiseInterface
+     * @return $this
      */
     public function inboundConnection(Connection $connection)
     {

@@ -5,21 +5,22 @@ namespace BitWasp\Bitcoin\Tests\Networking\P2P;
 use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Crypto\Random\Random;
 use BitWasp\Bitcoin\Networking\MessageFactory;
+use BitWasp\Bitcoin\Networking\P2P\Listener;
 use BitWasp\Bitcoin\Networking\P2P\Peer;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
-use BitWasp\Bitcoin\Tests\AbstractTestCase;
+use BitWasp\Bitcoin\Tests\Networking\AbstractTestCase;
 use BitWasp\Buffertools\Buffer;
 use React\EventLoop\StreamSelectLoop;
 use React\Socket\Server;
 use React\SocketClient\Connector;
 
-class PeerTest
+class PeerTest extends AbstractTestCase
 {
     protected function expectCallable($type)
     {
         $mock = $this->createCallableMock();
         $mock
-            ->expects($this->once())
+            ->expects($type)
             ->method('__invoke');
         return $mock;
     }
@@ -40,13 +41,12 @@ class PeerTest
     {
         $math = Bitcoin::getMath();
         $hex = $math->decHex($int);
-        $buffer = Buffer::hex($hex, 16);
+        $buffer = Buffer::hex($hex, 8);
         return $buffer;
     }
 
     public function testPeer()
     {
-
         $localhost = '127.0.0.1';
         $localport = '8333';
 
@@ -54,24 +54,20 @@ class PeerTest
         $remoteport = '9999';
 
         $loop = new StreamSelectLoop();
+        $dnsResolverFactory = new \React\Dns\Resolver\Factory();
+        $dns = $dnsResolverFactory->createCached('8.8.8.8', $loop);
+        $reactServer = new Server($loop);
+
         $network = Bitcoin::getDefaultNetwork();
-        $resolver = $this->createResolverMock();
 
-        $server = new Server($loop);
-        $server->on('connection', $this->expectCallable($this->once()));
-        $server->on('connection', function ($server) {
-            $server->close();
-        });
-        $server->listen($remoteport, $remotehost);
-
-        $local = new NetworkAddress(
-            $this->services(1),
+        $client = new NetworkAddress(
+            Buffer::hex('0000000000000001'),
             $localhost,
             $localport
         );
 
-        $remote = new NetworkAddress(
-            $this->services(1),
+        $server = new NetworkAddress(
+            Buffer::hex('0000000000000001'),
             $remotehost,
             $remoteport
         );
@@ -81,20 +77,35 @@ class PeerTest
             new Random()
         );
 
+        $serverReceivedConnection = false;
+        $serverListener = new Listener($server, $msgs, $reactServer, $loop);
+        $serverListener->on('connection', function (Peer $peer) use (&$serverReceivedConnection, &$serverListener) {
+            $peer->close();
+            $serverReceivedConnection = true;
+            ;
+        });
+        $serverListener->listen($server->getPort());
+
         $connector = new Connector(
             $loop,
-            $resolver
+            $dns
         );
 
-        $peer = new Peer(
-            $remote,
-            $local,
-            $connector,
+        $clientConnection = new Peer(
+            $client,
             $msgs,
             $loop
         );
 
-        $capturedStream = null;
-        /** not ready */
+        $clientConnection->connect($connector, $server)->then(
+            function (Peer $peer) use ($serverListener, &$loop) {
+                $peer->close();
+                $serverListener->close();
+            }
+        );
+
+        $loop->run();
+
+        $this->assertTrue($serverReceivedConnection);
     }
 }

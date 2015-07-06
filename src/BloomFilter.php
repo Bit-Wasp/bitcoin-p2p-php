@@ -230,7 +230,7 @@ class BloomFilter extends Serializable
     /**
      * @param int $nHashNum
      * @param Buffer $data
-     * @return int|string
+     * @return string
      */
     public function hash($nHashNum, Buffer $data)
     {

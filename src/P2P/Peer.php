@@ -96,6 +96,11 @@ class Peer extends EventEmitter
     private $lastPongTime;
 
     /**
+     * @var bool
+     */
+    private $inbound;
+
+    /**
      * Whether we want this peer to relay tx's to us.
      * @var bool
      */
@@ -234,7 +239,9 @@ class Peer extends EventEmitter
      */
     private function setupConnection()
     {
-        $this->stream->on('data', [$this, 'onData']);
+        $this->stream->on('data', function ($data) {
+            $this->onData($data);
+        });
 
         $this->on('msg', function (Peer $peer, NetworkMessage $msg) {
             if ($this->exchangedVersion) {
@@ -243,23 +250,6 @@ class Peer extends EventEmitter
                 echo " [ received " . $msg->getCommand() . "] \n";
             }
             $this->emit($msg->getCommand(), [$peer, $msg->getPayload()]);
-        });
-
-        $this->on('ready', function () {
-            $this->loop->addPeriodicTimer($this->pingInterval, function (\React\EventLoop\Timer\Timer $timer) {
-                if (!$this->stream->isReadable()) {
-                    echo "cancel ping timer\n";
-                    $timer->cancel();
-                }
-                $this->ping();
-                if ($this->lastPongTime > time() - ($this->pingInterval + $this->pingInterval * 0.20)) {
-                    $this->missedPings++;
-                }
-                if ($this->missedPings > $this->maxMissedPings) {
-                    echo "close\n";
-                    $this->close();
-                }
-            });
         });
 
         $this->on('close', function () {
@@ -312,23 +302,45 @@ class Peer extends EventEmitter
                 $this->relayToPeer = true;
             }
         );
+    }
 
+    public function timeoutWithoutVersion()
+    {
         $this->loop->addPeriodicTimer(30, function (Timer $timer) {
             if (false === $this->exchangedVersion) {
-                echo "havent exchanged version with peer \n";
                 $this->intentionalClose();
             }
             $timer->cancel();
         });
     }
 
+    public function sendPings()
+    {
+        $this->on('ready', function () {
+            $this->loop->addPeriodicTimer($this->pingInterval, function (\React\EventLoop\Timer\Timer $timer) {
+                if (!$this->stream->isReadable()) {
+                    $timer->cancel();
+                }
+                $this->ping();
+                if ($this->lastPongTime > time() - ($this->pingInterval + $this->pingInterval * 0.20)) {
+                    $this->missedPings++;
+                }
+                if ($this->missedPings > $this->maxMissedPings) {
+                    $this->close();
+                }
+            });
+        });
+
+    }
+
     /**
      * @param Connection $connection
-     * @return $this
+     * @return \React\Promise\Promise|\React\Promise\PromiseInterface
      */
     public function inboundConnection(Connection $connection)
     {
         $this->stream = $connection;
+        $this->inbound = true;
         $this->setupConnection();
         $deferred = new Deferred();
 
@@ -346,7 +358,7 @@ class Peer extends EventEmitter
             }
         });
 
-        return $this;
+        return $deferred->promise();
     }
     
     /**
@@ -358,6 +370,7 @@ class Peer extends EventEmitter
     {
         $deferred = new Deferred();
         $this->remoteAddr = $remoteAddr;
+        $this->inbound = false;
 
         $connector
             ->create($this->remoteAddr->getIp(), $this->remoteAddr->getPort())
@@ -393,7 +406,6 @@ class Peer extends EventEmitter
     {
         $this->emit('intentionaldisconnect', [$this]);
         $this->stream->end();
-        $this->stream->close();
     }
 
     /**
@@ -402,7 +414,6 @@ class Peer extends EventEmitter
     public function close()
     {
         $this->stream->end();
-        $this->stream->close();
     }
 
     /**

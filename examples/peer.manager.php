@@ -24,12 +24,10 @@ $msgs = new MessageFactory(
     Bitcoin::getDefaultNetwork(),
     new BitWasp\Bitcoin\Crypto\Random\Random()
 );
-
+$peerFactory = new \BitWasp\Bitcoin\Networking\P2P\PeerFactory($local, $msgs, $loop);
 $locator = new PeerLocator(
-    $local,
-    $msgs,
-    $connector,
-    $loop
+    $peerFactory,
+    $connector
 );
 
 $locator->discoverPeers()->then(function (PeerLocator $locator) {

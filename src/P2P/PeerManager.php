@@ -14,7 +14,10 @@ class PeerManager extends EventEmitter
     /**
      * @var array
      */
-    private $peers = [];
+    private $outPeers = [];
+    private $inPeers = [];
+    private $nOutPeers = 0;
+    private $nInPeers = 0;
 
     /**
      * @param PeerLocator $locator
@@ -30,20 +33,20 @@ class PeerManager extends EventEmitter
      * @param Peer $peer
      * @return Peer
      */
-    public function registerPeer(Peer $peer)
+    public function registerOutboundPeer(Peer $peer)
     {
-        $next = count($this->peers);
+        $next = $this->nOutPeers++;
         $peer->on('peerdisconnect', function () use ($next) {
-            unset($this->peers[$next]);
+            unset($this->outPeers[$next]);
             $this->doConnect();
         });
 
         $peer->on('intentionaldisconnect', function () use ($next) {
-            unset($this->peers[$next]);
+            unset($this->outPeers[$next]);
             $this->doConnect();
         });
 
-        $this->peers[$next] = $peer;
+        $this->outPeers[$next] = $peer;
         return $peer;
     }
 
@@ -71,5 +74,19 @@ class PeerManager extends EventEmitter
         }
 
         return \React\Promise\all($peers);
+    }
+
+    /**
+     * @param Listener $listener
+     */
+    public function registerListener(Listener $listener)
+    {
+        $listener->on('inbound.connection', function (Peer $peer) {
+            $next = $this->nInPeers++;
+            $this->inPeers[$next] = $peer;
+            $peer->on('close', function () use ($next) {
+                unset($this->inPeers[$next]);
+            });
+        });
     }
 }

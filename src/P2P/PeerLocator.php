@@ -2,37 +2,23 @@
 
 namespace BitWasp\Bitcoin\Networking\P2P;
 
-use BitWasp\Bitcoin\Networking\MessageFactory;
 use BitWasp\Bitcoin\Networking\Messages\Addr;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
-use BitWasp\Buffertools\Buffer;
-use \Exception;
-use React\EventLoop\LoopInterface;
 use React\Promise\Deferred;
 use React\SocketClient\Connector;
 
 class PeerLocator
 {
     /**
+     * @var PeerFactory
+     */
+    private $peerFactory;
+
+    /**
      * @var Connector
      */
     private $connector;
-
-    /**
-     * @var NetworkAddress
-     */
-    private $local;
-
-    /**
-     * @var LoopInterface
-     */
-    private $loop;
-
-    /**
-     * @var MessageFactory
-     */
-    private $msgs;
 
     /**
      * @var bool
@@ -45,23 +31,17 @@ class PeerLocator
     private $knownAddresses = [];
 
     /**
-     * @param NetworkAddress $localAddr
-     * @param MessageFactory $messageFactory
+     * @param PeerFactory $peerFactory
      * @param Connector $connector
-     * @param LoopInterface $loop
-     * @param bool $requestRelay
+     * @param bool|false $requestRelay
      */
     public function __construct(
-        NetworkAddress $localAddr,
-        MessageFactory $messageFactory,
+        PeerFactory $peerFactory,
         Connector $connector,
-        LoopInterface $loop,
         $requestRelay = false
     ) {
-        $this->local = $localAddr;
-        $this->msgs = $messageFactory;
+        $this->peerFactory = $peerFactory;
         $this->connector = $connector;
-        $this->loop = $loop;
         $this->requestRelay = $requestRelay;
     }
 
@@ -83,46 +63,6 @@ class PeerLocator
     }
 
     /**
-     * @return Peer
-     */
-    public function getPeer()
-    {
-        return new Peer(
-            $this->local,
-            $this->msgs,
-            $this->loop
-        );
-    }
-
-    /**
-     * @return Peer
-     */
-    public function getRelayPeer()
-    {
-        $peer = $this->getPeer();
-        if ($this->requestRelay) {
-            $peer->requestRelay();
-        }
-
-        return $peer;
-    }
-
-    /**
-     * @param string $host
-     * @param int $port
-     * @param Buffer|null $services
-     * @return NetworkAddress
-     */
-    public function getAddress($host, $port = 8333, Buffer $services = null)
-    {
-        return new NetworkAddress(
-            $services ?: Buffer::hex('0000000000000001'),
-            $host,
-            $port
-        );
-    }
-
-    /**
      * Connect to $numSeeds DNS seeds
      *
      * @param $numSeeds
@@ -139,13 +79,14 @@ class PeerLocator
         // Connect to $numSeeds peers
         /** @var Peer[] $peers */
         $peers = [];
+        $factory = $this->peerFactory;
         $resolved = false;
         foreach ($seeds as $seed) {
-            $this->getPeer()
-                ->connect($this->connector, $this->getAddress($seed))
+            $factory
+                ->getPeer()
+                ->connect($this->connector, $factory->getAddress($seed))
                 ->then(function (Peer $peer) use (&$numSeeds, &$connections, &$peers, &$resolved) {
                     if ($resolved) {
-                        echo "nxt happend\n";
                         $peer->close();
                         return;
                     }
@@ -190,7 +131,6 @@ class PeerLocator
         return $deferred->promise()->then(
             function (array $peerAddrs) {
                 foreach ($peerAddrs as $set) {
-                    //shuffle($set);
                     $this->knownAddresses = array_merge($this->knownAddresses, $set);
                 }
 
@@ -211,7 +151,7 @@ class PeerLocator
      * Pop an address from the discovered peers
      *
      * @return NetworkAddressInterface
-     * @throws Exception
+     * @throws \Exception
      */
     private function popAddress()
     {
@@ -237,8 +177,12 @@ class PeerLocator
     {
         $deferred = new Deferred();
 
-        $this
-            ->getRelayPeer()
+        $peer = $this->peerFactory->getPeer();
+        if ($this->requestRelay) {
+            $peer->requestRelay();
+        }
+
+        $peer
             ->connect($this->connector, $this->popAddress())
             ->then(
                 function ($peer) use (&$deferred, &$timer) {

@@ -70,7 +70,8 @@ $factory = new MessageFactory(
     new Random()
 );
 
-$peers = new \BitWasp\Bitcoin\Networking\P2P\PeerLocator($local, $factory, $connector, $loop);
+$peerFactory = new \BitWasp\Bitcoin\Networking\P2P\PeerFactory($local, $factory, $loop);
+$peers = new \BitWasp\Bitcoin\Networking\P2P\PeerLocator($peerFactory, $connector);
 $node = new \BitWasp\Bitcoin\Networking\P2P\Node($local, $headerchain, $peers);
 
 $peers

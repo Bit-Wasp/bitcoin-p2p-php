@@ -5,7 +5,6 @@ namespace BitWasp\Bitcoin\Networking\P2P;
 use BitWasp\Bitcoin\Networking\BlockLocator;
 use BitWasp\Bitcoin\Chain\Headerchain;
 use BitWasp\Bitcoin\Chain\Blockchain;
-use BitWasp\Bitcoin\Networking\Messages\Inv;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
 
 class Node

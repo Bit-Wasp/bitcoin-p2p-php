@@ -236,6 +236,8 @@ class Peer extends EventEmitter
 
     /**
      * Initializes basic peer functionality - used in server and client contexts
+     *
+     * @return $this
      */
     private function setupConnection()
     {
@@ -295,15 +297,17 @@ class Peer extends EventEmitter
             $this->filter->insertData($data);
         });
 
-        $this->on(
-            'filterclear',
-            function () {
-                $this->filter = null;
-                $this->relayToPeer = true;
-            }
-        );
+        $this->on('filterclear', function () {
+            $this->filter = null;
+            $this->relayToPeer = true;
+        });
+
+        return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function timeoutWithoutVersion()
     {
         $this->loop->addPeriodicTimer(30, function (Timer $timer) {
@@ -312,8 +316,13 @@ class Peer extends EventEmitter
             }
             $timer->cancel();
         });
+
+        return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function sendPings()
     {
         $this->on('ready', function () {
@@ -331,6 +340,7 @@ class Peer extends EventEmitter
             });
         });
 
+        return $this;
     }
 
     /**
@@ -405,7 +415,7 @@ class Peer extends EventEmitter
     public function intentionalClose()
     {
         $this->emit('intentionaldisconnect', [$this]);
-        $this->stream->end();
+        $this->close();
     }
 
     /**
@@ -414,6 +424,7 @@ class Peer extends EventEmitter
     public function close()
     {
         $this->stream->end();
+        $this->removeAllListeners();
     }
 
     /**

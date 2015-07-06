@@ -9,7 +9,6 @@ use BitWasp\Bitcoin\Math\Math;
 use BitWasp\Bitcoin\Network\NetworkFactory;
 use BitWasp\Bitcoin\Networking\BloomFilter;
 use BitWasp\Bitcoin\Networking\MessageFactory;
-use BitWasp\Bitcoin\Networking\Messages\MerkleBlock;
 use BitWasp\Bitcoin\Networking\Structure\FilteredBlock;
 use BitWasp\Bitcoin\Tests\Networking\AbstractTestCase;
 use BitWasp\Buffertools\Buffer;

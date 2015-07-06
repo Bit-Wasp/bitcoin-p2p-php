@@ -20,7 +20,9 @@ $factory = new \BitWasp\Bitcoin\Networking\MessageFactory(
     new \BitWasp\Bitcoin\Crypto\Random\Random()
 );
 
-$locator = new \BitWasp\Bitcoin\Networking\P2P\PeerLocator($local, $factory, $connector, $loop);
+$peerFactory = new \BitWasp\Bitcoin\Networking\P2P\PeerFactory($local, $factory, $loop);
+$locator = new \BitWasp\Bitcoin\Networking\P2P\PeerLocator($peerFactory, $connector);
+
 $peerManager = new \BitWasp\Bitcoin\Networking\P2P\PeerManager($locator);
 $listener = new \BitWasp\Bitcoin\Networking\P2P\Listener($local, $factory, $server,  $loop);
 $listener->listen();

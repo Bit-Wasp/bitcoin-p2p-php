@@ -4,11 +4,13 @@ namespace BitWasp\Bitcoin\Networking\P2P;
 
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
 use BitWasp\Bitcoin\Networking\MessageFactory;
+use Evenement\EventEmitter;
 use React\EventLoop\LoopInterface;
+use React\Promise\Deferred;
 use React\Socket\Connection;
 use React\Socket\Server;
 
-class Listener
+class Listener extends EventEmitter
 {
     /**
      * @var NetworkAddress
@@ -64,7 +66,22 @@ class Listener
      */
     public function handleIncomingPeer(Connection $connection)
     {
-        return $this->getPeer()->inboundConnection($connection);
+        $this
+            ->getPeer()
+            ->inboundConnection($connection)
+            ->then(
+                function (Peer $peer) use (&$deferred) {
+                    $this->emit('connection', [$peer]);
+                }
+            );
+    }
+
+    /**
+     * Shut down the server
+     */
+    public function close()
+    {
+        $this->server->shutdown();
     }
 
     /**

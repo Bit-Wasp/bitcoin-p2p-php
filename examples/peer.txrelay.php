@@ -23,7 +23,8 @@ $local = new NetworkAddress(
 );
 
 $msg = new MessageFactory($network, new \BitWasp\Bitcoin\Crypto\Random\Random());
-$locator = new PeerLocator($local, $msg, $connector, $loop, true);
+$peerFactory = new \BitWasp\Bitcoin\Networking\P2P\PeerFactory($local, $msgs, $loop);
+$locator = new PeerLocator($peerFactory, $connector);
 
 function decodeInv(Peer $peer, \BitWasp\Bitcoin\Networking\Messages\Inv $inv)
 {

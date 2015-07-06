@@ -25,12 +25,10 @@ $msgs = new MessageFactory(
     new BitWasp\Bitcoin\Crypto\Random\Random()
 );
 
+$peerFactory = new \BitWasp\Bitcoin\Networking\P2P\PeerFactory($local, $msgs, $loop);
 $locator = new PeerLocator(
-    $local,
-    $msgs,
-    $connector,
-    $loop,
-    false // dont request relay
+    $peerFactory,
+    $connector
 );
 
 $locator->discoverPeers()->then(function () use ($locator, &$loop) {

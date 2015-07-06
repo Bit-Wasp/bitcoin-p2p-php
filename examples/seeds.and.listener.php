@@ -6,7 +6,6 @@ use BitWasp\Bitcoin\Networking\P2P\PeerLocator;
 use BitWasp\Bitcoin\Networking\MessageFactory;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
 use BitWasp\Bitcoin\Bitcoin;
-use BitWasp\Bitcoin\Networking\P2P\Peer;
 use BitWasp\Buffertools\Buffer;
 
 $loop = React\EventLoop\Factory::create();

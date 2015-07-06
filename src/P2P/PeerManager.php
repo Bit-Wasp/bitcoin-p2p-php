@@ -57,7 +57,11 @@ class PeerManager extends EventEmitter
      */
     public function doConnect()
     {
-        return $this->locator->connectNextPeer()->then([$this, 'registerPeer']);
+        return $this->locator
+            ->connectNextPeer()
+            ->then(function (Peer $peer) {
+                $this->registerOutboundPeer($peer);
+            });
     }
 
     /**
@@ -81,7 +85,7 @@ class PeerManager extends EventEmitter
      */
     public function registerListener(Listener $listener)
     {
-        $listener->on('inbound.connection', function (Peer $peer) {
+        $listener->on('connection', function (Peer $peer) {
             $next = $this->nInPeers++;
             $this->inPeers[$next] = $peer;
             $peer->on('close', function () use ($next) {

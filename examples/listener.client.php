@@ -18,7 +18,7 @@ $connector = new React\SocketClient\Connector($loop, $dns);
 
 $host = new NetworkAddress(
     Buffer::hex('01', 16),
-    '192.168.192.10',
+    '127.0.0.1',
     8333
 );
 

@@ -2,9 +2,9 @@
 
 namespace BitWasp\Bitcoin\Networking\P2P;
 
-use BitWasp\Bitcoin\Networking\Messages\Addr;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
+use React\Dns\Resolver\Resolver;
 use React\Promise\Deferred;
 use React\SocketClient\Connector;
 
@@ -19,7 +19,10 @@ class PeerLocator
      * @var Connector
      */
     private $connector;
-
+    /**
+     * @var Resolver
+     */
+    private $dns;
     /**
      * @var bool
      */
@@ -33,22 +36,26 @@ class PeerLocator
     /**
      * @param PeerFactory $peerFactory
      * @param Connector $connector
+     * @param Resolver $dns
      * @param bool|false $requestRelay
      */
     public function __construct(
         PeerFactory $peerFactory,
         Connector $connector,
+        Resolver $dns,
         $requestRelay = false
     ) {
         $this->peerFactory = $peerFactory;
         $this->connector = $connector;
         $this->requestRelay = $requestRelay;
+        $this->dns = $dns;
     }
 
     /**
+     * @param bool $randomize - return a randomized list of dns seeds
      * @return string[]
      */
-    public function dnsSeedHosts()
+    public static function dnsSeedHosts($randomize = true)
     {
         $seeds = [
             'seed.bitcoin.sipa.be',
@@ -58,7 +65,10 @@ class PeerLocator
             "seed.bitcoin.jonasschnelli.ch"
         ];
 
-        shuffle($seeds);
+        if ($randomize) {
+            shuffle($seeds);
+        }
+
         return $seeds;
     }
 
@@ -68,75 +78,47 @@ class PeerLocator
      * @param $numSeeds
      * @return \React\Promise\Promise|\React\Promise\PromiseInterface
      */
-    public function connectDnsSeeds($numSeeds = 1)
+    public function queryDnsSeeds($numSeeds = 1)
     {
-        $connections = new Deferred();
+        $peerList = new Deferred();
 
         // Take $numSeeds
-        $seedHosts = $this->dnsSeedHosts();
+        $seedHosts = self::dnsSeedHosts();
         $seeds = array_slice($seedHosts, 0, min($numSeeds, count($seedHosts)));
 
         // Connect to $numSeeds peers
-        /** @var Peer[] $peers */
-        $peers = [];
-        $factory = $this->peerFactory;
-        $resolved = false;
+        /** @var Peer[] $vNetAddr */
+        $vNetAddr = [];
         foreach ($seeds as $seed) {
-            $factory
-                ->getPeer()
-                ->connect($this->connector, $factory->getAddress($seed))
-                ->then(function (Peer $peer) use (&$numSeeds, &$connections, &$peers, &$resolved) {
-                    if ($resolved) {
-                        $peer->close();
-                        return;
-                    }
-                    $peers[] = $peer;
-                    if (count($peers) == $numSeeds) {
-                        $connections->resolve($peers);
-                        $resolved = true;
+            $this->dns
+                ->resolve($seed)
+                ->then(function ($ipList) use (&$vNetAddr, $peerList, &$numSeeds) {
+                    $vNetAddr[] = $ipList;
+                    if (count($vNetAddr) == $numSeeds) {
+                        $peerList->resolve($vNetAddr);
                     }
                 });
         }
 
-        return $connections->promise();
-    }
+        // Compile the list of lists of peers into $this->knownAddresses
+        return $peerList
+            ->promise()
+            ->then(
+                function (array $vPeerVAddrs) {
+                    $addrs = [];
+                    array_map(
+                        function (array $value) use (&$addrs) {
+                            foreach ($value as $ip) {
+                                $addrs[] = $this->peerFactory->getAddress($ip);
+                            }
+                        },
+                        $vPeerVAddrs
+                    );
 
-    /**
-     * Discover peers by connecting to DNS seeds and wait for an Addr message
-     *
-     * @return \React\Promise\PromiseInterface|static
-     */
-    public function discoverPeers()
-    {
-        $deferred = new Deferred();
-
-        $this
-            ->connectDnsSeeds(1)
-            ->then(function (array $dnsPeers) use ($deferred) {
-                /** @var Peer[] $dnsPeers */
-                $results = [];
-                for ($i = 0, $nPeers = count($dnsPeers); $i < $nPeers; $i++) {
-                    $peer = $dnsPeers[$i];
-                    $peer->on('addr', function (Peer $peer, Addr $addr) use (&$deferred, &$results, &$nPeers) {
-                        $peer->close();
-                        $results[] = $addr->getAddresses();
-                        if (count($results) == $nPeers) {
-                            $deferred->resolve($results);
-                        }
-                    });
-                    $peer->getaddr();
+                    $this->knownAddresses = array_merge($this->knownAddresses, $addrs);
+                    return $this;
                 }
-            });
-
-        return $deferred->promise()->then(
-            function (array $peerAddrs) {
-                foreach ($peerAddrs as $set) {
-                    $this->knownAddresses = array_merge($this->knownAddresses, $set);
-                }
-
-                return $this;
-            }
-        );
+            );
     }
 
     /**

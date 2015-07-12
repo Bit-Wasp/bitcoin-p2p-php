@@ -26,6 +26,7 @@
     "ext-gmp": "*",
     "ext-json": "*",
     "bitwasp/bitcoin": "~0.0",
+    "symfony/console": "~2.6",
     "react/socket-client": "~0.4",
     "react/socket": "~0.4",
     "react/dns": "~0.4"

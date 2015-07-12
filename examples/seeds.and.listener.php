@@ -9,7 +9,7 @@ use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Buffertools\Buffer;
 
 $loop = React\EventLoop\Factory::create();
-$dnsResolverFactory = new React\Dns\Resolver\Factory();
+$dnsResolverFactory = new \BitWasp\Bitcoin\Networking\Dns\Factory();
 $dns = $dnsResolverFactory->createCached('8.8.8.8', $loop);
 $connector = new React\SocketClient\Connector($loop, $dns);
 
@@ -26,14 +26,15 @@ $msgs = new MessageFactory(
 $peerFactory = new \BitWasp\Bitcoin\Networking\P2P\PeerFactory($local, $msgs, $loop);
 $locator = new PeerLocator(
     $peerFactory,
-    $connector
+    $connector,
+    $dns
 );
 
 $server = new \React\Socket\Server($loop);
 $listener = new \BitWasp\Bitcoin\Networking\P2P\Listener($local, $msgs, $server, $loop);
 $listener->listen();
 
-$locator->discoverPeers()->then(function (PeerLocator $locator) use ($listener) {
+$locator->queryDnsSeeds()->then(function (PeerLocator $locator) use ($listener) {
     $manager = new \BitWasp\Bitcoin\Networking\P2P\PeerManager($locator);
     $manager->registerListener($listener);
     $manager->connectToPeers(3)->then(function () {

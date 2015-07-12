@@ -18,7 +18,7 @@ $math = BitWasp\Bitcoin\Bitcoin::getMath();
 
 $rpc = RpcFactory::bitcoind('192.168.192.101',8332, 'bitcoinrpc', 'rda0digjjfgsujushenbgtjegvrnrdybmvdkerb');
 $loop = React\EventLoop\Factory::create();
-$dnsResolverFactory = new React\Dns\Resolver\Factory();
+$dnsResolverFactory = new \BitWasp\Bitcoin\Networking\Dns\Factory;
 $dns = $dnsResolverFactory->createCached('8.8.8.8', $loop);
 $connector = new React\SocketClient\Connector($loop, $dns);
 
@@ -71,11 +71,11 @@ $factory = new MessageFactory(
 );
 
 $peerFactory = new \BitWasp\Bitcoin\Networking\P2P\PeerFactory($local, $factory, $loop);
-$peers = new \BitWasp\Bitcoin\Networking\P2P\PeerLocator($peerFactory, $connector);
+$peers = new \BitWasp\Bitcoin\Networking\P2P\PeerLocator($peerFactory, $connector, $dns);
 $node = new \BitWasp\Bitcoin\Networking\P2P\Node($local, $headerchain, $peers);
 
 $peers
-->discoverPeers()
+->queryDnsSeeds()
 ->then(
     function (\BitWasp\Bitcoin\Networking\P2P\PeerLocator $locator) {
         return $locator->connectNextPeer();

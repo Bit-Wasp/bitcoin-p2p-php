@@ -10,7 +10,7 @@ use BitWasp\Bitcoin\Networking\P2P\Peer;
 use BitWasp\Buffertools\Buffer;
 
 $loop = React\EventLoop\Factory::create();
-$dnsResolverFactory = new React\Dns\Resolver\Factory();
+$dnsResolverFactory = new \BitWasp\Bitcoin\Networking\Dns\Factory();
 $dns = $dnsResolverFactory->createCached('8.8.8.8', $loop);
 $connector = new React\SocketClient\Connector($loop, $dns);
 
@@ -22,9 +22,9 @@ $local = new NetworkAddress(
     32301
 );
 
-$msg = new MessageFactory($network, new \BitWasp\Bitcoin\Crypto\Random\Random());
+$msgs = new MessageFactory($network, new \BitWasp\Bitcoin\Crypto\Random\Random());
 $peerFactory = new \BitWasp\Bitcoin\Networking\P2P\PeerFactory($local, $msgs, $loop);
-$locator = new PeerLocator($peerFactory, $connector);
+$locator = new PeerLocator($peerFactory, $connector, $dns, true);
 
 function decodeInv(Peer $peer, \BitWasp\Bitcoin\Networking\Messages\Inv $inv)
 {
@@ -50,9 +50,9 @@ $locator->discoverPeers()->then(
     function (PeerLocator $locator) {
         $manager = new \BitWasp\Bitcoin\Networking\P2P\PeerManager($locator);
         $manager->connectToPeers(1)->then(function ($peers) {
-            $peer = $peers[0];
+            var_dump($peers);
             /** @var Peer $peer */
-            $peer->on('inv', 'decodeInv');
+            //$peer->on('inv', 'decodeInv');
         });
     }
 );

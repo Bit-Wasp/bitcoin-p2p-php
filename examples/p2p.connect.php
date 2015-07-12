@@ -12,7 +12,7 @@ use BitWasp\Bitcoin\Networking\Messages\Addr;
 $network = BitWasp\Bitcoin\Bitcoin::getDefaultNetwork();
 
 $loop = React\EventLoop\Factory::create();
-$dnsResolverFactory = new React\Dns\Resolver\Factory();
+$dnsResolverFactory = new \BitWasp\Bitcoin\Networking\Dns\Factory;
 $dns = $dnsResolverFactory->createCached('8.8.8.8', $loop);
 $connector = new React\SocketClient\Connector($loop, $dns);
 
@@ -42,11 +42,7 @@ $peer = new Peer(
 $peer->on('ready', function (Peer $peer) use ($factory) {
     $peer->send($factory->getaddr());
     $peer->on('addr', function (Peer $peer, Addr $addr) {
-        echo "Nodes: \n";
-        foreach ($addr->getAddresses() as $address)
-        {
-            echo $address->getIp() . "\n";
-        }
+        echo "Nodes: " . count($addr->getAddresses());
     });
 });
 

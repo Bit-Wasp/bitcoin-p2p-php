@@ -79,7 +79,7 @@ class BlockLocator
             }
         }
 
-        $hashStop = $all
+        $hashStop = ($all || count($hashes) == 1)
             ? Buffer::hex('00', 32)
             : array_pop($hashes);
 

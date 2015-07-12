@@ -41,7 +41,7 @@ function decodeInv(Peer $peer, \BitWasp\Bitcoin\Networking\Messages\Inv $inv)
 }
 
 $loop = React\EventLoop\Factory::create();
-$dnsResolverFactory = new React\Dns\Resolver\Factory();
+$dnsResolverFactory = new \BitWasp\Bitcoin\Networking\Dns\Factory;
 $dns = $dnsResolverFactory->createCached('8.8.8.8', $loop);
 $connector = new React\SocketClient\Connector($loop, $dns);
 
@@ -86,13 +86,14 @@ $factory = new MessageFactory(
 $peerFactory = new \BitWasp\Bitcoin\Networking\P2P\PeerFactory($local, $factory, $loop);
 $locator = new \BitWasp\Bitcoin\Networking\P2P\PeerLocator(
     $peerFactory,
-    $connector
+    $connector,
+    $dns
 );
 
 $node = new \BitWasp\Bitcoin\Networking\P2P\Node($local, $blockchain, $locator);
 
 $locator
-    ->discoverPeers()
+    ->queryDnsSeeds()
     ->then(
         function (\BitWasp\Bitcoin\Networking\P2P\PeerLocator $locator) {
             return $locator->connectNextPeer();
@@ -103,26 +104,33 @@ $locator
         })
     ->then(
         function (Peer $peer) use ($node, $loop) {
-            echo 'asdf';
-            $loop->addPeriodicTimer(60, function () use ($node, $peer) {
-                echo "send periodic getblocks\n";
-                $peer->getblocks($node->locator(true));
+            $height = $node->chain()->index()->height();
+
+            $peer->on('inv', function (Peer $peer, \BitWasp\Bitcoin\Networking\Messages\Inv $inv) use ($node, $height) {
+                decodeInv($peer, $inv);
+                $unseen = [];
+                foreach ($inv->getItems() as $inventory) {
+                    if ($inventory->isBlock()) {
+                        if (!$height->contains($inventory->getHash()->getHex())) {
+                            $unseen[] = $inventory;
+                        }
+                    }
+                }
+
+                if (count($unseen) > 0) {
+                    $peer->getdata($unseen);
+                }
             });
 
-            $peer->on('inv', 'decodeInv');
-
             $inboundBlocks = 0;
-            $peer->on('block', function (Peer $peer, \BitWasp\Bitcoin\Networking\Messages\Block $block) use ($node, &$inboundBlocks) {
-                echo "received block\n";
+            $peer->on('block', function (Peer $peer, \BitWasp\Bitcoin\Networking\Messages\Block $block) use ($node, &$inboundBlocks, $height) {
                 $blk = $block->getBlock();
                 $node->chain()->process($blk);
 
-                if ($inboundBlocks++ % 500 == 0) {
+                $prevHash = $blk->getHeader()->getPrevBlock();
+                if (!$height->contains($prevHash)) {
                     $peer->getblocks($node->locator(true));
                 }
-
-                echo $blk->getHeader()->getBlockHash() . "\n";
-                echo $node->chain()->currentHeight() . "\n";
             });
 
             $peer->getblocks($node->locator(true));

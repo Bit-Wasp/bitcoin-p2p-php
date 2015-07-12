@@ -86,6 +86,7 @@ class PeerManager extends EventEmitter
     public function registerListener(Listener $listener)
     {
         $listener->on('connection', function (Peer $peer) {
+            echo "connected\n";
             $next = $this->nInPeers++;
             $this->inPeers[$next] = $peer;
             $peer->on('close', function () use ($next) {

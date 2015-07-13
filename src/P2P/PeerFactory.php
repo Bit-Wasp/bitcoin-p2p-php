@@ -136,9 +136,11 @@ class PeerFactory
      */
     public function getListeningManager(Resolver $dns, Connector $connector = null, Server $server = null)
     {
-        return $this
-            ->getManager($connector ?: $this->getConnector($dns), $dns)
-            ->registerListener($this->getListener($server ?: $this->getServer()))
-        ;
+        $listener = $this->getListener($server ?: $this->getServer());
+
+        $manager = $this->getManager($connector ?: $this->getConnector($dns), $dns);
+        $manager->registerListener($listener);
+
+        return [$manager, $listener];
     }
 }

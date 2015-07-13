@@ -29,18 +29,26 @@ class PeerFactory
     private $msgs;
 
     /**
-     * @param NetworkAddressInterface $localAddress
      * @param MessageFactory $factory
      * @param LoopInterface $loop
+     * @param NetworkAddressInterface $localAddress
      */
     public function __construct(
-        NetworkAddressInterface $localAddress,
         MessageFactory $factory,
-        LoopInterface $loop
+        LoopInterface $loop,
+        NetworkAddressInterface $localAddress = null
     ) {
-        $this->local = $localAddress;
         $this->msgs = $factory;
         $this->loop = $loop;
+        $this->setLocalAddr($localAddress ?: $this->getAddress('0.0.0.0'));
+    }
+
+    /**
+     * @param NetworkAddressInterface $localAddress
+     */
+    public function setLocalAddr(NetworkAddressInterface $localAddress)
+    {
+        $this->local = $localAddress;
     }
 
     /**
@@ -100,6 +108,23 @@ class PeerFactory
      */
     public function getListener(Server $server)
     {
-        return new Listener($this->local, $this->msgs, $server, $loop);
+        return new Listener($this->local, $this->msgs, $server, $this->loop);
+    }
+
+    /**
+     * @param Resolver|null $resolver
+     * @return Connector
+     */
+    public function getConnector(Resolver $resolver)
+    {
+        return new Connector($this->loop, $resolver);
+    }
+
+    /**
+     * @return Server
+     */
+    public function getServer()
+    {
+        return new Server($this->loop);
     }
 }

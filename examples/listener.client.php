@@ -2,46 +2,22 @@
 
 require_once "../vendor/autoload.php";
 
-use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
-use BitWasp\Buffertools\Buffer;
-use BitWasp\Bitcoin\Crypto\Random\Random;
-use BitWasp\Bitcoin\Networking\MessageFactory;
+
 use BitWasp\Bitcoin\Networking\P2P\Peer;
 use BitWasp\Bitcoin\Networking\Messages\Addr;
 
-$network = BitWasp\Bitcoin\Bitcoin::getDefaultNetwork();
-
 $loop = React\EventLoop\Factory::create();
-$dnsResolverFactory = new \BitWasp\Bitcoin\Networking\Dns\Factory;
-$dns = $dnsResolverFactory->createCached('8.8.8.8', $loop);
-$connector = new React\SocketClient\Connector($loop, $dns);
+$factory = new \BitWasp\Bitcoin\Networking\Factory($loop);
+$dns = $factory->getDns();
 
-$host = new NetworkAddress(
-    Buffer::hex('01', 16),
-    '127.0.0.1',
-    8333
-);
+$peerFactory = $factory->getPeerFactory();
+$host = $peerFactory->getAddress('127.0.0.1');
+$local = $peerFactory->getAddress('192.168.192.39', 32301);
 
-$local = new NetworkAddress(
-    Buffer::hex('01', 16),
-    '192.168.192.39',
-    32301
-);
-
-$factory = new MessageFactory(
-    $network,
-    new Random()
-);
-
-$peer = new Peer(
-    $local,
-    $factory,
-    $loop
-);
-
+$peer = $peerFactory->getPeer();
 $peer->on('ready', function (Peer $peer) use ($factory) {
     echo "connected\n";
-    $peer->send($factory->getaddr());
+    $peer->getaddr();
     $peer->on('addr', function (Addr $addr) {
         echo "Nodes: \n";
         foreach ($addr->getAddresses() as $address)
@@ -50,5 +26,6 @@ $peer->on('ready', function (Peer $peer) use ($factory) {
         }
     });
 });
-$peer->connect($connector, $host);
+
+$peer->connect($peerFactory->getConnector($dns), $host);
 $loop->run();

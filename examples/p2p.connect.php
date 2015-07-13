@@ -12,7 +12,6 @@ $loop = React\EventLoop\Factory::create();
 $factory = new \BitWasp\Bitcoin\Networking\Factory($loop);
 $peerFactory = $factory->getPeerFactory();
 $host = $peerFactory->getAddress('192.168.192.101');
-$local = $peerFactory->getAddress('192.168.192.39', 32301);
 $peer = $peerFactory->getPeer();
 
 $peer->on('ready', function (Peer $peer) use ($factory) {

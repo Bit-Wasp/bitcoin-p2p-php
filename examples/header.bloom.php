@@ -3,26 +3,15 @@
 require_once "../vendor/autoload.php";
 
 
-use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
 use BitWasp\Bitcoin\Chain\BlockHashIndex;
 use BitWasp\Bitcoin\Chain\BlockHeightIndex;
 use BitWasp\Bitcoin\Chain\BlockIndex;
 use BitWasp\Buffertools\Buffer;
-use BitWasp\Bitcoin\Crypto\Random\Random;
-use BitWasp\Bitcoin\Networking\MessageFactory;
 use BitWasp\Bitcoin\Networking\P2P\Peer;
-use BitWasp\Bitcoin\Rpc\RpcFactory;
 use BitWasp\Bitcoin\Flags;
 use BitWasp\Bitcoin\Networking\BloomFilter;
 use BitWasp\Bitcoin\Networking\Structure\InventoryVector;
-$network = BitWasp\Bitcoin\Bitcoin::getDefaultNetwork();
-$math = BitWasp\Bitcoin\Bitcoin::getMath();
 
-$rpc = RpcFactory::bitcoind('192.168.192.101',8332, 'bitcoinrpc', 'rda0digjjfgsujushenbgtjegvrnrdybmvdkerb');
-$loop = React\EventLoop\Factory::create();
-$dnsResolverFactory = new \BitWasp\Bitcoin\Networking\Dns\Factory;
-$dns = $dnsResolverFactory->createCached('8.8.8.8', $loop);
-$connector = new React\SocketClient\Connector($loop, $dns);
 
 function decodeInv(Peer $peer, \BitWasp\Bitcoin\Networking\Messages\Inv $inv)
 {
@@ -43,6 +32,19 @@ function decodeInv(Peer $peer, \BitWasp\Bitcoin\Networking\Messages\Inv $inv)
         echo " [blocks: " . count($blks) . ", txs: " . count($txs) . ", filtered: " . count($filtered) . "]\n";
     }
 }
+
+$math = BitWasp\Bitcoin\Bitcoin::getMath();
+
+$loop = React\EventLoop\Factory::create();
+$factory = new \BitWasp\Bitcoin\Networking\Factory($loop);
+
+$peerFactory = $factory->getPeerFactory();
+$host = $peerFactory->getAddress('192.168.192.101');
+$local = $peerFactory->getAddress('192.168.192.39', 32301);
+
+$dns = $factory->getDns();
+$connector = $peerFactory->getConnector($dns);
+$peers = $peerFactory->getLocator($connector, $dns);
 
 $redis = new Redis();
 $redis->connect('127.0.0.1');
@@ -75,28 +77,7 @@ $headerchain = new \BitWasp\Bitcoin\Chain\Headerchain(
     )
 );
 
-$host = new NetworkAddress(
-    Buffer::hex('01', 16),
-    '192.168.192.101',
-    //'91.121.144.57',
-    8333
-);
-
-$local = new NetworkAddress(
-    Buffer::hex('01', 16),
-    '192.168.192.39',
-    32301
-);
-
-$factory = new MessageFactory(
-    $network,
-    new Random()
-);
-
-$peerFactory = new \BitWasp\Bitcoin\Networking\P2P\PeerFactory($local, $factory, $loop);
-$peers = new \BitWasp\Bitcoin\Networking\P2P\PeerLocator($peerFactory, $connector, $dns, false);
 $node = new \BitWasp\Bitcoin\Networking\P2P\Node($local, $headerchain, $peers);
-;
 
 $key = \BitWasp\Bitcoin\Key\Deterministic\HierarchicalKeyFactory::fromEntropy(new Buffer('this random sentence can be used to form a private key trololol123'));
 $hd = $key->deriveChild(1);

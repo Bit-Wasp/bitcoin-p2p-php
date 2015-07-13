@@ -26,7 +26,7 @@ class PeerFactory
     /**
      * @var MessageFactory
      */
-    private $msgs;
+    private $msgFactory;
 
     /**
      * @param MessageFactory $factory
@@ -38,7 +38,7 @@ class PeerFactory
         LoopInterface $loop,
         NetworkAddressInterface $localAddress = null
     ) {
-        $this->msgs = $factory;
+        $this->msgFactory = $factory;
         $this->loop = $loop;
         $this->setLocalAddr($localAddress ?: $this->getAddress('0.0.0.0'));
     }
@@ -73,7 +73,7 @@ class PeerFactory
     {
         return new Peer(
             $this->local,
-            $this->msgs,
+            $this->msgFactory,
             $this->loop
         );
     }
@@ -108,11 +108,11 @@ class PeerFactory
      */
     public function getListener(Server $server)
     {
-        return new Listener($this->local, $this->msgs, $server, $this->loop);
+        return new Listener($this->local, $this->msgFactory, $server, $this->loop);
     }
 
     /**
-     * @param Resolver|null $resolver
+     * @param Resolver $resolver
      * @return Connector
      */
     public function getConnector(Resolver $resolver)
@@ -126,5 +126,19 @@ class PeerFactory
     public function getServer()
     {
         return new Server($this->loop);
+    }
+
+    /**
+     * @param Resolver $dns
+     * @param Connector|null $connector
+     * @param Server|null $server
+     * @return $this
+     */
+    public function getListeningManager(Resolver $dns, Connector $connector = null, Server $server = null)
+    {
+        return $this
+            ->getManager($connector ?: $this->getConnector($dns), $dns)
+            ->registerListener($this->getListener($server ?: $this->getServer()))
+        ;
     }
 }

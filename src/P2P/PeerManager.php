@@ -82,6 +82,7 @@ class PeerManager extends EventEmitter
 
     /**
      * @param Listener $listener
+     * @return $this
      */
     public function registerListener(Listener $listener)
     {
@@ -93,5 +94,7 @@ class PeerManager extends EventEmitter
                 unset($this->inPeers[$next]);
             });
         });
+
+        return $this;
     }
 }

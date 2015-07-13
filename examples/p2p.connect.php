@@ -44,6 +44,8 @@ $peer->on('ready', function (Peer $peer) use ($factory) {
     $peer->on('addr', function (Peer $peer, Addr $addr) {
         echo "Nodes: " . count($addr->getAddresses());
     });
+    $peer->close();
+    echo "shutting down\n";
 });
 
 $peer->on('version', function (Peer $peer, \BitWasp\Bitcoin\Networking\Messages\Version $msg) {

@@ -93,13 +93,12 @@ class PeerFactory
     }
 
     /**
-     * @param Connector $connector
-     * @param Resolver $dns
+     * @param PeerLocator $locator
      * @return PeerManager
      */
-    public function getManager(Connector $connector, Resolver $dns)
+    public function getManager(PeerLocator $locator)
     {
-        return new PeerManager($this->getLocator($connector, $dns));
+        return new PeerManager($locator);
     }
 
     /**

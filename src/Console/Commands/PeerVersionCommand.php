@@ -119,7 +119,7 @@ class PeerVersionCommand extends AbstractCommand
         $services = $version->getServices()->getInt();
         $hasServices = implode(" ", array_map(
             function ($value) use ($services) {
-                    return $services == constant('\BitWasp\Bitcoin\Networking\Messages\Version'.'::'.$value)
+                    return $services == constant('\BitWasp\Bitcoin\Networking\Messages\Version::'.$value)
                         ? $value
                         : '';
             },

@@ -62,9 +62,10 @@ class Factory
      * @param NetworkAddressInterface|null $localAddr
      * @return PeerFactory
      */
-    public function getPeerFactory(MessageFactory $messageFactory = null, NetworkAddressInterface $localAddr = null)
+    public function getPeerFactory(Resolver $dns, MessageFactory $messageFactory = null, NetworkAddressInterface $localAddr = null)
     {
         return new PeerFactory(
+            $dns,
             $messageFactory ?: $this->getMessages(),
             $this->loop,
             $localAddr

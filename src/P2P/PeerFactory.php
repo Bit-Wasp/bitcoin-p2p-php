@@ -14,6 +14,11 @@ use React\SocketClient\Connector;
 class PeerFactory
 {
     /**
+     * @var Resolver
+     */
+    private $dns;
+
+    /**
      * @var NetworkAddressInterface
      */
     private $local;
@@ -29,15 +34,18 @@ class PeerFactory
     private $msgFactory;
 
     /**
+     * @param Resolver $dns
      * @param MessageFactory $factory
      * @param LoopInterface $loop
      * @param NetworkAddressInterface $localAddress
      */
     public function __construct(
+        Resolver $dns,
         MessageFactory $factory,
         LoopInterface $loop,
         NetworkAddressInterface $localAddress = null
     ) {
+        $this->dns = $dns;
         $this->msgFactory = $factory;
         $this->loop = $loop;
         $this->setLocalAddr($localAddress ?: $this->getAddress('0.0.0.0'));
@@ -52,16 +60,16 @@ class PeerFactory
     }
 
     /**
-     * @param string $host
+     * @param string $ipAddress
      * @param int $port
      * @param Buffer|null $services
      * @return NetworkAddress
      */
-    public function getAddress($host, $port = 8333, Buffer $services = null)
+    public function getAddress($ipAddress, $port = 8333, Buffer $services = null)
     {
         return new NetworkAddress(
             $services ?: Buffer::hex('0000000000000001'),
-            $host,
+            $ipAddress,
             $port
         );
     }
@@ -80,15 +88,16 @@ class PeerFactory
 
     /**
      * @param Connector $connector
-     * @param Resolver $dns
+     * @param bool|false $shouldRelay
      * @return PeerLocator
      */
-    public function getLocator(Connector $connector, Resolver $dns)
+    public function getLocator(Connector $connector, $shouldRelay = false)
     {
         return new PeerLocator(
             $this,
             $connector,
-            $dns
+            $this->dns,
+            $shouldRelay
         );
     }
 
@@ -111,12 +120,11 @@ class PeerFactory
     }
 
     /**
-     * @param Resolver $resolver
      * @return Connector
      */
-    public function getConnector(Resolver $resolver)
+    public function getConnector()
     {
-        return new Connector($this->loop, $resolver);
+        return new Connector($this->loop, $this->dns);
     }
 
     /**
@@ -128,16 +136,15 @@ class PeerFactory
     }
 
     /**
-     * @param Resolver $dns
      * @param Connector|null $connector
      * @param Server|null $server
      * @return $this
      */
-    public function getListeningManager(Resolver $dns, Connector $connector = null, Server $server = null)
+    public function getListeningManager(Connector $connector = null, Server $server = null)
     {
         $listener = $this->getListener($server ?: $this->getServer());
-
-        $manager = $this->getManager($connector ?: $this->getConnector($dns), $dns);
+        $locator = $this->getLocator($connector ?: $this->getConnector());
+        $manager = $this->getManager($locator);
         $manager->registerListener($listener);
 
         return [$manager, $listener];

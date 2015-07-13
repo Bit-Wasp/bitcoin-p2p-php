@@ -7,7 +7,7 @@ use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Crypto\Random\Random;
 use BitWasp\Bitcoin\Network\NetworkInterface;
 use BitWasp\Bitcoin\Networking\Dns\Resolver;
-use BitWasp\Bitcoin\Networking\P2P\PeerFactory;
+use BitWasp\Bitcoin\Networking\Peer\Factory;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
 use React\Socket\Server;
 use React\SocketClient\Connector;
@@ -60,11 +60,11 @@ class Factory
     /**
      * @param MessageFactory|null $messageFactory
      * @param NetworkAddressInterface|null $localAddr
-     * @return PeerFactory
+     * @return Factory
      */
     public function getPeerFactory(Resolver $dns, MessageFactory $messageFactory = null, NetworkAddressInterface $localAddr = null)
     {
-        return new PeerFactory(
+        return new Factory(
             $dns,
             $messageFactory ?: $this->getMessages(),
             $this->loop,

@@ -1,6 +1,6 @@
 <?php
 
-namespace BitWasp\Bitcoin\Networking\P2P;
+namespace BitWasp\Bitcoin\Networking\Peer;
 
 use BitWasp\Bitcoin\Networking\BlockLocator;
 use BitWasp\Bitcoin\Chain\Headerchain;
@@ -20,16 +20,16 @@ class Node
     private $chain;
 
     /**
-     * @var PeerLocator
+     * @var Locator
      */
     private $peers;
 
     /**
      * @param NetworkAddress $local
      * @param $chain
-     * @param PeerLocator $peers
+     * @param Locator $peers
      */
-    public function __construct(NetworkAddress $local, $chain, PeerLocator $peers)
+    public function __construct(NetworkAddress $local, $chain, Locator $peers)
     {
         $this->local = $local;
         $this->chain = $chain;
@@ -46,7 +46,7 @@ class Node
     }
 
     /**
-     * @return PeerLocator
+     * @return Locator
      */
     public function peers()
     {

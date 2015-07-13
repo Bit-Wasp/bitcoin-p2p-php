@@ -1,6 +1,6 @@
 <?php
 
-namespace BitWasp\Bitcoin\Networking\P2P;
+namespace BitWasp\Bitcoin\Networking\Peer;
 
 use BitWasp\Bitcoin\Block\BlockInterface;
 use BitWasp\Bitcoin\Networking\BlockLocator;

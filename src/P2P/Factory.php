@@ -1,6 +1,6 @@
 <?php
 
-namespace BitWasp\Bitcoin\Networking\P2P;
+namespace BitWasp\Bitcoin\Networking\Peer;
 
 use BitWasp\Bitcoin\Networking\Dns\Resolver;
 use BitWasp\Bitcoin\Networking\MessageFactory;
@@ -11,7 +11,7 @@ use React\EventLoop\LoopInterface;
 use React\Socket\Server;
 use React\SocketClient\Connector;
 
-class PeerFactory
+class Factory
 {
     /**
      * @var Resolver
@@ -89,11 +89,11 @@ class PeerFactory
     /**
      * @param Connector $connector
      * @param bool|false $shouldRelay
-     * @return PeerLocator
+     * @return Locator
      */
     public function getLocator(Connector $connector, $shouldRelay = false)
     {
-        return new PeerLocator(
+        return new Locator(
             $this,
             $connector,
             $this->dns,
@@ -102,12 +102,12 @@ class PeerFactory
     }
 
     /**
-     * @param PeerLocator $locator
-     * @return PeerManager
+     * @param Locator $locator
+     * @return Manager
      */
-    public function getManager(PeerLocator $locator)
+    public function getManager(Locator $locator)
     {
-        return new PeerManager($locator);
+        return new Manager($locator);
     }
 
     /**

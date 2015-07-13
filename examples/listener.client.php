@@ -3,7 +3,7 @@
 require_once "../vendor/autoload.php";
 
 
-use BitWasp\Bitcoin\Networking\P2P\Peer;
+use BitWasp\Bitcoin\Networking\Peer\Peer;
 use BitWasp\Bitcoin\Networking\Messages\Addr;
 
 $loop = React\EventLoop\Factory::create();

@@ -7,7 +7,7 @@ use BitWasp\Bitcoin\Chain\BlockHashIndex;
 use BitWasp\Bitcoin\Chain\BlockHeightIndex;
 use BitWasp\Bitcoin\Chain\BlockIndex;
 use BitWasp\Buffertools\Buffer;
-use BitWasp\Bitcoin\Networking\P2P\Peer;
+use BitWasp\Bitcoin\Networking\Peer\Peer;
 use BitWasp\Bitcoin\Flags;
 use BitWasp\Bitcoin\Networking\BloomFilter;
 use BitWasp\Bitcoin\Networking\Structure\InventoryVector;
@@ -76,7 +76,7 @@ $headerchain = new \BitWasp\Bitcoin\Chain\Headerchain(
     )
 );
 
-$node = new \BitWasp\Bitcoin\Networking\P2P\Node($local, $headerchain, $peers);
+$node = new \BitWasp\Bitcoin\Networking\Peer\Node($local, $headerchain, $peers);
 
 $key = \BitWasp\Bitcoin\Key\Deterministic\HierarchicalKeyFactory::fromEntropy(new Buffer('this random sentence can be used to form a private key trololol123'));
 $hd = $key->deriveChild(1);

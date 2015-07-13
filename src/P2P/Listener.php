@@ -1,6 +1,6 @@
 <?php
 
-namespace BitWasp\Bitcoin\Networking\P2P;
+namespace BitWasp\Bitcoin\Networking\Peer;
 
 use BitWasp\Bitcoin\Networking\MessageFactory;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;

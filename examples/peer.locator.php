@@ -2,7 +2,7 @@
 
 require "../vendor/autoload.php";
 
-use BitWasp\Bitcoin\Networking\P2P\Peer;
+use BitWasp\Bitcoin\Networking\Peer\Peer;
 
 $loop = React\EventLoop\Factory::create();
 $factory = new \BitWasp\Bitcoin\Networking\Factory($loop);
@@ -13,7 +13,7 @@ $connector = $peerFactory->getConnector();
 $locator = $peerFactory->getLocator($connector);
 
 $locator->queryDnsSeeds()->then(
-    function (\BitWasp\Bitcoin\Networking\P2P\PeerLocator $locator) use (&$loop) {
+    function (\BitWasp\Bitcoin\Networking\Peer\Locator $locator) use (&$loop) {
         $locator->connectNextPeer()->then(
             function (Peer $peer) use (&$loop) {
                 echo "connected to " . $peer->getRemoteAddr()->getIp() . "\n";

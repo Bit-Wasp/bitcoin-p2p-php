@@ -2,7 +2,7 @@
 
 namespace BitWasp\Bitcoin\Networking\Console\Commands;
 
-use BitWasp\Bitcoin\Networking\P2P\PeerLocator;
+use BitWasp\Bitcoin\Networking\Peer\Locator;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -19,7 +19,7 @@ class ListDnsSeedsCommand extends AbstractCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $output->writeln('  Known DNS seeds:');
-        foreach (PeerLocator::dnsSeedHosts(false) as $seed) {
+        foreach (Locator::dnsSeedHosts(false) as $seed) {
             $output->writeln("     -  " . $seed);
         }
 

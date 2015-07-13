@@ -2,7 +2,7 @@
 
 namespace BitWasp\Bitcoin\Networking\Console\Commands;
 
-use BitWasp\Bitcoin\Networking\P2P\PeerLocator;
+use BitWasp\Bitcoin\Networking\Peer\Locator;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -29,7 +29,7 @@ class QueryDnsSeedsCommand extends AbstractCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $loop = \React\EventLoop\Factory::create();
-        $seed = $input->getOption('seed') ?: PeerLocator::dnsSeedHosts()[0];
+        $seed = $input->getOption('seed') ?: Locator::dnsSeedHosts()[0];
 
         $factory = new \BitWasp\Bitcoin\Networking\Factory($loop);
         $factory

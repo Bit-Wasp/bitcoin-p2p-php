@@ -9,7 +9,7 @@ use BitWasp\Bitcoin\Chain\BlockHashIndex;
 use BitWasp\Bitcoin\Chain\BlockHeightIndex;
 use BitWasp\Bitcoin\Chain\BlockIndex;
 use BitWasp\Bitcoin\Utxo\UtxoSet;
-use BitWasp\Bitcoin\Networking\P2P\Peer;
+use BitWasp\Bitcoin\Networking\Peer\Peer;
 
 
 $math = BitWasp\Bitcoin\Bitcoin::getMath();
@@ -65,12 +65,12 @@ $blockchain = new Blockchain(
     new UtxoSet(new ArrayCache())
 );
 
-$node = new \BitWasp\Bitcoin\Networking\P2P\Node($local, $blockchain, $locator);
+$node = new \BitWasp\Bitcoin\Networking\Peer\Node($local, $blockchain, $locator);
 
 $locator
     ->queryDnsSeeds()
     ->then(
-        function (\BitWasp\Bitcoin\Networking\P2P\PeerLocator $locator) {
+        function (\BitWasp\Bitcoin\Networking\Peer\Locator $locator) {
             return $locator->connectNextPeer();
         },
         function ($error) {

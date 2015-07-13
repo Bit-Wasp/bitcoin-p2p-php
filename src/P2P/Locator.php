@@ -1,6 +1,6 @@
 <?php
 
-namespace BitWasp\Bitcoin\Networking\P2P;
+namespace BitWasp\Bitcoin\Networking\Peer;
 
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
@@ -8,10 +8,10 @@ use React\Dns\Resolver\Resolver;
 use React\Promise\Deferred;
 use React\SocketClient\Connector;
 
-class PeerLocator
+class Locator
 {
     /**
-     * @var PeerFactory
+     * @var Factory
      */
     private $peerFactory;
 
@@ -36,13 +36,13 @@ class PeerLocator
     private $knownAddresses = [];
 
     /**
-     * @param PeerFactory $peerFactory
+     * @param Factory $peerFactory
      * @param Connector $connector
      * @param Resolver $dns
      * @param bool|false $requestRelay
      */
     public function __construct(
-        PeerFactory $peerFactory,
+        Factory $peerFactory,
         Connector $connector,
         Resolver $dns,
         $requestRelay = false

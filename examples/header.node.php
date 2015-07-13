@@ -6,7 +6,7 @@ require_once "../vendor/autoload.php";
 use BitWasp\Bitcoin\Chain\BlockHashIndex;
 use BitWasp\Bitcoin\Chain\BlockHeightIndex;
 use BitWasp\Bitcoin\Chain\BlockIndex;
-use BitWasp\Bitcoin\Networking\P2P\Peer;
+use BitWasp\Bitcoin\Networking\Peer\Peer;
 
 $math = BitWasp\Bitcoin\Bitcoin::getMath();
 $loop = React\EventLoop\Factory::create();
@@ -51,12 +51,12 @@ $host = $peerFactory->getAddress('91.146.57.187');
 $local = $peerFactory->getAddress('192.168.192.39', 32391);
 $locator = $peerFactory->getLocator($connector, $dns);
 
-$node = new \BitWasp\Bitcoin\Networking\P2P\Node($local, $headerchain, $locator);
+$node = new \BitWasp\Bitcoin\Networking\Peer\Node($local, $headerchain, $locator);
 
 $locator
 ->queryDnsSeeds()
 ->then(
-    function (\BitWasp\Bitcoin\Networking\P2P\PeerLocator $locator) {
+    function (\BitWasp\Bitcoin\Networking\Peer\Locator $locator) {
         return $locator->connectNextPeer();
     },
     function ($error) {

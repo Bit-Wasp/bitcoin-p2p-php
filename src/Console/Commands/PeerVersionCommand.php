@@ -3,7 +3,7 @@
 namespace BitWasp\Bitcoin\Networking\Console\Commands;
 
 use BitWasp\Bitcoin\Networking\Messages\Version;
-use BitWasp\Bitcoin\Networking\P2P\Peer;
+use BitWasp\Bitcoin\Networking\Peer\Peer;
 use React\EventLoop\Timer\Timer;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;

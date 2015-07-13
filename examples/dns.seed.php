@@ -4,8 +4,8 @@ require_once "../vendor/autoload.php";
 
 $loop = React\EventLoop\Factory::create();
 
-$factory = new \BitWasp\Bitcoin\Networking\Dns\Factory();
-$dns = $factory->create('8.8.8.8', $loop);
+$factory = new \BitWasp\Bitcoin\Networking\Factory($loop);
+$dns = $factory->getDns();
 
 $dns->resolve('dnsseed.bitcoin.dashjr.org')->then(
     function ($ips) {

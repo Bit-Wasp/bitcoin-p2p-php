@@ -12,35 +12,18 @@ use BitWasp\Bitcoin\Networking\Messages\Addr;
 $network = BitWasp\Bitcoin\Bitcoin::getDefaultNetwork();
 
 $loop = React\EventLoop\Factory::create();
-$dnsResolverFactory = new \BitWasp\Bitcoin\Networking\Dns\Factory;
-$dns = $dnsResolverFactory->createCached('8.8.8.8', $loop);
+
+$factory = new \BitWasp\Bitcoin\Networking\Factory($loop);
+$dns = $factory->getDns();
 $connector = new React\SocketClient\Connector($loop, $dns);
 
-$host = new NetworkAddress(
-    Buffer::hex('01', 16),
-    '192.168.192.101',
-    8333
-);
+$peerFactory = $factory->getPeerFactory();
+$host = $peerFactory->getAddress('192.168.192.101');
+$local = $peerFactory->getAddress('192.168.192.39', 32301);
 
-$local = new NetworkAddress(
-    Buffer::hex('01', 16),
-    '192.168.192.39',
-    32301
-);
-
-$factory = new MessageFactory(
-    $network,
-    new Random()
-);
-
-$peer = new Peer(
-    $local,
-    $factory,
-    $loop
-);
-
+$peer = $peerFactory->getPeer();
 $peer->on('ready', function (Peer $peer) use ($factory) {
-    $peer->send($factory->getaddr());
+    $peer->getaddr();
     $peer->on('addr', function (Peer $peer, Addr $addr) {
         echo "Nodes: " . count($addr->getAddresses());
     });

@@ -2,7 +2,6 @@
 
 namespace BitWasp\Bitcoin\Networking\Dns;
 
-
 class Resolver extends \React\Dns\Resolver\Resolver
 {
     public function extractAddress(\React\Dns\Query\Query $query, \React\Dns\Model\Message $response)

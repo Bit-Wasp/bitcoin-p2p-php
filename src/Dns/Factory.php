@@ -2,7 +2,6 @@
 
 namespace BitWasp\Bitcoin\Networking\Dns;
 
-
 use React\EventLoop\LoopInterface;
 
 class Factory extends \React\Dns\Resolver\Factory

@@ -2,7 +2,6 @@
 
 namespace BitWasp\Bitcoin\Networking\Console\Commands;
 
-
 use BitWasp\Bitcoin\Networking\P2P\PeerLocator;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;

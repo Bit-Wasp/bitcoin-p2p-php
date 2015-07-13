@@ -2,7 +2,6 @@
 
 namespace BitWasp\Bitcoin\Networking\Console\Commands;
 
-
 use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Crypto\Random\Random;
 use BitWasp\Bitcoin\Networking\MessageFactory;
@@ -119,14 +118,13 @@ class PeerVersionCommand extends AbstractCommand
 
         $services = $version->getServices()->getInt();
         $hasServices = implode(" ", array_map(
-                function ($value) use ($services) {
+            function ($value) use ($services) {
                     return $services == constant('\BitWasp\Bitcoin\Networking\Messages\Version'.'::'.$value)
                         ? $value
                         : '';
-                },
-                ['NODE_NETWORK', 'NODE_GETUTXOS']
-            )
-        );
+            },
+            ['NODE_NETWORK', 'NODE_GETUTXOS']
+        ));
         $output->writeln('   Services:            ' . $version->getServices()->getInt() . " " . $hasServices);
         $output->writeln('   Requesting relay:    ' . ($version->getRelay() ? 'true' : 'false') . "");
         $output->writeln('   Timestamp:           ' . $version->getTimestamp() . "");

@@ -2,7 +2,6 @@
 
 namespace BitWasp\Bitcoin\Networking\Console;
 
-
 use BitWasp\Bitcoin\Networking\Console\Commands\PeerVersionCommand;
 use BitWasp\Bitcoin\Networking\Console\Commands\QueryDnsSeedsCommand;
 use BitWasp\Bitcoin\Networking\Console\Commands\ListDnsSeedsCommand;

@@ -2,40 +2,23 @@
 
 require "../vendor/autoload.php";
 
-use BitWasp\Bitcoin\Networking\P2P\PeerLocator;
-use BitWasp\Bitcoin\Networking\MessageFactory;
-use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
-use BitWasp\Bitcoin\Bitcoin;
-use BitWasp\Bitcoin\Networking\P2P\Peer;
-use BitWasp\Buffertools\Buffer;
 
 $loop = React\EventLoop\Factory::create();
-$dnsResolverFactory = new BitWasp\Bitcoin\Networking\Dns\Factory();
-$dns = $dnsResolverFactory->createCached('8.8.8.8', $loop);
-$connector = new React\SocketClient\Connector($loop, $dns);
+$factory = new \BitWasp\Bitcoin\Networking\Factory($loop);
+$dns = $factory->getDns();
 
-$local = new NetworkAddress(
-    Buffer::hex('01', 16),
-    '192.168.192.39',
-    32301
-);
+$peerFactory = $factory->getPeerFactory();
 
-$msgs = new MessageFactory(
-    Bitcoin::getDefaultNetwork(),
-    new BitWasp\Bitcoin\Crypto\Random\Random()
-);
-$peerFactory = new \BitWasp\Bitcoin\Networking\P2P\PeerFactory($local, $msgs, $loop);
-$locator = new PeerLocator(
-    $peerFactory,
-    $connector,
-    $dns
-);
+$connector = $peerFactory->getConnector($dns);
+$locator = $peerFactory->getLocator($connector, $dns);
+$manager = $peerFactory->getManager($locator);
 
-$locator->queryDnsSeeds()->then(function (PeerLocator $locator) {
-    $manager = new \BitWasp\Bitcoin\Networking\P2P\PeerManager($locator);
-    $manager->connectToPeers(3)->then(function () {
-        echo "done!!\n";
-    });
-});
+$locator->queryDnsSeeds()->then(
+    function () use ($manager) {
+        $manager->connectToPeers(3)->then(function () {
+            echo "done!!\n";
+        });
+    }
+);
 
 $loop->run();

@@ -2,13 +2,8 @@
 
 namespace BitWasp\Bitcoin\Networking\Console\Commands;
 
-use BitWasp\Bitcoin\Bitcoin;
-use BitWasp\Bitcoin\Crypto\Random\Random;
-use BitWasp\Bitcoin\Networking\MessageFactory;
 use BitWasp\Bitcoin\Networking\Messages\Version;
 use BitWasp\Bitcoin\Networking\P2P\Peer;
-use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
-use BitWasp\Buffertools\Buffer;
 use React\EventLoop\Timer\Timer;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -35,43 +30,18 @@ class PeerVersionCommand extends AbstractCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $network = Bitcoin::getDefaultNetwork();
-
         $loop = \React\EventLoop\Factory::create();
-        $dnsResolverFactory = new \React\Dns\Resolver\Factory();
-        $dns = $dnsResolverFactory->createCached('8.8.8.8', $loop);
-        $connector = new \React\SocketClient\Connector($loop, $dns);
+        $factory = new \BitWasp\Bitcoin\Networking\Factory($loop);
+        $dns = $factory->getDns();
+        $peerFactory = $factory->getPeerFactory($dns);
 
         $timeout = $input->getOption('timeout');
-        $userHost = $input->getArgument('host');
-
-        $local = new NetworkAddress(
-            Buffer::hex('01', 16),
-            '192.168.192.39',
-            32301
-        );
-
-        $host = new NetworkAddress(
-            Buffer::hex('01', 16),
-            $userHost,
-            8333
-        );
-
-
-        $factory = new MessageFactory(
-            $network,
-            new Random()
-        );
-
-        $peer = new Peer(
-            $local,
-            $factory,
-            $loop
-        );
+        $host = $peerFactory->getAddress($input->getArgument('host'));
 
         $deferred = new \React\Promise\Deferred();
 
-        $peer->on('version', function (Peer $peer, Version $ver) use ($deferred, $userHost, $output, $loop) {
+        $peer = $peerFactory->getPeer();
+        $peer->on('version', function (Peer $peer, Version $ver) use ($deferred) {
             $deferred->resolve([$peer, $ver]);
         });
 
@@ -89,8 +59,7 @@ class PeerVersionCommand extends AbstractCommand
             $this->renderTimeout($output, $userHost);
         });
 
-        $peer
-            ->connect($connector, $host);
+        $peer->connect($peerFactory->getConnector(), $host);
 
         $loop->run();
         return 0;

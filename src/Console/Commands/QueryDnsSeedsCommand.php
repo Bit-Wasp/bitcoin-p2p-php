@@ -31,8 +31,9 @@ class QueryDnsSeedsCommand extends AbstractCommand
         $loop = \React\EventLoop\Factory::create();
         $seed = $input->getOption('seed') ?: PeerLocator::dnsSeedHosts()[0];
 
-        (new \BitWasp\Bitcoin\Networking\Dns\Factory())
-            ->create('8.8.8.8', $loop)
+        $factory = new \BitWasp\Bitcoin\Networking\Factory($loop);
+        $factory
+            ->getDns()
             ->resolve($seed)
             ->then(
                 function ($ipArr) use ($seed, $output, $loop) {

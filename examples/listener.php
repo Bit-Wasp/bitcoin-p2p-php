@@ -6,7 +6,7 @@ $loop = React\EventLoop\Factory::create();
 $factory = new \BitWasp\Bitcoin\Networking\Factory($loop);
 $dns = $factory->getDns();
 
-$peerFactory = $factory->getPeerFactory();
+$peerFactory = $factory->getPeerFactory($dns);
 $server = $peerFactory->getServer();
 $listener = $peerFactory->getListener($server);
 $listener->listen();

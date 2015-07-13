@@ -13,8 +13,8 @@ $loop = React\EventLoop\Factory::create();
 $factory = new \BitWasp\Bitcoin\Networking\Factory($loop);
 $dns = $factory->getDns();
 
-$peerFactory = $factory->getPeerFactory();
-$connector = new React\SocketClient\Connector($loop, $dns);
+$peerFactory = $factory->getPeerFactory($dns);
+$connector = $peerFactory->getConnector();
 
 $redis = new Redis();
 $redis->connect('127.0.0.1');

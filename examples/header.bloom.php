@@ -37,14 +37,13 @@ $math = BitWasp\Bitcoin\Bitcoin::getMath();
 
 $loop = React\EventLoop\Factory::create();
 $factory = new \BitWasp\Bitcoin\Networking\Factory($loop);
-
-$peerFactory = $factory->getPeerFactory();
+$dns = $factory->getDns();
+$peerFactory = $factory->getPeerFactory($dns);
 $host = $peerFactory->getAddress('192.168.192.101');
 $local = $peerFactory->getAddress('192.168.192.39', 32301);
 
-$dns = $factory->getDns();
-$connector = $peerFactory->getConnector($dns);
-$peers = $peerFactory->getLocator($connector, $dns);
+$connector = $peerFactory->getConnector();
+$peers = $peerFactory->getLocator($connector);
 
 $redis = new Redis();
 $redis->connect('127.0.0.1');

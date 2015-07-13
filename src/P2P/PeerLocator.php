@@ -19,10 +19,12 @@ class PeerLocator
      * @var Connector
      */
     private $connector;
+
     /**
      * @var Resolver
      */
     private $dns;
+
     /**
      * @var bool
      */
@@ -97,7 +99,8 @@ class PeerLocator
                     if (count($vNetAddr) == $numSeeds) {
                         $peerList->resolve($vNetAddr);
                     }
-                });
+                })
+            ;
         }
 
         // Compile the list of lists of peers into $this->knownAddresses
@@ -105,20 +108,21 @@ class PeerLocator
             ->promise()
             ->then(
                 function (array $vPeerVAddrs) {
-                    $addrs = [];
+                    $addresses = [];
                     array_map(
-                        function (array $value) use (&$addrs) {
+                        function (array $value) use (&$addresses) {
                             foreach ($value as $ip) {
-                                $addrs[] = $this->peerFactory->getAddress($ip);
+                                $addresses[] = $this->peerFactory->getAddress($ip);
                             }
                         },
                         $vPeerVAddrs
                     );
 
-                    $this->knownAddresses = array_merge($this->knownAddresses, $addrs);
+                    $this->knownAddresses = array_merge($this->knownAddresses, $addresses);
                     return $this;
                 }
-            );
+            )
+        ;
     }
 
     /**
@@ -157,29 +161,34 @@ class PeerLocator
      */
     public function connectNextPeer()
     {
-        $deferred = new Deferred();
-
         $peer = $this->peerFactory->getPeer();
         if ($this->requestRelay) {
             $peer->requestRelay();
         }
 
+        $deferred = new Deferred();
         $peer
             ->connect($this->connector, $this->popAddress())
             ->then(
-                function ($peer) use (&$deferred, &$timer) {
+                function ($peer) use ($deferred) {
                     $deferred->resolve($peer);
                 },
-                function () use (&$deferred, &$retryAnotherPeer) {
+                function () use ($deferred) {
                     $deferred->reject();
                 }
             );
 
-        return $deferred->promise()->then(function (Peer $peer) {
-            return $peer;
-        }, function () {
-            // TODO: Should have error checking here
-            return $this->connectNextPeer();
-        });
+        return $deferred
+            ->promise()
+            ->then(
+                function (Peer $peer) {
+                    return $peer;
+                },
+                function () {
+                    // TODO: Should have error checking here
+                    return $this->connectNextPeer();
+                }
+            )
+        ;
     }
 }

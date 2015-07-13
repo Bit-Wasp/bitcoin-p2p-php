@@ -7,10 +7,9 @@ $loop = React\EventLoop\Factory::create();
 $factory = new \BitWasp\Bitcoin\Networking\Factory($loop);
 $dns = $factory->getDns();
 
-$peerFactory = $factory->getPeerFactory();
+$peerFactory = $factory->getPeerFactory($dns);
 
-$connector = $peerFactory->getConnector($dns);
-$locator = $peerFactory->getLocator($connector, $dns);
+$locator = $peerFactory->getLocator($peerFactory->getConnector());
 $manager = $peerFactory->getManager($locator);
 
 $locator->queryDnsSeeds()->then(

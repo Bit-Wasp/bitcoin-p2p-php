@@ -2,24 +2,18 @@
 
 require_once "../vendor/autoload.php";
 
-use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
 use BitWasp\Bitcoin\Chain\Blockchain;
 use BitWasp\Bitcoin\Chain\BlockStorage;
 use Doctrine\Common\Cache\ArrayCache;
 use BitWasp\Bitcoin\Chain\BlockHashIndex;
 use BitWasp\Bitcoin\Chain\BlockHeightIndex;
 use BitWasp\Bitcoin\Chain\BlockIndex;
-use BitWasp\Buffertools\Buffer;
 use BitWasp\Bitcoin\Utxo\UtxoSet;
-use BitWasp\Bitcoin\Crypto\Random\Random;
-use BitWasp\Bitcoin\Networking\MessageFactory;
 use BitWasp\Bitcoin\Networking\P2P\Peer;
-use BitWasp\Bitcoin\Rpc\RpcFactory;
 
-$network = BitWasp\Bitcoin\Bitcoin::getDefaultNetwork();
+
 $math = BitWasp\Bitcoin\Bitcoin::getMath();
 
-$rpc = RpcFactory::bitcoind('192.168.192.101',8332, 'bitcoinrpc', 'rda0digjjfgsujushenbgtjegvrnrdybmvdkerb');
 function decodeInv(Peer $peer, \BitWasp\Bitcoin\Networking\Messages\Inv $inv)
 {
     $txs = [];
@@ -41,9 +35,14 @@ function decodeInv(Peer $peer, \BitWasp\Bitcoin\Networking\Messages\Inv $inv)
 }
 
 $loop = React\EventLoop\Factory::create();
-$dnsResolverFactory = new \BitWasp\Bitcoin\Networking\Dns\Factory;
-$dns = $dnsResolverFactory->createCached('8.8.8.8', $loop);
-$connector = new React\SocketClient\Connector($loop, $dns);
+$factory = new \BitWasp\Bitcoin\Networking\Factory($loop);
+$dns = $factory->getDns();
+$peerFactory = $factory->getPeerFactory($dns);
+
+$local = $peerFactory->getAddress('192.168.192.39');
+$host = $peerFactory->getAddress('192.168.192.101');
+$connector = $peerFactory->getConnector();
+$locator = $peerFactory->getLocator($connector);
 
 $blockchain = new Blockchain(
     $math,
@@ -64,30 +63,6 @@ $blockchain = new Blockchain(
         new BlockHeightIndex(new ArrayCache())
     ),
     new UtxoSet(new ArrayCache())
-);
-
-$host = new NetworkAddress(
-    Buffer::hex('01', 16),
-    '192.168.192.101',
-    8333
-);
-
-$local = new NetworkAddress(
-    Buffer::hex('01', 16),
-    '192.168.192.39',
-    32301
-);
-
-$factory = new MessageFactory(
-    $network,
-    new Random()
-);
-
-$peerFactory = new \BitWasp\Bitcoin\Networking\P2P\PeerFactory($local, $factory, $loop);
-$locator = new \BitWasp\Bitcoin\Networking\P2P\PeerLocator(
-    $peerFactory,
-    $connector,
-    $dns
 );
 
 $node = new \BitWasp\Bitcoin\Networking\P2P\Node($local, $blockchain, $locator);

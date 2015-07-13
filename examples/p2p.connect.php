@@ -10,7 +10,7 @@ $network = BitWasp\Bitcoin\Bitcoin::getDefaultNetwork();
 $loop = React\EventLoop\Factory::create();
 
 $factory = new \BitWasp\Bitcoin\Networking\Factory($loop);
-$peerFactory = $factory->getPeerFactory();
+$peerFactory = $factory->getPeerFactory($factory->getDns());
 $host = $peerFactory->getAddress('192.168.192.101');
 $peer = $peerFactory->getPeer();
 
@@ -27,7 +27,6 @@ $peer->on('version', function (Peer $peer, \BitWasp\Bitcoin\Networking\Messages\
     echo $msg->getNetworkMessage()->getHex() . "\n";
 });
 
-$connector = $peerFactory->getConnector($factory->getDns());
-$peer->connect($connector, $host);
+$peer->connect($peerFactory->getConnector(), $host);
 
 $loop->run();

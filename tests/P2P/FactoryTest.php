@@ -2,7 +2,6 @@
 
 namespace BitWasp\Bitcoin\Tests\Networking\P2P;
 
-
 use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Crypto\Random\Random;
 use BitWasp\Bitcoin\Networking\Peer\Factory;

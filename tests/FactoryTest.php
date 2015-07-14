@@ -2,7 +2,6 @@
 
 namespace BitWasp\Bitcoin\Tests\Networking;
 
-
 use BitWasp\Bitcoin\Networking\Factory;
 
 class FactoryTest extends AbstractTestCase

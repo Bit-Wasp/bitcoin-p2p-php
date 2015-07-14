@@ -117,8 +117,8 @@ class LocatorTest extends AbstractTestCase
                 $loop->stop();
             });
 
-        $loop->run();
-        $this->assertTrue($receivedTx);
+            $loop->run();
+            $this->assertTrue($receivedTx);
 
     }
 }

@@ -17,16 +17,4 @@ class Factory extends \React\Dns\Resolver\Factory
         $executor = $this->createRetryExecutor($loop);
         return new Resolver($nameserver, $executor);
     }
-
-    /**
-     * @param string $nameserver
-     * @param LoopInterface $loop
-     * @return Resolver
-     */
-    public function createCached($nameserver, LoopInterface $loop)
-    {
-        $nameserver = $this->addPortToServerIfMissing($nameserver);
-        $executor = $this->createCachedExecutor($loop);
-        return new Resolver($nameserver, $executor);
-    }
 }

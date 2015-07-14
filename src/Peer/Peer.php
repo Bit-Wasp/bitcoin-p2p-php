@@ -223,8 +223,6 @@ class Peer extends EventEmitter
                 $command = $message->getCommand();
                 if ($this->exchangedVersion || ($command == 'version' || $command == 'verack')) {
                     $this->emit('msg', [$this, $message]);
-                } else {
-                    echo "Not exchanged version\n";
                 }
             }
         } catch (\Exception $e) {

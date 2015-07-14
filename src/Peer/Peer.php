@@ -7,7 +7,6 @@ use BitWasp\Bitcoin\Networking\BlockLocator;
 use BitWasp\Bitcoin\Networking\BloomFilter;
 use BitWasp\Bitcoin\Networking\Messages\Version;
 use BitWasp\Bitcoin\Networking\Structure\FilteredBlock;
-use BitWasp\Bitcoin\Networking\MessageFactory;
 use BitWasp\Bitcoin\Networking\Messages\FilterAdd;
 use BitWasp\Bitcoin\Networking\Messages\FilterLoad;
 use BitWasp\Bitcoin\Networking\Messages\Ping;
@@ -61,7 +60,7 @@ class Peer extends EventEmitter
     private $loop;
 
     /**
-     * @var MessageFactory
+     * @var \BitWasp\Bitcoin\Networking\Messages\Factory
      */
     private $msgs;
 
@@ -113,12 +112,12 @@ class Peer extends EventEmitter
 
     /**
      * @param NetworkAddressInterface $local
-     * @param MessageFactory $msgs
+     * @param \BitWasp\Bitcoin\Networking\Messages\Factory $msgs
      * @param LoopInterface $loop
      */
     public function __construct(
         NetworkAddressInterface $local,
-        MessageFactory $msgs,
+        \BitWasp\Bitcoin\Networking\Messages\Factory $msgs,
         LoopInterface $loop
     ) {
         $this->localAddr = $local;
@@ -230,7 +229,6 @@ class Peer extends EventEmitter
             }
         } catch (\Exception $e) {
             $this->buffer = $tmp;
-            echo ".";
             // Do nothing - it was probably a fragmented message
         }
     }

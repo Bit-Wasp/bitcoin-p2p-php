@@ -4,7 +4,7 @@ namespace BitWasp\Bitcoin\Tests\Networking\Messages;
 
 use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Crypto\Random\Random;
-use BitWasp\Bitcoin\Networking\MessageFactory;
+use BitWasp\Bitcoin\Networking\Messages\Factory;
 use BitWasp\Bitcoin\Networking\Messages\Reject;
 use BitWasp\Bitcoin\Networking\Serializer\NetworkMessageSerializer;
 use BitWasp\Bitcoin\Tests\Networking\AbstractTestCase;
@@ -16,7 +16,7 @@ class RejectTest extends AbstractTestCase
     {
         $net = Bitcoin::getDefaultNetwork();
         $serializer = new NetworkMessageSerializer($net);
-        $factory = new MessageFactory($net, new Random());
+        $factory = new Factory($net, new Random());
         $reject = $factory->reject(
             new Buffer(),
             Reject::REJECT_INVALID,
@@ -37,7 +37,7 @@ class RejectTest extends AbstractTestCase
     public function testWithInvalidCode()
     {
         $net = Bitcoin::getDefaultNetwork();
-        $factory = new MessageFactory($net, new Random());
+        $factory = new Factory($net, new Random());
         $factory->reject(
             new Buffer(),
             10,

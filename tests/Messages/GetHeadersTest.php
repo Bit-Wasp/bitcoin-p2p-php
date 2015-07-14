@@ -5,7 +5,7 @@ namespace BitWasp\Bitcoin\Tests\Networking\Messages;
 use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Crypto\Random\Random;
 use BitWasp\Bitcoin\Networking\BlockLocator;
-use BitWasp\Bitcoin\Networking\MessageFactory;
+use BitWasp\Bitcoin\Networking\Messages\Factory;
 use BitWasp\Bitcoin\Tests\Networking\AbstractTestCase;
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Buffertools\Parser;
@@ -15,7 +15,7 @@ class GetHeadersTest extends AbstractTestCase
     public function testNetworkSerializer()
     {
         $net = Bitcoin::getDefaultNetwork();
-        $factory = new MessageFactory($net, new Random());
+        $factory = new Factory($net, new Random());
 
         $locator = new BlockLocator([Buffer::hex('4141414141414141414141414141414141414141414141414141414141414141')], Buffer::hex('0000000000000000000000000000000000000000000000000000000000000000'));
         $getheaders = $factory->getheaders(

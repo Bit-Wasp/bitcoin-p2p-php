@@ -3,7 +3,6 @@
 namespace BitWasp\Bitcoin\Networking\Peer;
 
 use BitWasp\Bitcoin\Networking\Dns\Resolver;
-use BitWasp\Bitcoin\Networking\MessageFactory;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
 use BitWasp\Buffertools\Buffer;
@@ -29,19 +28,19 @@ class Factory
     private $loop;
 
     /**
-     * @var MessageFactory
+     * @var \BitWasp\Bitcoin\Networking\Messages\Factory
      */
     private $msgFactory;
 
     /**
      * @param Resolver $dns
-     * @param MessageFactory $factory
+     * @param \BitWasp\Bitcoin\Networking\Messages\Factory $factory
      * @param LoopInterface $loop
      * @param NetworkAddressInterface $localAddress
      */
     public function __construct(
         Resolver $dns,
-        MessageFactory $factory,
+        \BitWasp\Bitcoin\Networking\Messages\Factory $factory,
         LoopInterface $loop,
         NetworkAddressInterface $localAddress = null
     ) {

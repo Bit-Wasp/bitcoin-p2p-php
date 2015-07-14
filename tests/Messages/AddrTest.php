@@ -5,7 +5,7 @@ namespace BitWasp\Bitcoin\Test\Network\Messages;
 use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Crypto\Random\Random;
 use BitWasp\Bitcoin\Tests\Networking\AbstractTestCase;
-use BitWasp\Bitcoin\Networking\MessageFactory;
+use BitWasp\Bitcoin\Networking\Messages\Factory;
 use BitWasp\Bitcoin\Networking\Serializer\NetworkMessageSerializer;
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Bitcoin\Networking\Messages\Addr;
@@ -70,7 +70,7 @@ class AddrTest extends AbstractTestCase
 
         $parser = new NetworkMessageSerializer(Bitcoin::getDefaultNetwork());
 
-        $factory = new MessageFactory($network, new Random());
+        $factory = new Factory($network, new Random());
         $addr = $factory->addr([$add]);
 
         $serialized = $addr->getNetworkMessage()->getBuffer();

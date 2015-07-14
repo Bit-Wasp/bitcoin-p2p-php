@@ -4,7 +4,7 @@ namespace BitWasp\Bitcoin\Tests\Networking\Messages;
 
 use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Crypto\Random\Random;
-use BitWasp\Bitcoin\Networking\MessageFactory;
+use BitWasp\Bitcoin\Networking\Messages\Factory;
 use BitWasp\Bitcoin\Networking\Structure\AlertDetail;
 use BitWasp\Bitcoin\Tests\Networking\AbstractTestCase;
 use BitWasp\Bitcoin\Networking\Serializer\NetworkMessageSerializer;
@@ -18,7 +18,7 @@ class AlertTest extends AbstractTestCase
     {
         $network = Bitcoin::getDefaultNetwork();
         $parser = new NetworkMessageSerializer(Bitcoin::getDefaultNetwork());
-        $factory = new MessageFactory($network, new Random());
+        $factory = new Factory($network, new Random());
 
         $version = '1';
         $relayUntil = '9999999';

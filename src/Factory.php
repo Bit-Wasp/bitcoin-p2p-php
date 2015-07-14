@@ -2,15 +2,11 @@
 
 namespace BitWasp\Bitcoin\Networking;
 
-
 use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Crypto\Random\Random;
 use BitWasp\Bitcoin\Network\NetworkInterface;
 use BitWasp\Bitcoin\Networking\Dns\Resolver;
-use BitWasp\Bitcoin\Networking\Peer\Factory;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
-use React\Socket\Server;
-use React\SocketClient\Connector;
 use React\EventLoop\LoopInterface;
 
 class Factory
@@ -37,18 +33,6 @@ class Factory
     }
 
     /**
-     * @param Random|null $random
-     * @return MessageFactory
-     */
-    public function getMessages(Random $random = null)
-    {
-        return new MessageFactory(
-            $this->network,
-            $random ?: new Random()
-        );
-    }
-
-    /**
      * @param string $host
      * @return Dns\Resolver
      */
@@ -58,13 +42,26 @@ class Factory
     }
 
     /**
-     * @param MessageFactory|null $messageFactory
-     * @param NetworkAddressInterface|null $localAddr
-     * @return Factory
+     * @param Random|null $random
+     * @return Messages\Factory
      */
-    public function getPeerFactory(Resolver $dns, MessageFactory $messageFactory = null, NetworkAddressInterface $localAddr = null)
+    public function getMessages(Random $random = null)
     {
-        return new Factory(
+        return new Messages\Factory(
+            $this->network,
+            $random ?: new Random()
+        );
+    }
+
+    /**
+     * @param Resolver $dns
+     * @param Messages\Factory|null $messageFactory
+     * @param NetworkAddressInterface|null $localAddr
+     * @return Peer\Factory
+     */
+    public function getPeerFactory(Resolver $dns, Messages\Factory $messageFactory = null, NetworkAddressInterface $localAddr = null)
+    {
+        return new Peer\Factory(
             $dns,
             $messageFactory ?: $this->getMessages(),
             $this->loop,

@@ -2,7 +2,6 @@
 
 namespace BitWasp\Bitcoin\Networking\Peer;
 
-use BitWasp\Bitcoin\Networking\MessageFactory;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
 use Evenement\EventEmitter;
 use React\EventLoop\LoopInterface;
@@ -22,7 +21,7 @@ class Listener extends EventEmitter
     private $loop;
 
     /**
-     * @var MessageFactory
+     * @var \BitWasp\Bitcoin\Networking\Messages\Factory
      */
     private $msgs;
 
@@ -33,12 +32,16 @@ class Listener extends EventEmitter
 
     /**
      * @param NetworkAddressInterface $localAddr
-     * @param MessageFactory $messageFactory
+     * @param \BitWasp\Bitcoin\Networking\Messages\Factory $messageFactory
      * @param Server $server
      * @param LoopInterface $loop
      */
-    public function __construct(NetworkAddressInterface $localAddr, MessageFactory $messageFactory, Server $server, LoopInterface $loop)
-    {
+    public function __construct(
+        NetworkAddressInterface $localAddr,
+        \BitWasp\Bitcoin\Networking\Messages\Factory $messageFactory,
+        Server $server,
+        LoopInterface $loop
+    ) {
         $this->local = $localAddr;
         $this->msgs = $messageFactory;
         $this->server = $server;

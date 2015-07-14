@@ -4,7 +4,7 @@ namespace BitWasp\Bitcoin\Tests\Networking\P2P;
 
 use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Crypto\Random\Random;
-use BitWasp\Bitcoin\Networking\MessageFactory;
+use BitWasp\Bitcoin\Networking\Messages\Factory;
 use BitWasp\Bitcoin\Networking\Peer\Listener;
 use BitWasp\Bitcoin\Networking\Peer\Peer;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
@@ -72,7 +72,7 @@ class PeerTest extends AbstractTestCase
             $remoteport
         );
 
-        $msgs = new MessageFactory(
+        $msgs = new Factory(
             $network,
             new Random()
         );

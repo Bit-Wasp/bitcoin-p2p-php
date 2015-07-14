@@ -5,7 +5,7 @@ namespace BitWasp\Bitcoin\Tests\Networking\Messages;
 use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Crypto\Random\Random;
 use BitWasp\Bitcoin\Math\Math;
-use BitWasp\Bitcoin\Networking\MessageFactory;
+use BitWasp\Bitcoin\Networking\Messages\Factory;
 use BitWasp\Bitcoin\Networking\Messages\Ping;
 use BitWasp\Bitcoin\Networking\Messages\Pong;
 use BitWasp\Bitcoin\Networking\Serializer\NetworkMessageSerializer;
@@ -44,7 +44,7 @@ class PongTest extends AbstractTestCase
         $net = Bitcoin::getDefaultNetwork();
 
         $serializer = new NetworkMessageSerializer($net);
-        $factory = new MessageFactory($net, new Random());
+        $factory = new Factory($net, new Random());
         $pong = $factory->pong($factory->ping());
 
         $serialized = $pong->getNetworkMessage()->getBuffer();

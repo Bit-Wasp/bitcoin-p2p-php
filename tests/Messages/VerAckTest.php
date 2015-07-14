@@ -4,7 +4,7 @@ namespace BitWasp\Bitcoin\Tests\Networking\Messages;
 
 use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Crypto\Random\Random;
-use BitWasp\Bitcoin\Networking\MessageFactory;
+use BitWasp\Bitcoin\Networking\Messages\Factory;
 use BitWasp\Bitcoin\Networking\Messages\VerAck;
 use BitWasp\Bitcoin\Networking\Serializer\NetworkMessageSerializer;
 use BitWasp\Bitcoin\Tests\Networking\AbstractTestCase;
@@ -25,7 +25,7 @@ class VerAckTest extends AbstractTestCase
     {
         $net = Bitcoin::getDefaultNetwork();
         $serializer = new NetworkMessageSerializer($net);
-        $factory = new MessageFactory($net, new Random());
+        $factory = new Factory($net, new Random());
         $verack = $factory->verack();
 
         $serialized = $verack->getNetworkMessage()->getBuffer();

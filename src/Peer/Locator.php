@@ -145,12 +145,7 @@ class Locator
             throw new \Exception('No peers');
         }
 
-        $address = array_pop($this->knownAddresses);
-        if ($address->getIp() == '0.0.0.0') {
-            return $this->popAddress();
-        }
-
-        return $address;
+        return array_pop($this->knownAddresses);
     }
 
     /**

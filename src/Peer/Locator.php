@@ -2,7 +2,6 @@
 
 namespace BitWasp\Bitcoin\Networking\Peer;
 
-use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
 use React\Dns\Resolver\Resolver;
 use React\Promise\Deferred;
@@ -31,7 +30,7 @@ class Locator
     private $requestRelay;
 
     /**
-     * @var NetworkAddress[]
+     * @var NetworkAddressInterface[]
      */
     private $knownAddresses = [];
 
@@ -126,7 +125,7 @@ class Locator
     }
 
     /**
-     * @return array
+     * @return NetworkAddressInterface[]
      */
     public function getKnownAddresses()
     {

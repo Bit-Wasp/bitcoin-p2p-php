@@ -4,7 +4,7 @@ namespace BitWasp\Bitcoin\Tests\Networking\Messages;
 
 use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Crypto\Random\Random;
-use BitWasp\Bitcoin\Networking\MessageFactory;
+use BitWasp\Bitcoin\Networking\Messages\Factory;
 use BitWasp\Bitcoin\Networking\Structure\InventoryVector;
 use BitWasp\Bitcoin\Tests\Networking\AbstractTestCase;
 use BitWasp\Buffertools\Buffer;
@@ -15,7 +15,7 @@ class InvTest extends AbstractTestCase
     public function testNetworkSerializer()
     {
         $net = Bitcoin::getDefaultNetwork();
-        $factory = new MessageFactory($net, new Random());
+        $factory = new Factory($net, new Random());
 
         $inv = $factory->inv([
             new InventoryVector(

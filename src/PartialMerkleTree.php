@@ -13,7 +13,7 @@ class PartialMerkleTree extends Serializable
     /**
      * @var int
      */
-    private $txCount;
+    private $elementCount;
 
     /**
      * @var Buffer[]
@@ -31,20 +31,21 @@ class PartialMerkleTree extends Serializable
     private $fBad = false;
 
     /**
-     * Takes array of hashes and flag array only. Use PartialMerkleTree::create() instead of creating instante directly..
+     * Takes array of hashes and flag array only. Use PartialMerkleTree::create() instead of creating instance directly..
+     *
      * @param int $txCount
      * @param array $vHashes
      * @param array $vBits
      */
     public function __construct($txCount = 0, array $vHashes = [], array $vBits = [])
     {
-        $this->txCount = $txCount;
+        $this->elementCount = $txCount;
         $this->vHashes = $vHashes;
         $this->vFlagBits = $vBits;
     }
 
     /**
-     * Construct the merkle tree
+     * Construct the Merkle tree
      *
      * @param int $txCount
      * @param array $vTxHashes
@@ -79,7 +80,7 @@ class PartialMerkleTree extends Serializable
      */
     public function getTxCount()
     {
-        return $this->txCount;
+        return $this->elementCount;
     }
 
     /**
@@ -106,11 +107,11 @@ class PartialMerkleTree extends Serializable
      */
     public function calcTreeWidth($height)
     {
-        return ($this->txCount + (1 << $height) - 1) >> $height;
+        return ($this->elementCount + (1 << $height) - 1) >> $height;
     }
 
     /**
-     * Calculate the hash for a given height/position
+     * Calculate the hash for the given $height and $position
      *
      * @param int $height
      * @param int $position
@@ -144,7 +145,7 @@ class PartialMerkleTree extends Serializable
     public function traverseAndBuild($height, $position, array $vTxid, array &$vMatch)
     {
         $parent = false;
-        for ($p = ($position << $height); $p < (($position + 1) << $height) && $p < $this->txCount; $p++) {
+        for ($p = ($position << $height); $p < (($position + 1) << $height) && $p < $this->elementCount; $p++) {
             $parent = $parent || $vMatch[$p];
         }
 

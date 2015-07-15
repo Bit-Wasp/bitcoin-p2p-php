@@ -1,31 +1,13 @@
 <?php
 
-namespace BitWasp\Bitcoin\Networking;
+namespace BitWasp\Bitcoin\Networking\Messages;
 
 use BitWasp\Bitcoin\Block\BlockInterface;
 use BitWasp\Bitcoin\Crypto\Random\Random;
 use BitWasp\Bitcoin\Network\NetworkInterface;
-use BitWasp\Bitcoin\Networking\Messages\Addr;
-use BitWasp\Bitcoin\Networking\Messages\Alert;
-use BitWasp\Bitcoin\Networking\Messages\Block;
-use BitWasp\Bitcoin\Networking\Messages\FilterAdd;
-use BitWasp\Bitcoin\Networking\Messages\FilterClear;
-use BitWasp\Bitcoin\Networking\Messages\FilterLoad;
-use BitWasp\Bitcoin\Networking\Messages\GetAddr;
-use BitWasp\Bitcoin\Networking\Messages\GetBlocks;
-use BitWasp\Bitcoin\Networking\Messages\GetData;
-use BitWasp\Bitcoin\Networking\Messages\GetHeaders;
-use BitWasp\Bitcoin\Networking\Messages\Headers;
-use BitWasp\Bitcoin\Networking\Messages\Inv;
-use BitWasp\Bitcoin\Networking\Messages\MemPool;
-use BitWasp\Bitcoin\Networking\Messages\MerkleBlock;
-use BitWasp\Bitcoin\Networking\Messages\NotFound;
-use BitWasp\Bitcoin\Networking\Messages\Ping;
-use BitWasp\Bitcoin\Networking\Messages\Pong;
-use BitWasp\Bitcoin\Networking\Messages\Reject;
-use BitWasp\Bitcoin\Networking\Messages\Tx;
-use BitWasp\Bitcoin\Networking\Messages\VerAck;
-use BitWasp\Bitcoin\Networking\Messages\Version;
+use BitWasp\Bitcoin\Networking\BlockLocator;
+use BitWasp\Bitcoin\Networking\BloomFilter;
+use BitWasp\Bitcoin\Networking\NetworkMessage;
 use BitWasp\Bitcoin\Networking\Structure\AlertDetail;
 use BitWasp\Bitcoin\Networking\Structure\FilteredBlock;
 use BitWasp\Bitcoin\Networking\Structure\InventoryVector;
@@ -37,7 +19,7 @@ use BitWasp\Bitcoin\Transaction\TransactionInterface;
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Buffertools\Parser;
 
-class MessageFactory
+class Factory
 {
     /**
      * @var NetworkInterface

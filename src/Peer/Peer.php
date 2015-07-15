@@ -1,13 +1,12 @@
 <?php
 
-namespace BitWasp\Bitcoin\Networking\P2P;
+namespace BitWasp\Bitcoin\Networking\Peer;
 
 use BitWasp\Bitcoin\Block\BlockInterface;
 use BitWasp\Bitcoin\Networking\BlockLocator;
 use BitWasp\Bitcoin\Networking\BloomFilter;
 use BitWasp\Bitcoin\Networking\Messages\Version;
 use BitWasp\Bitcoin\Networking\Structure\FilteredBlock;
-use BitWasp\Bitcoin\Networking\MessageFactory;
 use BitWasp\Bitcoin\Networking\Messages\FilterAdd;
 use BitWasp\Bitcoin\Networking\Messages\FilterLoad;
 use BitWasp\Bitcoin\Networking\Messages\Ping;
@@ -61,7 +60,7 @@ class Peer extends EventEmitter
     private $loop;
 
     /**
-     * @var MessageFactory
+     * @var \BitWasp\Bitcoin\Networking\Messages\Factory
      */
     private $msgs;
 
@@ -113,12 +112,12 @@ class Peer extends EventEmitter
 
     /**
      * @param NetworkAddressInterface $local
-     * @param MessageFactory $msgs
+     * @param \BitWasp\Bitcoin\Networking\Messages\Factory $msgs
      * @param LoopInterface $loop
      */
     public function __construct(
         NetworkAddressInterface $local,
-        MessageFactory $msgs,
+        \BitWasp\Bitcoin\Networking\Messages\Factory $msgs,
         LoopInterface $loop
     ) {
         $this->localAddr = $local;
@@ -212,24 +211,22 @@ class Peer extends EventEmitter
     /**
      * Handler for incoming data. Buffers possibly fragmented packets since they arrive sequentially.
      * Before finishing the version exchange, this will only emit Version and VerAck messages.
-     *
-     * @param string $data
      */
-    private function onData($data)
+    private function onData()
     {
-        $this->buffer .= $data;
-        $length = strlen($this->buffer);
-        $parser = new Parser(new Buffer($this->buffer));
+        $tmp = $this->buffer;
+        $parser = new Parser(new Buffer($tmp));
 
         try {
-            while ($parser->getPosition() !== $length && $message = $this->msgs->parse($parser)) {
-                $this->buffer = $parser->getBuffer()->slice($parser->getPosition())->getBinary();
+            while ($message = $this->msgs->parse($parser)) {
+                $tmp = $parser->getBuffer()->slice($parser->getPosition())->getBinary();
                 $command = $message->getCommand();
                 if ($this->exchangedVersion || ($command == 'version' || $command == 'verack')) {
                     $this->emit('msg', [$this, $message]);
                 }
             }
         } catch (\Exception $e) {
+            $this->buffer = $tmp;
             // Do nothing - it was probably a fragmented message
         }
     }
@@ -242,7 +239,12 @@ class Peer extends EventEmitter
     private function setupConnection()
     {
         $this->stream->on('data', function ($data) {
-            $this->onData($data);
+            $this->buffer .= $data;
+            $this->emit('data');
+        });
+
+        $this->on('data', function () {
+            $this->onData();
         });
 
         $this->on('msg', function (Peer $peer, NetworkMessage $msg) {
@@ -306,11 +308,12 @@ class Peer extends EventEmitter
     }
 
     /**
+     * @param int $timeout
      * @return $this
      */
-    public function timeoutWithoutVersion()
+    public function timeoutWithoutVersion($timeout = 20)
     {
-        $this->loop->addPeriodicTimer(30, function (Timer $timer) {
+        $this->loop->addPeriodicTimer($timeout, function (Timer $timer) {
             if (false === $this->exchangedVersion) {
                 $this->intentionalClose();
             }
@@ -405,6 +408,7 @@ class Peer extends EventEmitter
             }, function ($error) use ($deferred) {
                 $deferred->reject($error);
             });
+
 
         return $deferred->promise();
     }

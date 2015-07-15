@@ -1,19 +1,17 @@
 <?php
 
-namespace BitWasp\Bitcoin\Networking\P2P;
+namespace BitWasp\Bitcoin\Networking\Peer;
 
-use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
-use BitWasp\Bitcoin\Networking\MessageFactory;
+use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
 use Evenement\EventEmitter;
 use React\EventLoop\LoopInterface;
-use React\Promise\Deferred;
 use React\Socket\Connection;
 use React\Socket\Server;
 
 class Listener extends EventEmitter
 {
     /**
-     * @var NetworkAddress
+     * @var NetworkAddressInterface
      */
     private $local;
 
@@ -23,7 +21,7 @@ class Listener extends EventEmitter
     private $loop;
 
     /**
-     * @var MessageFactory
+     * @var \BitWasp\Bitcoin\Networking\Messages\Factory
      */
     private $msgs;
 
@@ -33,13 +31,17 @@ class Listener extends EventEmitter
     private $server;
 
     /**
-     * @param NetworkAddress $localAddr
-     * @param MessageFactory $messageFactory
+     * @param NetworkAddressInterface $localAddr
+     * @param \BitWasp\Bitcoin\Networking\Messages\Factory $messageFactory
      * @param Server $server
      * @param LoopInterface $loop
      */
-    public function __construct(NetworkAddress $localAddr, MessageFactory $messageFactory, Server $server, LoopInterface $loop)
-    {
+    public function __construct(
+        NetworkAddressInterface $localAddr,
+        \BitWasp\Bitcoin\Networking\Messages\Factory $messageFactory,
+        Server $server,
+        LoopInterface $loop
+    ) {
         $this->local = $localAddr;
         $this->msgs = $messageFactory;
         $this->server = $server;

@@ -4,7 +4,7 @@ namespace BitWasp\Bitcoin\Tests\Networking\Messages;
 
 use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Crypto\Random\Random;
-use BitWasp\Bitcoin\Networking\MessageFactory;
+use BitWasp\Bitcoin\Networking\Messages\Factory;
 use BitWasp\Bitcoin\Networking\Serializer\NetworkMessageSerializer;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressTimestamp;
 use BitWasp\Buffertools\Buffer;
@@ -16,7 +16,7 @@ class VersionTest extends AbstractTestCase
 {
     public function testVersion()
     {
-        $factory = new MessageFactory(Bitcoin::getDefaultNetwork(), new Random());
+        $factory = new Factory(Bitcoin::getDefaultNetwork(), new Random());
         $v = '60002';
         $services = Buffer::hex('0000000000000001');
         $time = (string)time();
@@ -51,7 +51,7 @@ class VersionTest extends AbstractTestCase
 
     public function testVersionWithTimestampedAddress()
     {
-        $factory = new MessageFactory(Bitcoin::getDefaultNetwork(), new Random());
+        $factory = new Factory(Bitcoin::getDefaultNetwork(), new Random());
         $v = '60002';
         $services = Buffer::hex('0000000000000001');
         $time = (string)time();
@@ -80,7 +80,7 @@ class VersionTest extends AbstractTestCase
 
     public function testVersionWithoutBlockchain()
     {
-        $factory = new MessageFactory(Bitcoin::getDefaultNetwork(), new Random());
+        $factory = new Factory(Bitcoin::getDefaultNetwork(), new Random());
         $v = '60002';
         $services = Buffer::hex('0000000000000000');
         $time = (string)time();

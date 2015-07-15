@@ -34,6 +34,15 @@ class NetworkAddressTest extends AbstractTestCase
         $this->assertEquals($expected, $from->getBuffer()->getHex());
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testNetworkAddressWithoutIp()
+    {
+        $services = Buffer::hex('0000000000000001');
+        $from = new NetworkAddress($services, '12', 8833);
+    }
+
     public function testNetworkAddressTimestamp()
     {
         $ip = '127.0.0.1';

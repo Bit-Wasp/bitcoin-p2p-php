@@ -1,13 +1,13 @@
 <?php
 
-namespace BitWasp\Bitcoin\Networking\P2P;
+namespace BitWasp\Bitcoin\Networking\Peer;
 
 use Evenement\EventEmitter;
 
-class PeerManager extends EventEmitter
+class Manager extends EventEmitter
 {
     /**
-     * @var PeerLocator
+     * @var Locator
      */
     private $locator;
 
@@ -20,9 +20,9 @@ class PeerManager extends EventEmitter
     private $nInPeers = 0;
 
     /**
-     * @param PeerLocator $locator
+     * @param Locator $locator
      */
-    public function __construct(PeerLocator $locator)
+    public function __construct(Locator $locator)
     {
         $this->locator = $locator;
     }
@@ -82,6 +82,7 @@ class PeerManager extends EventEmitter
 
     /**
      * @param Listener $listener
+     * @return $this
      */
     public function registerListener(Listener $listener)
     {
@@ -92,5 +93,7 @@ class PeerManager extends EventEmitter
                 unset($this->inPeers[$next]);
             });
         });
+
+        return $this;
     }
 }

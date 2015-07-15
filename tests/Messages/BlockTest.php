@@ -5,7 +5,7 @@ namespace BitWasp\Bitcoin\Tests\Networking\Messages;
 use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Block\BlockFactory;
 use BitWasp\Bitcoin\Crypto\Random\Random;
-use BitWasp\Bitcoin\Networking\MessageFactory;
+use BitWasp\Bitcoin\Networking\Messages\Factory;
 use BitWasp\Bitcoin\Networking\Messages\Block;
 use BitWasp\Bitcoin\Networking\Serializer\NetworkMessageSerializer;
 use BitWasp\Bitcoin\Tests\Networking\AbstractTestCase;
@@ -37,7 +37,7 @@ class BlockTest extends AbstractTestCase
 
         $newBlock = BlockFactory::fromHex($blockHex);
 
-        $factory = new MessageFactory(Bitcoin::getDefaultNetwork(), new Random());
+        $factory = new Factory(Bitcoin::getDefaultNetwork(), new Random());
         $block = $factory->block($newBlock);
 
         $this->assertEquals('block', $block->getNetworkCommand());

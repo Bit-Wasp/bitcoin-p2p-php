@@ -3,24 +3,18 @@
 require_once "../vendor/autoload.php";
 
 
-use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
 use BitWasp\Bitcoin\Chain\BlockHashIndex;
 use BitWasp\Bitcoin\Chain\BlockHeightIndex;
 use BitWasp\Bitcoin\Chain\BlockIndex;
-use BitWasp\Buffertools\Buffer;
-use BitWasp\Bitcoin\Crypto\Random\Random;
-use BitWasp\Bitcoin\Networking\MessageFactory;
-use BitWasp\Bitcoin\Networking\P2P\Peer;
-use BitWasp\Bitcoin\Rpc\RpcFactory;
+use BitWasp\Bitcoin\Networking\Peer\Peer;
 
-$network = BitWasp\Bitcoin\Bitcoin::getDefaultNetwork();
 $math = BitWasp\Bitcoin\Bitcoin::getMath();
-
-$rpc = RpcFactory::bitcoind('192.168.192.101',8332, 'bitcoinrpc', 'rda0digjjfgsujushenbgtjegvrnrdybmvdkerb');
 $loop = React\EventLoop\Factory::create();
-$dnsResolverFactory = new React\Dns\Resolver\Factory();
-$dns = $dnsResolverFactory->createCached('8.8.8.8', $loop);
-$connector = new React\SocketClient\Connector($loop, $dns);
+$factory = new \BitWasp\Bitcoin\Networking\Factory($loop);
+$dns = $factory->getDns();
+
+$peerFactory = $factory->getPeerFactory($dns);
+$connector = $peerFactory->getConnector();
 
 $redis = new Redis();
 $redis->connect('127.0.0.1');
@@ -53,31 +47,16 @@ $headerchain = new \BitWasp\Bitcoin\Chain\Headerchain(
     )
 );
 
-$host = new NetworkAddress(
-    Buffer::hex('01', 16),
-    '91.146.57.187',
-    8333
-);
+$host = $peerFactory->getAddress('91.146.57.187');
+$local = $peerFactory->getAddress('192.168.192.39', 32391);
+$locator = $peerFactory->getLocator($connector, $dns);
 
-$local = new NetworkAddress(
-    Buffer::hex('01', 16),
-    '192.168.192.39',
-    32301
-);
+$node = new \BitWasp\Bitcoin\Networking\Peer\Node($local, $headerchain, $locator);
 
-$factory = new MessageFactory(
-    $network,
-    new Random()
-);
-
-$peerFactory = new \BitWasp\Bitcoin\Networking\P2P\PeerFactory($local, $factory, $loop);
-$peers = new \BitWasp\Bitcoin\Networking\P2P\PeerLocator($peerFactory, $connector);
-$node = new \BitWasp\Bitcoin\Networking\P2P\Node($local, $headerchain, $peers);
-
-$peers
-->discoverPeers()
+$locator
+->queryDnsSeeds()
 ->then(
-    function (\BitWasp\Bitcoin\Networking\P2P\PeerLocator $locator) {
+    function (\BitWasp\Bitcoin\Networking\Peer\Locator $locator) {
         return $locator->connectNextPeer();
     },
     function ($error) {

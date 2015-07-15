@@ -4,7 +4,7 @@ namespace BitWasp\Bitcoin\Tests\Networking\Messages;
 
 use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Crypto\Random\Random;
-use BitWasp\Bitcoin\Networking\MessageFactory;
+use BitWasp\Bitcoin\Networking\Messages\Factory;
 use BitWasp\Bitcoin\Networking\Messages\Tx;
 use BitWasp\Bitcoin\Networking\Serializer\NetworkMessageSerializer;
 use BitWasp\Bitcoin\Tests\Networking\AbstractTestCase;
@@ -34,7 +34,7 @@ class TxTest extends AbstractTestCase
 
         $net = Bitcoin::getDefaultNetwork();
         $serializer = new NetworkMessageSerializer($net);
-        $factory = new MessageFactory($net, new Random());
+        $factory = new Factory($net, new Random());
         $txMsg = $factory->tx($tx);
 
         $serialized = $txMsg->getNetworkMessage()->getBuffer();

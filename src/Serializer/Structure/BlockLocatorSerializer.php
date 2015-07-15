@@ -19,7 +19,7 @@ class BlockLocatorSerializer
             ->vector(function (Parser & $parser) {
                 return $parser->readBytes(32, true);
             })
-            ->bytestring(32)
+            ->bytestringle(32)
             ->getTemplate();
     }
 

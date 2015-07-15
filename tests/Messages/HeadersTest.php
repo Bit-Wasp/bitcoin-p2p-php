@@ -8,7 +8,7 @@ use BitWasp\Bitcoin\Crypto\Random\Random;
 use BitWasp\Bitcoin\Networking\Messages\Headers;
 use BitWasp\Bitcoin\Networking\Serializer\NetworkMessageSerializer;
 use BitWasp\Bitcoin\Tests\Networking\AbstractTestCase;
-use BitWasp\Bitcoin\Networking\MessageFactory;
+use BitWasp\Bitcoin\Networking\Messages\Factory;
 
 class HeadersTest extends AbstractTestCase
 {
@@ -52,7 +52,7 @@ class HeadersTest extends AbstractTestCase
     {
         $net = Bitcoin::getDefaultNetwork();
         $parser = new NetworkMessageSerializer($net);
-        $factory = new MessageFactory($net, new Random());
+        $factory = new Factory($net, new Random());
 
         $headers = $factory->headers([
             BlockHeaderFactory::fromHex('0100000000000000000000000000000000000000000000000000000000000000000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4a29ab5f49ffff001d1dac2b7c')

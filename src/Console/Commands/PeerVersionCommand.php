@@ -48,7 +48,7 @@ class PeerVersionCommand extends AbstractCommand
         $deferred
             ->promise()
             ->then(function ($arr) use ($loop, $output, &$userHost) {
-                list ($peer, $msg) = $arr;
+                list (, $msg) = $arr;
                 $loop->stop();
                 $this->renderVersion($output, $userHost, $msg);
             });

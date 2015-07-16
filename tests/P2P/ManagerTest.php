@@ -20,7 +20,7 @@ class ManagerTest extends AbstractTestCase
 
         $deferred = new Deferred();
         $locator->queryDnsSeeds()->then(function () use ($manager, $deferred) {
-            $manager->connectToPeers(1)->then(function () use ($deferred) {
+            $manager->connectToPeers(3)->then(function () use ($deferred) {
                 $deferred->resolve();
             }, function () use ($deferred) {
                 $deferred->reject();

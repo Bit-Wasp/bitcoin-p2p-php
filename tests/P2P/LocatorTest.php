@@ -53,34 +53,6 @@ class LocatorTest extends AbstractTestCase
 
     }
 
-    public function testConnectingToPeer()
-    {
-        $loop = new \React\EventLoop\StreamSelectLoop();
-        $factory = new \BitWasp\Bitcoin\Networking\Factory($loop);
-
-        $peerFactory = $factory->getPeerFactory($factory->getDns());
-        $locator = $peerFactory->getLocator($peerFactory->getConnector());
-        $foundPeer = null;
-        $connected = null;
-        $locator->queryDnsSeeds()->then(function (Locator $locator) use (&$foundPeer, &$connected, $loop) {
-            $connected = true;
-            $locator->connectNextPeer()->then(function (Peer $peer) use (&$foundPeer, $loop) {
-                $foundPeer = true;
-                $loop->stop();
-            }, function ($err) use ($loop) {
-                echo $err;
-                $loop->stop();
-            });
-        }, function ($err) use ($loop) {
-            echo $err;
-            $loop->stop();
-
-        });
-        $loop->run();
-        $this->assertTrue($connected);
-        $this->assertTrue($foundPeer);
-    }
-
     public function testConnectingToPeerRequestingRelay()
     {
         $loop = new \React\EventLoop\StreamSelectLoop();

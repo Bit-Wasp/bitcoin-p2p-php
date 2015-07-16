@@ -2,7 +2,6 @@
 
 namespace BitWasp\Bitcoin\Networking\Peer;
 
-use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
 use React\Dns\Resolver\Resolver;
 use React\Promise\Deferred;
@@ -31,7 +30,7 @@ class Locator
     private $requestRelay;
 
     /**
-     * @var NetworkAddress[]
+     * @var NetworkAddressInterface[]
      */
     private $knownAddresses = [];
 
@@ -118,7 +117,10 @@ class Locator
                         $vPeerVAddrs
                     );
 
-                    $this->knownAddresses = array_merge($this->knownAddresses, $addresses);
+                    $this->knownAddresses = array_merge(
+                        $this->knownAddresses,
+                        $addresses
+                    );
                     return $this;
                 }
             )
@@ -126,7 +128,7 @@ class Locator
     }
 
     /**
-     * @return array
+     * @return NetworkAddressInterface[]
      */
     public function getKnownAddresses()
     {
@@ -173,17 +175,6 @@ class Locator
                 }
             );
 
-        return $deferred
-            ->promise()
-            ->then(
-                function (Peer $peer) {
-                    return $peer;
-                },
-                function () {
-                    // TODO: Should have error checking here
-                    return $this->connectNextPeer();
-                }
-            )
-        ;
+        return $deferred->promise();
     }
 }

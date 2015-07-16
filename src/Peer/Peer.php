@@ -313,11 +313,13 @@ class Peer extends EventEmitter
      */
     public function timeoutWithoutVersion($timeout = 20)
     {
-        $this->loop->addPeriodicTimer($timeout, function (Timer $timer) {
-            if (false === $this->exchangedVersion) {
-                $this->intentionalClose();
-            }
-            $timer->cancel();
+        $this->once('data', function () use ($timeout) {
+            $this->loop->addPeriodicTimer($timeout, function (Timer $timer) {
+                if (false === $this->exchangedVersion) {
+                    $this->intentionalClose();
+                }
+                $timer->cancel();
+            });
         });
 
         return $this;

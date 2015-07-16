@@ -12,11 +12,23 @@ class Manager extends EventEmitter
     private $locator;
 
     /**
-     * @var array
+     * @var Peer[]
      */
     private $outPeers = [];
+
+    /**
+     * @var Peer[]
+     */
     private $inPeers = [];
+
+    /**
+     * @var int
+     */
     private $nOutPeers = 0;
+
+    /**
+     * @var int
+     */
     private $nInPeers = 0;
 
     /**
@@ -36,17 +48,13 @@ class Manager extends EventEmitter
     public function registerOutboundPeer(Peer $peer)
     {
         $next = $this->nOutPeers++;
-        $peer->on('peerdisconnect', function () use ($next) {
-            unset($this->outPeers[$next]);
-            $this->doConnect();
-        });
-
-        $peer->on('intentionaldisconnect', function () use ($next) {
+        $peer->on('close', function () use ($next) {
             unset($this->outPeers[$next]);
             $this->doConnect();
         });
 
         $this->outPeers[$next] = $peer;
+        $this->emit('outbound', [$peer]);
         return $peer;
     }
 
@@ -61,6 +69,9 @@ class Manager extends EventEmitter
             ->connectNextPeer()
             ->then(function (Peer $peer) {
                 $this->registerOutboundPeer($peer);
+            })
+            ->otherwise(function () {
+                return $this->doConnect();
             });
     }
 
@@ -74,10 +85,23 @@ class Manager extends EventEmitter
     {
         $peers = [];
         for ($i = 0; $i < $n; $i++) {
-            $peers[] = $this->doConnect();
+            $peers[$i] = $this->doConnect();
         }
 
         return \React\Promise\all($peers);
+    }
+
+    /**
+     * @param Peer $peer
+     */
+    public function registerInboundPeer(Peer $peer)
+    {
+        $next = $this->nInPeers++;
+        $this->inPeers[$next] = $peer;
+        $peer->on('close', function () use ($next) {
+            unset($this->inPeers[$next]);
+        });
+        $this->emit('inbound', [$peer]);
     }
 
     /**
@@ -87,11 +111,7 @@ class Manager extends EventEmitter
     public function registerListener(Listener $listener)
     {
         $listener->on('connection', function (Peer $peer) {
-            $next = $this->nInPeers++;
-            $this->inPeers[$next] = $peer;
-            $peer->on('close', function () use ($next) {
-                unset($this->inPeers[$next]);
-            });
+            $this->registerInboundPeer($peer);
         });
 
         return $this;

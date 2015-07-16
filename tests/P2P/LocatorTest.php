@@ -64,13 +64,12 @@ class LocatorTest extends AbstractTestCase
         $connected = null;
         $locator->queryDnsSeeds()->then(function (Locator $locator) use (&$foundPeer, &$connected, $loop) {
             $connected = true;
-            $locator->connectNextPeer()->then(function (Peer $peer) use (&$foundPeer, $loop) {
-                $foundPeer = $peer;
+            $locator->connectNextPeer()->then(function () use (&$foundPeer, $loop) {
+                $foundPeer = true;
                 $loop->stop();
             }, function ($err) use ($loop) {
                 echo $err;
                 $loop->stop();
-
             });
         }, function ($err) use ($loop) {
             echo $err;
@@ -79,7 +78,7 @@ class LocatorTest extends AbstractTestCase
         });
         $loop->run();
         $this->assertTrue($connected);
-        $this->assertInstanceOf('\BitWasp\Bitcoin\Networking\Peer\Peer', $foundPeer);
+        $this->assertTrue($foundPeer);
     }
 
     public function testConnectingToPeerRequestingRelay()

@@ -61,6 +61,9 @@ class Manager extends EventEmitter
             ->connectNextPeer()
             ->then(function (Peer $peer) {
                 $this->registerOutboundPeer($peer);
+            })
+            ->otherwise(function () {
+                return $this->doConnect();
             });
     }
 
@@ -74,7 +77,7 @@ class Manager extends EventEmitter
     {
         $peers = [];
         for ($i = 0; $i < $n; $i++) {
-            $peers[] = $this->doConnect();
+            $peers[$i] = $this->doConnect();
         }
 
         return \React\Promise\all($peers);

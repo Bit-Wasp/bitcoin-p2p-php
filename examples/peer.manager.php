@@ -14,7 +14,7 @@ $manager = $peerFactory->getManager($locator);
 
 $locator->queryDnsSeeds()->then(
     function () use ($manager) {
-        $manager->connectToPeers(3)->then(function () {
+        $manager->connectToPeers(8)->then(function () {
             echo "done!!\n";
         });
     }

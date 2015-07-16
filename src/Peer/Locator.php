@@ -117,7 +117,10 @@ class Locator
                         $vPeerVAddrs
                     );
 
-                    $this->knownAddresses = array_merge($this->knownAddresses, $addresses);
+                    $this->knownAddresses = array_merge(
+                        $this->knownAddresses,
+                        $addresses
+                    );
                     return $this;
                 }
             )
@@ -172,17 +175,6 @@ class Locator
                 }
             );
 
-        return $deferred
-            ->promise()
-            ->then(
-                function (Peer $peer) {
-                    return $peer;
-                },
-                function () {
-                    // TODO: Should have error checking here
-                    return $this->connectNextPeer();
-                }
-            )
-        ;
+        return $deferred->promise();
     }
 }

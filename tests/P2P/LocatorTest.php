@@ -64,7 +64,7 @@ class LocatorTest extends AbstractTestCase
         $connected = null;
         $locator->queryDnsSeeds()->then(function (Locator $locator) use (&$foundPeer, &$connected, $loop) {
             $connected = true;
-            $locator->connectNextPeer()->then(function () use (&$foundPeer, $loop) {
+            $locator->connectNextPeer()->then(function (Peer $peer) use (&$foundPeer, $loop) {
                 $foundPeer = true;
                 $loop->stop();
             }, function ($err) use ($loop) {
@@ -102,9 +102,11 @@ class LocatorTest extends AbstractTestCase
                     }
                 });
             }, function ($err) use ($loop) {
+                echo $err;
                 $loop->stop();
             });
         }, function ($err) use ($loop) {
+            echo $err;
             $loop->stop();
         });
 

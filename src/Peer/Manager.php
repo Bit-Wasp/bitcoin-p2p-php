@@ -111,10 +111,8 @@ class Manager extends EventEmitter
         $deferred = new Deferred();
 
         // If there is an available peer in the Recorder, use it.
-
         if ($this->recorder && $this->recorder->count() > 0) {
             $val = $this->recorder->pop();
-            var_dump($val);
             $deferred->resolve($val);
         } else {
             // Otherwise, rely on the Locator.

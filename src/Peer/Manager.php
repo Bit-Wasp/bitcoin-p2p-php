@@ -2,7 +2,9 @@
 
 namespace BitWasp\Bitcoin\Networking\Peer;
 
+use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
 use Evenement\EventEmitter;
+use React\Promise\Deferred;
 
 class Manager extends EventEmitter
 {
@@ -10,6 +12,11 @@ class Manager extends EventEmitter
      * @var Locator
      */
     private $locator;
+
+    /**
+     * @var Factory
+     */
+    private $peerFactory;
 
     /**
      * @var Peer[]
@@ -32,11 +39,47 @@ class Manager extends EventEmitter
     private $nInPeers = 0;
 
     /**
-     * @param Locator $locator
+     * @var null|Recorder
      */
-    public function __construct(Locator $locator)
+    private $recorder;
+
+    /**
+     * @param Factory $factory
+     * @param Locator $locator
+     * @param bool|false $requestRelay
+     */
+    public function __construct(Factory $factory, Locator $locator, $requestRelay = false)
     {
+        $this->peerFactory = $factory;
         $this->locator = $locator;
+        $this->requestRelay = $requestRelay;
+    }
+
+    /**
+     * @param NetworkAddressInterface $address
+     * @return \React\Promise\Promise|\React\Promise\PromiseInterface
+     * @throws \Exception
+     */
+    public function connect(NetworkAddressInterface $address)
+    {
+        $peer = $this->peerFactory->getPeer();
+        if ($this->requestRelay) {
+            $peer->requestRelay();
+        }
+
+        $deferred = new Deferred();
+        $peer
+            ->connect($this->peerFactory->getConnector(), $address)
+            ->then(
+                function ($peer) use ($deferred) {
+                    $deferred->resolve($peer);
+                },
+                function () use ($deferred) {
+                    $deferred->reject();
+                }
+            );
+
+        return $deferred->promise();
     }
 
     /**
@@ -50,7 +93,7 @@ class Manager extends EventEmitter
         $next = $this->nOutPeers++;
         $peer->on('close', function () use ($next) {
             unset($this->outPeers[$next]);
-            $this->doConnect();
+            $this->connectNextPeer();
         });
 
         $this->outPeers[$next] = $peer;
@@ -63,15 +106,43 @@ class Manager extends EventEmitter
      *
      * @return \React\Promise\PromiseInterface|static
      */
-    public function doConnect()
+    public function connectNextPeer()
     {
-        return $this->locator
-            ->connectNextPeer()
-            ->then(function (Peer $peer) {
-                $this->registerOutboundPeer($peer);
-            })
+        $deferred = new Deferred();
+
+        // If there is an available peer in the Recorder, use it.
+
+        if ($this->recorder && $this->recorder->count() > 0) {
+            $val = $this->recorder->pop();
+            var_dump($val);
+            $deferred->resolve($val);
+        } else {
+            // Otherwise, rely on the Locator.
+            try {
+                $deferred->resolve($this->locator->popAddress());
+            } catch (\Exception $e) {
+                $this->locator->queryDnsSeeds()->then(
+                    function () use ($deferred) {
+                        $deferred->resolve($this->locator->popAddress());
+                    }
+                );
+            }
+        }
+
+        return $deferred
+            ->promise()
+            ->then(
+                function (NetworkAddressInterface $address) {
+                    return $this->connect($address)->then(
+                        function (Peer $peer) {
+                            $this->registerOutboundPeer($peer);
+                            return $peer;
+                        }
+                    );
+                }
+            )
             ->otherwise(function () {
-                return $this->doConnect();
+                return $this->connectNextPeer();
             });
     }
 
@@ -85,7 +156,7 @@ class Manager extends EventEmitter
     {
         $peers = [];
         for ($i = 0; $i < $n; $i++) {
-            $peers[$i] = $this->doConnect();
+            $peers[$i] = $this->connectNextPeer();
         }
 
         return \React\Promise\all($peers);
@@ -115,5 +186,16 @@ class Manager extends EventEmitter
         });
 
         return $this;
+    }
+
+    /**
+     * @param Recorder $recorder
+     */
+    public function registerRecorder(Recorder $recorder)
+    {
+        $this->recorder = $recorder;
+        $this->on('outbound', function (Peer $peer) {
+            $this->recorder->save($peer->getRemoteAddr());
+        });
     }
 }

@@ -41,8 +41,8 @@ $peerFactory = $factory->getPeerFactory($dns);
 
 $local = $peerFactory->getAddress('192.168.192.39');
 $host = $peerFactory->getAddress('192.168.192.101');
-$connector = $peerFactory->getConnector();
-$locator = $peerFactory->getLocator($connector);
+$locator = $peerFactory->getLocator();
+$manager = $peerFactory->getManager($locator);
 
 $blockchain = new Blockchain(
     $math,
@@ -65,13 +65,13 @@ $blockchain = new Blockchain(
     new UtxoSet(new ArrayCache())
 );
 
-$node = new \BitWasp\Bitcoin\Networking\Peer\Node($local, $blockchain, $locator);
+$node = new \BitWasp\Bitcoin\Networking\Node\Node($local, $blockchain, $manager);
 
 $locator
     ->queryDnsSeeds()
     ->then(
-        function (\BitWasp\Bitcoin\Networking\Peer\Locator $locator) {
-            return $locator->connectNextPeer();
+        function (\BitWasp\Bitcoin\Networking\Peer\Locator $locator) use ($manager) {
+            return $manager->connectNextPeer();
         },
         function ($error) {
             echo $error;

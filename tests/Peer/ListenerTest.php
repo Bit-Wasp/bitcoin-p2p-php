@@ -1,6 +1,6 @@
 <?php
 
-namespace BitWasp\Bitcoin\Tests\Networking\P2P;
+namespace BitWasp\Bitcoin\Tests\Networking\Peer;
 
 use BitWasp\Bitcoin\Networking\Peer\Peer;
 use BitWasp\Bitcoin\Tests\Networking\AbstractTestCase;

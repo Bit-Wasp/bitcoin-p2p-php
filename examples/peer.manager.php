@@ -9,7 +9,7 @@ $dns = $factory->getDns();
 
 $peerFactory = $factory->getPeerFactory($dns);
 
-$locator = $peerFactory->getLocator($peerFactory->getConnector());
+$locator = $peerFactory->getLocator();
 $manager = $peerFactory->getManager($locator);
 
 $locator->queryDnsSeeds()->then(

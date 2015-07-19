@@ -108,10 +108,10 @@ class Recorder
      */
     public function reset()
     {
-        $this->cache->save('start', 0);
-        $this->cache->save('end', 0);
         for ($i = $this->getStart(), $end = $this->getEnd(); $i < $end; $i++) {
             $this->cache->delete($i);
         }
+        $this->cache->save('start', 0);
+        $this->cache->save('end', 0);
     }
 }

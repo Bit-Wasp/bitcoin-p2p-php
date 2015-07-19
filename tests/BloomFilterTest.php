@@ -8,6 +8,7 @@ use BitWasp\Bitcoin\Flags;
 use BitWasp\Bitcoin\Key\PrivateKeyFactory;
 use BitWasp\Bitcoin\Math\Math;
 use BitWasp\Bitcoin\Networking\BloomFilter;
+use BitWasp\Bitcoin\Networking\Serializer\BloomFilterSerializer;
 use BitWasp\Bitcoin\Networking\Structure\FilteredBlock;
 use BitWasp\Bitcoin\Transaction\Transaction;
 use BitWasp\Bitcoin\Transaction\TransactionFactory;
@@ -83,6 +84,9 @@ class BloomFilterTest extends AbstractTestCase
         }
 
         $this->assertEquals('03ce4299050000000100008001', $filter->getBuffer()->getHex());
+        $parser = new BloomFilterSerializer();
+        $parse = $parser->parse($filter->getBuffer());
+        $this->assertEquals($filter, $parse);
     }
 
     public function testFlagChecks()

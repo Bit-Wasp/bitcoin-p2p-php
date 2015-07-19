@@ -49,7 +49,8 @@ $headerchain = new \BitWasp\Bitcoin\Chain\Headerchain(
 
 $host = $peerFactory->getAddress('91.146.57.187');
 $local = $peerFactory->getAddress('192.168.192.39', 32391);
-$locator = $peerFactory->getLocator($connector, $dns);
+$locator = $peerFactory->getLocator();
+$manager = $peerFactory->getManager($locator);
 
 $node = new \BitWasp\Bitcoin\Networking\Peer\Node($local, $headerchain, $locator);
 
@@ -78,13 +79,6 @@ $locator
 
             if ($missedBlock) {
                 $peer->getheaders($node->locator(true));
-            }
-        });
-
-        $peer->on('block', function (Peer $peer, \BitWasp\Bitcoin\Networking\Messages\Block $block) use ($node) {
-            $header = $block->getBlock()->getHeader();
-            if (!$node->chain()->index()->hash()->contains($header->getBlockHash())) {
-                $node->chain()->process($header);
             }
         });
 

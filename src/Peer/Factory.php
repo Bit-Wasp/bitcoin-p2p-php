@@ -6,6 +6,7 @@ use BitWasp\Bitcoin\Networking\Dns\Resolver;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
 use BitWasp\Buffertools\Buffer;
+use Doctrine\Common\Cache\Cache;
 use React\EventLoop\LoopInterface;
 use React\Socket\Server;
 use React\SocketClient\Connector;
@@ -86,27 +87,21 @@ class Factory
     }
 
     /**
-     * @param Connector $connector
-     * @param bool|false $shouldRelay
      * @return Locator
      */
-    public function getLocator(Connector $connector, $shouldRelay = false)
+    public function getLocator()
     {
-        return new Locator(
-            $this,
-            $connector,
-            $this->dns,
-            $shouldRelay
-        );
+        return new Locator($this->dns);
     }
 
     /**
      * @param Locator $locator
+     * @param bool|false $shouldRelay
      * @return Manager
      */
-    public function getManager(Locator $locator)
+    public function getManager(Locator $locator, $shouldRelay = false)
     {
-        return new Manager($locator);
+        return new Manager($this, $locator, $shouldRelay);
     }
 
     /**
@@ -135,6 +130,15 @@ class Factory
     }
 
     /**
+     * @param Cache $cache
+     * @return Recorder
+     */
+    public function getRecorder(Cache $cache)
+    {
+        return new Recorder($cache);
+    }
+
+    /**
      * @param Connector|null $connector
      * @param Server|null $server
      * @return $this
@@ -142,7 +146,7 @@ class Factory
     public function getListeningManager(Connector $connector = null, Server $server = null)
     {
         $listener = $this->getListener($server ?: $this->getServer());
-        $locator = $this->getLocator($connector ?: $this->getConnector());
+        $locator = $this->getLocator();
         $manager = $this->getManager($locator);
         $manager->registerListener($listener);
 

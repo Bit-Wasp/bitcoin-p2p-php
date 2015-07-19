@@ -2,22 +2,14 @@
 
 namespace BitWasp\Bitcoin\Networking\Peer;
 
+use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
+use BitWasp\Buffertools\Buffer;
 use React\Dns\Resolver\Resolver;
 use React\Promise\Deferred;
-use React\SocketClient\Connector;
 
 class Locator
 {
-    /**
-     * @var Factory
-     */
-    private $peerFactory;
-
-    /**
-     * @var Connector
-     */
-    private $connector;
 
     /**
      * @var Resolver
@@ -25,30 +17,15 @@ class Locator
     private $dns;
 
     /**
-     * @var bool
-     */
-    private $requestRelay;
-
-    /**
      * @var NetworkAddressInterface[]
      */
     private $knownAddresses = [];
 
     /**
-     * @param Factory $peerFactory
-     * @param Connector $connector
      * @param Resolver $dns
-     * @param bool|false $requestRelay
      */
-    public function __construct(
-        Factory $peerFactory,
-        Connector $connector,
-        Resolver $dns,
-        $requestRelay = false
-    ) {
-        $this->peerFactory = $peerFactory;
-        $this->connector = $connector;
-        $this->requestRelay = $requestRelay;
+    public function __construct(Resolver $dns)
+    {
         $this->dns = $dns;
     }
 
@@ -91,6 +68,7 @@ class Locator
         /** @var Peer[] $vNetAddr */
         $vNetAddr = [];
         foreach ($seeds as $seed) {
+            echo " [ query DNS seed: " . $seed . " ] \n";
             $this->dns
                 ->resolve($seed)
                 ->then(function ($ipList) use (&$vNetAddr, $peerList, &$numSeeds) {
@@ -111,7 +89,11 @@ class Locator
                     array_map(
                         function (array $value) use (&$addresses) {
                             foreach ($value as $ip) {
-                                $addresses[] = $this->peerFactory->getAddress($ip);
+                                $addresses[] = new NetworkAddress(
+                                    Buffer::hex('01', 8),
+                                    $ip,
+                                    8333
+                                );
                             }
                         },
                         $vPeerVAddrs
@@ -141,40 +123,12 @@ class Locator
      * @return NetworkAddressInterface
      * @throws \Exception
      */
-    private function popAddress()
+    public function popAddress()
     {
         if (count($this->knownAddresses) < 1) {
             throw new \Exception('No peers');
         }
 
         return array_pop($this->knownAddresses);
-    }
-
-    /**
-     * Connect to the next known address. If it fails, initiate another attempt.
-     *
-     * @return \React\Promise\Promise|\React\Promise\PromiseInterface
-     * @throws \Exception
-     */
-    public function connectNextPeer()
-    {
-        $peer = $this->peerFactory->getPeer();
-        if ($this->requestRelay) {
-            $peer->requestRelay();
-        }
-
-        $deferred = new Deferred();
-        $peer
-            ->connect($this->connector, $this->popAddress())
-            ->then(
-                function ($peer) use ($deferred) {
-                    $deferred->resolve($peer);
-                },
-                function () use ($deferred) {
-                    $deferred->reject();
-                }
-            );
-
-        return $deferred->promise();
     }
 }

@@ -42,8 +42,8 @@ $peerFactory = $factory->getPeerFactory($dns);
 $host = $peerFactory->getAddress('192.168.192.101');
 $local = $peerFactory->getAddress('192.168.192.39', 32301);
 
-$connector = $peerFactory->getConnector();
-$peers = $peerFactory->getLocator($connector);
+$peers = $peerFactory->getLocator();
+$manager = $peerFactory->getManager($peers);
 
 $redis = new Redis();
 $redis->connect('127.0.0.1');
@@ -76,7 +76,7 @@ $headerchain = new \BitWasp\Bitcoin\Chain\Headerchain(
     )
 );
 
-$node = new \BitWasp\Bitcoin\Networking\Peer\Node($local, $headerchain, $peers);
+$node = new \BitWasp\Bitcoin\Networking\Node\Node($local, $headerchain, $manager);
 
 $key = \BitWasp\Bitcoin\Key\Deterministic\HierarchicalKeyFactory::fromEntropy(new Buffer('this random sentence can be used to form a private key trololol123'));
 $hd = $key->deriveChild(1);
@@ -133,7 +133,6 @@ $peerFactory->getPeer()->connect($connector, $host)
 
         },
         function ($error) {
-            echo 'WE HIT A FRIGGING ERROR';
             echo $error;
             throw $error;
         }

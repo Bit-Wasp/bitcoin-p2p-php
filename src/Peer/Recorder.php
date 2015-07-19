@@ -20,7 +20,7 @@ class Recorder
     public function __construct(Cache $cache)
     {
         $this->cache = $cache;
-        if ($this->cache->fetch('start') === null) {
+        if ($this->cache->fetch('start') === false) {
             $this->cache->save('start', 0);
             $this->cache->save('end', 0);
         }
@@ -63,7 +63,7 @@ class Recorder
      */
     public function count()
     {
-        return ($this->getEnd() - $this->getStart());
+        return $this->getEnd() - $this->getStart();
     }
 
     /**
@@ -72,9 +72,8 @@ class Recorder
      */
     public function save(NetworkAddressInterface $networkAddress)
     {
-        $end = $this->getEnd();
-        $new = $end + 1;
-        $this->cache->save($end ? $new : 0, $networkAddress->getIp());
+        $new = $this->getEnd() + 1;
+        $this->cache->save($new, $networkAddress->getIp());
         $this->setEnd($new);
     }
 
@@ -92,9 +91,10 @@ class Recorder
             throw new \Exception('No saved peers');
         }
 
-        $ip = $this->cache->fetch($start);
-        $this->setStart($start + 1);
-        $this->cache->delete($start);
+        $index = $start + 1;
+        $ip = $this->cache->fetch($index);
+        $this->setStart($index);
+        $this->cache->delete($index);
 
         return new NetworkAddress(
             Buffer::hex('01', 8),

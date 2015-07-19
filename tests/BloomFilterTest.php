@@ -85,6 +85,28 @@ class BloomFilterTest extends AbstractTestCase
         $this->assertEquals('03ce4299050000000100008001', $filter->getBuffer()->getHex());
     }
 
+    public function testFlagChecks()
+    {
+        $math = new Math();
+        $flagsAll = new Flags(BloomFilter::UPDATE_ALL);
+        $filter = BloomFilter::create($math, 3, 0.01, 2147483649, $flagsAll);
+        $this->assertTrue($filter->isUpdateAll());
+        $this->assertFalse($filter->isUpdateNone());
+        $this->assertFalse($filter->isUpdatePubKeyOnly());
+
+        $flagsNone = new Flags(BloomFilter::UPDATE_NONE);
+        $filter = BloomFilter::create($math, 3, 0.01, 2147483649, $flagsNone);
+        $this->assertTrue($filter->isUpdateNone());
+        $this->assertFalse($filter->isUpdatePubKeyOnly());
+        $this->assertFalse($filter->isUpdateAll());
+
+        $flagsP2P = new Flags(BloomFilter::UPDATE_P2PUBKEY_ONLY);
+        $filter = BloomFilter::create($math, 3, 0.01, 2147483649, $flagsP2P);
+        $this->assertTrue($filter->isUpdatePubKeyOnly());
+        $this->assertFalse($filter->isUpdateNone());
+        $this->assertFalse($filter->isUpdateAll());
+    }
+
     public function testForAFalsePositive()
     {
         /*

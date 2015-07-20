@@ -10,7 +10,6 @@ use BitWasp\Bitcoin\Networking\Messages\Inv;
 use BitWasp\Bitcoin\Networking\Peer\Manager;
 use BitWasp\Bitcoin\Networking\Peer\Peer;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
-use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
 
 class Node
 {
@@ -29,6 +28,9 @@ class Node
      */
     private $manager;
 
+    /**
+     * @var bool
+     */
     private $downloading = false;
 
     /**
@@ -61,7 +63,7 @@ class Node
     }
 
     /**
-     * @return Blockchain|Headerchain
+     * @return Headerchain|Blockchain
      */
     public function chain()
     {

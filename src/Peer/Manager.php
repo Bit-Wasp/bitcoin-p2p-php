@@ -19,6 +19,11 @@ class Manager extends EventEmitter
     private $peerFactory;
 
     /**
+     * @var bool|false
+     */
+    private $requestRelay;
+
+    /**
      * @var Peer[]
      */
     private $outPeers = [];

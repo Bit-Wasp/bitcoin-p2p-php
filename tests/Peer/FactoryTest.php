@@ -40,7 +40,7 @@ class FactoryTest extends AbstractTestCase
         $server = $factory->getServer();
         $this->assertInstanceOf($this->serverType, $server);
 
-        $locator = $factory->getLocator($connector);
+        $locator = $factory->getLocator();
         $this->assertInstanceOf($this->locatorType, $locator);
 
         $listener = $factory->getListener($server);
@@ -49,9 +49,5 @@ class FactoryTest extends AbstractTestCase
         $manager = $factory->getManager($locator);
         $this->assertInstanceOf($this->managerType, $manager);
 
-        $listeningManager = $factory->getListeningManager($connector, $server);
-        list ($m, $l) = $listeningManager;
-        $this->assertInstanceOf($this->managerType, $m);
-        $this->assertInstanceOf($this->listenerType, $l);
     }
 }

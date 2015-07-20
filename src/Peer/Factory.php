@@ -52,6 +52,22 @@ class Factory
     }
 
     /**
+     * @return Connector
+     */
+    public function getConnector()
+    {
+        return new Connector($this->loop, $this->dns);
+    }
+
+    /**
+     * @return Server
+     */
+    public function getServer()
+    {
+        return new Server($this->loop);
+    }
+
+    /**
      * @param NetworkAddressInterface $localAddress
      */
     public function setLocalAddr(NetworkAddressInterface $localAddress)
@@ -114,42 +130,11 @@ class Factory
     }
 
     /**
-     * @return Connector
-     */
-    public function getConnector()
-    {
-        return new Connector($this->loop, $this->dns);
-    }
-
-    /**
-     * @return Server
-     */
-    public function getServer()
-    {
-        return new Server($this->loop);
-    }
-
-    /**
      * @param Cache $cache
      * @return Recorder
      */
     public function getRecorder(Cache $cache)
     {
         return new Recorder($cache);
-    }
-
-    /**
-     * @param Connector|null $connector
-     * @param Server|null $server
-     * @return $this
-     */
-    public function getListeningManager(Connector $connector = null, Server $server = null)
-    {
-        $listener = $this->getListener($server ?: $this->getServer());
-        $locator = $this->getLocator();
-        $manager = $this->getManager($locator);
-        $manager->registerListener($listener);
-
-        return [$manager, $listener];
     }
 }

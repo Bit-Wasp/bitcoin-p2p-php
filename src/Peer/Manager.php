@@ -19,6 +19,11 @@ class Manager extends EventEmitter
     private $peerFactory;
 
     /**
+     * @var bool|false
+     */
+    private $requestRelay;
+
+    /**
      * @var Peer[]
      */
     private $outPeers = [];
@@ -102,9 +107,10 @@ class Manager extends EventEmitter
     }
 
     /**
-     * Execute connection with the next available peer, and register it if it suceeds.
+     * Execute connection with the next available peer, and register it if it succeeds.
      *
-     * @return \React\Promise\PromiseInterface|static
+     * @return \React\Promise\ExtendedPromiseInterface|\React\Promise\Promise|static
+     * @throws \Exception
      */
     public function connectNextPeer()
     {

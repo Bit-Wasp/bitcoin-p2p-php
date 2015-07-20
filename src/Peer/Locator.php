@@ -85,6 +85,7 @@ class Locator
             ->promise()
             ->then(
                 function (array $vPeerVAddrs) {
+                    /** @var NetworkAddressInterface[] $addresses */
                     $addresses = [];
                     array_map(
                         function (array $value) use (&$addresses) {
@@ -103,6 +104,7 @@ class Locator
                         $this->knownAddresses,
                         $addresses
                     );
+                    
                     return $this;
                 }
             )

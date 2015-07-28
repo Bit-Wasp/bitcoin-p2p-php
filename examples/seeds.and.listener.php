@@ -9,8 +9,7 @@ $dns = $factory->getDns();
 $peerFactory = $factory->getPeerFactory($dns);
 $local = $peerFactory->getAddress('192.168.192.39');
 
-$connector = $peerFactory->getConnector();
-$locator = $peerFactory->getLocator($connector);
+$locator = $peerFactory->getLocator();
 
 $server = $peerFactory->getServer();
 $listener = $peerFactory->getListener($server);

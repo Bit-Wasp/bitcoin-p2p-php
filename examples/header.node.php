@@ -6,7 +6,6 @@ require_once "../vendor/autoload.php";
 use BitWasp\Bitcoin\Chain\BlockHashIndex;
 use BitWasp\Bitcoin\Chain\BlockHeightIndex;
 use BitWasp\Bitcoin\Chain\BlockIndex;
-use BitWasp\Bitcoin\Networking\Peer\Peer;
 
 $math = BitWasp\Bitcoin\Bitcoin::getMath();
 $loop = React\EventLoop\Factory::create();
@@ -52,59 +51,7 @@ $local = $peerFactory->getAddress('192.168.192.39', 32391);
 $locator = $peerFactory->getLocator();
 $manager = $peerFactory->getManager($locator);
 
-$node = new \BitWasp\Bitcoin\Networking\Peer\Node($local, $headerchain, $locator);
-
-$locator
-->queryDnsSeeds()
-->then(
-    function (\BitWasp\Bitcoin\Networking\Peer\Locator $locator) {
-        return $locator->connectNextPeer();
-    },
-    function ($error) {
-        echo $error;
-        throw $error;
-    })
-->then(
-    function (Peer $peer) use (&$node) {
-        $peer->on('inv', function (Peer $peer, \BitWasp\Bitcoin\Networking\Messages\Inv $inv) use (&$node) {
-            $missedBlock = false;
-            foreach ($inv->getItems() as $item) {
-                if ($item->isBlock()) {
-                    $key = $item->getHash()->getHex();
-                    if (!$node->chain()->index()->hash()->contains($key)) {
-                        $missedBlock = true;
-                    }
-                }
-            }
-
-            if ($missedBlock) {
-                $peer->getheaders($node->locator(true));
-            }
-        });
-
-        $peer->on('headers', function (Peer $peer, \BitWasp\Bitcoin\Networking\Messages\Headers $headers) use ($node) {
-            $vHeaders = $headers->getHeaders();
-            $cHeaders = count($vHeaders);
-            for ($i = 0; $i < $cHeaders; $i++) {
-                $node->chain()->process($vHeaders[$i]);
-            }
-
-            echo "Now have up to " . $node->chain()->currentHeight() . " headers\n";
-            if ($cHeaders > 0) {
-                $peer->getheaders($node->locator(true));
-            }
-        });
-
-        $peer->getheaders($node->locator(true));
-    },
-    function ($error) {
-        echo $error;
-        throw $error;
-    }
-);
+$node = new \BitWasp\Bitcoin\Networking\Node\Node($local, $headerchain, $manager);
+$node->start(1);
 
 $loop->run();
-
-
-
-

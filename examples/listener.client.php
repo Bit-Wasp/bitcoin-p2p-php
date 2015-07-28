@@ -11,7 +11,7 @@ $factory = new \BitWasp\Bitcoin\Networking\Factory($loop);
 $dns = $factory->getDns();
 
 $peerFactory = $factory->getPeerFactory($dns);
-$host = $peerFactory->getAddress('127.0.0.1');
+$host = $peerFactory->getAddress('127.0.0.1', 8334);
 $local = $peerFactory->getAddress('192.168.192.39', 32301);
 
 $peer = $peerFactory->getPeer();

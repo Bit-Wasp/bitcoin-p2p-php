@@ -48,10 +48,7 @@ $local = $peerFactory->getAddress('192.168.192.39', 32391);
 $manager->registerRecorder($peerFactory->getRecorder($peerRecorderFS));
 
 $node = new \BitWasp\Bitcoin\Networking\Node\Node($local, $headerchain, $manager);
-
-$locator->queryDnsSeeds()->then(function () use ($node) {
-    $node->start();
-});
+$node->start();
 
 $loop->run();
 

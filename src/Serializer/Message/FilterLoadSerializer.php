@@ -3,7 +3,7 @@
 namespace BitWasp\Bitcoin\Networking\Serializer\Message;
 
 use BitWasp\Bitcoin\Networking\Messages\FilterLoad;
-use BitWasp\Bitcoin\Networking\Serializer\BloomFilterSerializer;
+use BitWasp\Bitcoin\Serializer\Bloom\BloomFilterSerializer;
 use BitWasp\Buffertools\Parser;
 
 class FilterLoadSerializer

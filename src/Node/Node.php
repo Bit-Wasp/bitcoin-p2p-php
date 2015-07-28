@@ -116,7 +116,7 @@ class Node
         }
     }
 
-    public function startManager()
+    public function startManager($nPeers = 8)
     {
         $locator = $this->locator(true);
 
@@ -126,11 +126,11 @@ class Node
             }
         });
 
-        return $this->manager->connectToPeers(8);
+        return $this->manager->connectToPeers($nPeers);
     }
 
-    public function start()
+    public function start($nPeers = 8)
     {
-        $this->startManager();
+        $this->startManager($nPeers);
     }
 }

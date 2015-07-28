@@ -3,7 +3,7 @@
 namespace BitWasp\Bitcoin\Networking\Serializer\Message;
 
 use BitWasp\Bitcoin\Networking\Messages\MerkleBlock;
-use BitWasp\Bitcoin\Networking\Serializer\Structure\FilteredBlockSerializer;
+use BitWasp\Bitcoin\Serializer\Block\FilteredBlockSerializer;
 use BitWasp\Buffertools\Parser;
 
 class MerkleBlockSerializer

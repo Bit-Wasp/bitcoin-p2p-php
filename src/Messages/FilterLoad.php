@@ -2,9 +2,9 @@
 
 namespace BitWasp\Bitcoin\Networking\Messages;
 
-use BitWasp\Bitcoin\Networking\BloomFilter;
+use BitWasp\Bitcoin\Bloom\BloomFilter;
 use BitWasp\Bitcoin\Networking\NetworkSerializable;
-use BitWasp\Bitcoin\Networking\Serializer\BloomFilterSerializer;
+use BitWasp\Bitcoin\Serializer\Bloom\BloomFilterSerializer;
 use BitWasp\Bitcoin\Networking\Serializer\Message\FilterLoadSerializer;
 use BitWasp\Buffertools\Buffer;
 

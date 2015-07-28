@@ -3,13 +3,13 @@
 namespace BitWasp\Bitcoin\Networking\Messages;
 
 use BitWasp\Bitcoin\Block\BlockInterface;
+use BitWasp\Bitcoin\Block\FilteredBlock;
+use BitWasp\Bitcoin\Bloom\BloomFilter;
 use BitWasp\Bitcoin\Crypto\Random\Random;
 use BitWasp\Bitcoin\Network\NetworkInterface;
 use BitWasp\Bitcoin\Networking\BlockLocator;
-use BitWasp\Bitcoin\Networking\BloomFilter;
 use BitWasp\Bitcoin\Networking\NetworkMessage;
 use BitWasp\Bitcoin\Networking\Structure\AlertDetail;
-use BitWasp\Bitcoin\Networking\Structure\FilteredBlock;
 use BitWasp\Bitcoin\Networking\Structure\InventoryVector;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
 use BitWasp\Bitcoin\Networking\Serializer\NetworkMessageSerializer;
@@ -247,11 +247,12 @@ class Factory
         Buffer $reason,
         Buffer $data = null
     ) {
+        $extraData = $data ?: new Buffer();
         return new Reject(
             $message,
             $code,
             $reason,
-            $data ?: new Buffer()
+            $extraData
         );
     }
 

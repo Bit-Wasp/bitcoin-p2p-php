@@ -3,13 +3,13 @@
 namespace BitWasp\Bitcoin\Tests\Networking\Messages;
 
 use BitWasp\Bitcoin\Bitcoin;
+use BitWasp\Bitcoin\Bloom\BloomFilter;
 use BitWasp\Bitcoin\Crypto\Random\Random;
 use BitWasp\Bitcoin\Flags;
 use BitWasp\Bitcoin\Math\Math;
-use BitWasp\Bitcoin\Networking\BloomFilter;
 use BitWasp\Bitcoin\Tests\Networking\AbstractTestCase;
-use BitWasp\Buffertools\Buffer;
 use BitWasp\Bitcoin\Networking\Messages\Factory;
+use BitWasp\Buffertools\Buffer;
 use BitWasp\Buffertools\Parser;
 
 class FilterLoadTest extends AbstractTestCase

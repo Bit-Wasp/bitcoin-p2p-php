@@ -3,15 +3,15 @@
 namespace BitWasp\Bitcoin\Tests\Networking\Messages;
 
 use BitWasp\Bitcoin\Block\BlockFactory;
+use BitWasp\Bitcoin\Bloom\BloomFilter;
 use BitWasp\Bitcoin\Crypto\Random\Random;
 use BitWasp\Bitcoin\Flags;
 use BitWasp\Bitcoin\Math\Math;
 use BitWasp\Bitcoin\Network\NetworkFactory;
-use BitWasp\Bitcoin\Networking\BloomFilter;
 use BitWasp\Bitcoin\Networking\Messages\Factory;
-use BitWasp\Bitcoin\Networking\Structure\FilteredBlock;
 use BitWasp\Bitcoin\Tests\Networking\AbstractTestCase;
 use BitWasp\Buffertools\Buffer;
+use BitWasp\Buffertools\Parser;
 
 class MerkleBlockTest extends AbstractTestCase
 {
@@ -28,20 +28,13 @@ class MerkleBlockTest extends AbstractTestCase
         $filter->insertHash('63194f18be0af63f2c6bc9dc0f777cbefed3d9415c4af83f3ee3a3d669c00cb5');
 
         // Check that Merkleblock message is serialized correctly
-        $filtered = FilteredBlock::filter($block, $filter);
+        $filtered = $block->filter($filter);
         $this->assertEquals($block->getHeader(), $filtered->getHeader());
 
         $merkle = $factory->merkleblock($filtered);
-        $this->assertInstanceOf('\BitWasp\Bitcoin\Networking\Messages\MerkleBlock', $merkle);
 
-        $tree = $filtered->getPartialTree();
-        $hashes = $tree->getHashes();
-        $this->assertEquals($onlyTransaction->getTransactionId(), $hashes[0]->getHex());
-
-        /** @var Buffer[] $matches */
-        $matches = [];
-        $extracted = $tree->extractMatches($matches);
-        $this->assertEquals($block->getHeader()->getMerkleRoot(), $extracted->getHex());
-        $this->assertEquals($onlyTransaction->getTransactionId(), $matches[0]->getHex());
+        $serialized = $merkle->getNetworkMessage()->getBuffer();
+        $parsed = $factory->parse(new Parser($serialized))->getPayload();
+        $this->assertEquals($merkle, $parsed);
     }
 }

@@ -4,9 +4,8 @@ namespace BitWasp\Bitcoin\Networking\Serializer;
 
 use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Crypto\Hash;
+use BitWasp\Bitcoin\Network\NetworkInterface;
 use BitWasp\Bitcoin\Networking\Serializer\Structure\BlockLocatorSerializer;
-use BitWasp\Bitcoin\Serializer\Block\HexBlockHeaderSerializer;
-use BitWasp\Bitcoin\Serializer\Block\HexBlockSerializer;
 use BitWasp\Bitcoin\Networking\Messages\Block;
 use BitWasp\Bitcoin\Networking\Messages\FilterClear;
 use BitWasp\Bitcoin\Networking\Messages\GetAddr;
@@ -30,15 +29,18 @@ use BitWasp\Bitcoin\Networking\Serializer\Message\PongSerializer;
 use BitWasp\Bitcoin\Networking\Serializer\Message\RejectSerializer;
 use BitWasp\Bitcoin\Networking\Serializer\Message\VersionSerializer;
 use BitWasp\Bitcoin\Networking\Serializer\Structure\AlertDetailSerializer;
-use BitWasp\Bitcoin\Networking\Serializer\Structure\FilteredBlockSerializer;
 use BitWasp\Bitcoin\Networking\Serializer\Structure\InventoryVectorSerializer;
 use BitWasp\Bitcoin\Networking\Serializer\Structure\NetworkAddressSerializer;
 use BitWasp\Bitcoin\Networking\Serializer\Structure\NetworkAddressTimestampSerializer;
+use BitWasp\Bitcoin\Serializer\Bloom\BloomFilterSerializer;
+use BitWasp\Bitcoin\Serializer\Block\FilteredBlockSerializer;
+use BitWasp\Bitcoin\Serializer\Block\HexBlockHeaderSerializer;
+use BitWasp\Bitcoin\Serializer\Block\HexBlockSerializer;
+use BitWasp\Bitcoin\Serializer\Block\PartialMerkleTreeSerializer;
 use BitWasp\Bitcoin\Serializer\Transaction\TransactionSerializer;
 use BitWasp\Buffertools\Buffertools;
 use BitWasp\Buffertools\Parser;
 use BitWasp\Buffertools\Buffer;
-use BitWasp\Bitcoin\Network\NetworkInterface;
 use BitWasp\Buffertools\TemplateFactory;
 
 class NetworkMessageSerializer

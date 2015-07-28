@@ -9,5 +9,5 @@ $dns = $factory->getDns();
 $peerFactory = $factory->getPeerFactory($dns);
 $server = $peerFactory->getServer();
 $listener = $peerFactory->getListener($server);
-$listener->listen();
+$listener->listen(8334);
 $loop->run();

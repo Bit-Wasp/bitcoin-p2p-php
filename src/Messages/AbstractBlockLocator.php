@@ -2,9 +2,8 @@
 
 namespace BitWasp\Bitcoin\Networking\Messages;
 
-use BitWasp\Bitcoin\Networking\BlockLocator;
+use BitWasp\Bitcoin\Chain\BlockLocator;
 use BitWasp\Bitcoin\Networking\NetworkSerializable;
-use BitWasp\Buffertools\Buffer;
 
 abstract class AbstractBlockLocator extends NetworkSerializable
 {

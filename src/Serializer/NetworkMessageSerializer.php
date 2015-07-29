@@ -143,11 +143,11 @@ class NetworkMessageSerializer
                 $payload = new Tx($serializer->parse($buffer));
                 break;
             case 'block':
-                $serializer = new HexBlockSerializer($math, new HexBlockHeaderSerializer(), new TransactionSerializer());
+                $serializer = new BlockSerializer($math, new BlockHeaderSerializer(), new TransactionSerializer());
                 $payload = new Block($serializer->parse($buffer));
                 break;
             case 'headers':
-                $serializer = new HeadersSerializer(new HexBlockHeaderSerializer());
+                $serializer = new HeadersSerializer(new BlockHeaderSerializer());
                 $payload = $serializer->parse($buffer);
                 break;
             case 'getaddr':
@@ -168,7 +168,7 @@ class NetworkMessageSerializer
                 $payload = new FilterClear();
                 break;
             case 'merkleblock':
-                $serializer = new MerkleBlockSerializer(new FilteredBlockSerializer(new HexBlockHeaderSerializer(), new PartialMerkleTreeSerializer()));
+                $serializer = new MerkleBlockSerializer(new FilteredBlockSerializer(new BlockHeaderSerializer(), new PartialMerkleTreeSerializer()));
                 $payload = $serializer->parse($buffer);
                 break;
             case 'ping':

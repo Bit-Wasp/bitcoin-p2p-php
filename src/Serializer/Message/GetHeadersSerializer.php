@@ -3,8 +3,7 @@
 namespace BitWasp\Bitcoin\Networking\Serializer\Message;
 
 use BitWasp\Bitcoin\Networking\Messages\GetHeaders;
-use BitWasp\Bitcoin\Networking\Serializer\Structure\BlockLocatorSerializer;
-use BitWasp\Buffertools\Buffer;
+use BitWasp\Bitcoin\Serializer\Chain\BlockLocatorSerializer;
 use BitWasp\Buffertools\Buffertools;
 use BitWasp\Buffertools\Parser;
 use BitWasp\Buffertools\TemplateFactory;

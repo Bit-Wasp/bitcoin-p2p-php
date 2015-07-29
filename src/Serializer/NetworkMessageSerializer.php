@@ -5,7 +5,6 @@ namespace BitWasp\Bitcoin\Networking\Serializer;
 use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Crypto\Hash;
 use BitWasp\Bitcoin\Network\NetworkInterface;
-use BitWasp\Bitcoin\Networking\Serializer\Structure\BlockLocatorSerializer;
 use BitWasp\Bitcoin\Networking\Messages\Block;
 use BitWasp\Bitcoin\Networking\Messages\FilterClear;
 use BitWasp\Bitcoin\Networking\Messages\GetAddr;
@@ -34,9 +33,10 @@ use BitWasp\Bitcoin\Networking\Serializer\Structure\NetworkAddressSerializer;
 use BitWasp\Bitcoin\Networking\Serializer\Structure\NetworkAddressTimestampSerializer;
 use BitWasp\Bitcoin\Serializer\Bloom\BloomFilterSerializer;
 use BitWasp\Bitcoin\Serializer\Block\FilteredBlockSerializer;
-use BitWasp\Bitcoin\Serializer\Block\HexBlockHeaderSerializer;
-use BitWasp\Bitcoin\Serializer\Block\HexBlockSerializer;
+use BitWasp\Bitcoin\Serializer\Block\BlockHeaderSerializer;
+use BitWasp\Bitcoin\Serializer\Block\BlockSerializer;
 use BitWasp\Bitcoin\Serializer\Block\PartialMerkleTreeSerializer;
+use BitWasp\Bitcoin\Serializer\Chain\BlockLocatorSerializer;
 use BitWasp\Bitcoin\Serializer\Transaction\TransactionSerializer;
 use BitWasp\Buffertools\Buffertools;
 use BitWasp\Buffertools\Parser;
@@ -143,11 +143,11 @@ class NetworkMessageSerializer
                 $payload = new Tx($serializer->parse($buffer));
                 break;
             case 'block':
-                $serializer = new HexBlockSerializer($math, new HexBlockHeaderSerializer(), new TransactionSerializer());
+                $serializer = new BlockSerializer($math, new BlockHeaderSerializer(), new TransactionSerializer());
                 $payload = new Block($serializer->parse($buffer));
                 break;
             case 'headers':
-                $serializer = new HeadersSerializer(new HexBlockHeaderSerializer());
+                $serializer = new HeadersSerializer(new BlockHeaderSerializer());
                 $payload = $serializer->parse($buffer);
                 break;
             case 'getaddr':
@@ -168,7 +168,7 @@ class NetworkMessageSerializer
                 $payload = new FilterClear();
                 break;
             case 'merkleblock':
-                $serializer = new MerkleBlockSerializer(new FilteredBlockSerializer(new HexBlockHeaderSerializer(), new PartialMerkleTreeSerializer()));
+                $serializer = new MerkleBlockSerializer(new FilteredBlockSerializer(new BlockHeaderSerializer(), new PartialMerkleTreeSerializer()));
                 $payload = $serializer->parse($buffer);
                 break;
             case 'ping':

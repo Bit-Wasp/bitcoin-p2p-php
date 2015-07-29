@@ -4,7 +4,7 @@ namespace BitWasp\Bitcoin\Networking\Messages;
 
 use BitWasp\Bitcoin\Block\BlockHeaderInterface;
 use BitWasp\Bitcoin\Networking\NetworkSerializable;
-use BitWasp\Bitcoin\Serializer\Block\HexBlockHeaderSerializer;
+use BitWasp\Bitcoin\Serializer\Block\BlockHeaderSerializer;
 use BitWasp\Bitcoin\Networking\Serializer\Message\HeadersSerializer;
 
 class Headers extends NetworkSerializable implements \Countable
@@ -76,6 +76,6 @@ class Headers extends NetworkSerializable implements \Countable
      */
     public function getBuffer()
     {
-        return (new HeadersSerializer(new HexBlockHeaderSerializer()))->serialize($this);
+        return (new HeadersSerializer(new BlockHeaderSerializer()))->serialize($this);
     }
 }

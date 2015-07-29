@@ -3,7 +3,7 @@
 namespace BitWasp\Bitcoin\Networking\Serializer\Message;
 
 use BitWasp\Bitcoin\Networking\Messages\Headers;
-use BitWasp\Bitcoin\Serializer\Block\HexBlockHeaderSerializer;
+use BitWasp\Bitcoin\Serializer\Block\BlockHeaderSerializer;
 use BitWasp\Buffertools\Parser;
 use BitWasp\Buffertools\TemplateFactory;
 use phpDocumentor\Transformer\Template;
@@ -11,14 +11,14 @@ use phpDocumentor\Transformer\Template;
 class HeadersSerializer
 {
     /**
-     * @var HexBlockHeaderSerializer
+     * @var BlockHeaderSerializer
      */
     private $header;
 
     /**
-     * @param HexBlockHeaderSerializer $header
+     * @param BlockHeaderSerializer $header
      */
-    public function __construct(HexBlockHeaderSerializer $header)
+    public function __construct(BlockHeaderSerializer $header)
     {
         $this->header = $header;
     }

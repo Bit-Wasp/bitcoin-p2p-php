@@ -10,7 +10,6 @@ use BitWasp\Bitcoin\Math\Math;
 use BitWasp\Bitcoin\Network\NetworkFactory;
 use BitWasp\Bitcoin\Networking\Messages\Factory;
 use BitWasp\Bitcoin\Tests\Networking\AbstractTestCase;
-use BitWasp\Buffertools\Buffer;
 use BitWasp\Buffertools\Parser;
 
 class MerkleBlockTest extends AbstractTestCase

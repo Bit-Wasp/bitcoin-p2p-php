@@ -3,7 +3,7 @@
 namespace BitWasp\Bitcoin\Networking\Messages;
 
 use BitWasp\Bitcoin\Networking\Serializer\Message\GetHeadersSerializer;
-use BitWasp\Bitcoin\Networking\Serializer\Structure\BlockLocatorSerializer;
+use BitWasp\Bitcoin\Serializer\Chain\BlockLocatorSerializer;
 
 class GetHeaders extends AbstractBlockLocator
 {

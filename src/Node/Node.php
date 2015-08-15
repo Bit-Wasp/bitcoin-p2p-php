@@ -2,7 +2,7 @@
 
 namespace BitWasp\Bitcoin\Networking\Node;
 
-use BitWasp\Bitcoin\Networking\BlockLocator;
+use BitWasp\Bitcoin\Chain\BlockLocator;
 use BitWasp\Bitcoin\Chain\Headerchain;
 use BitWasp\Bitcoin\Chain\Blockchain;
 use BitWasp\Bitcoin\Networking\Messages\Headers;

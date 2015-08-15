@@ -4,8 +4,8 @@ namespace BitWasp\Bitcoin\Networking\Messages;
 
 use BitWasp\Bitcoin\Block\FilteredBlock;
 use BitWasp\Bitcoin\Networking\NetworkSerializable;
-use BitWasp\Bitcoin\Serializer\Block\BlockHeaderSerializer;
 use BitWasp\Bitcoin\Networking\Serializer\Message\MerkleBlockSerializer;
+use BitWasp\Bitcoin\Serializer\Block\BlockHeaderSerializer;
 use BitWasp\Bitcoin\Serializer\Block\PartialMerkleTreeSerializer;
 use BitWasp\Bitcoin\Serializer\Block\FilteredBlockSerializer;
 

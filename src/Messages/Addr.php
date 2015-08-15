@@ -6,7 +6,6 @@ use BitWasp\Bitcoin\Networking\Serializer\Message\AddrSerializer;
 use BitWasp\Bitcoin\Networking\Serializer\Structure\NetworkAddressTimestampSerializer;
 use BitWasp\Bitcoin\Networking\NetworkSerializable;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressTimestamp;
-use InvalidArgumentException;
 
 class Addr extends NetworkSerializable implements \Countable
 {
@@ -52,11 +51,12 @@ class Addr extends NetworkSerializable implements \Countable
     /**
      * @param int $index
      * @return NetworkAddressTimestamp
+     * @throws \InvalidArgumentException
      */
     public function getAddress($index)
     {
         if (false === isset($this->addresses[$index])) {
-            throw new InvalidArgumentException('No address exists at this index');
+            throw new \InvalidArgumentException('No address exists at this index');
         }
 
         return $this->addresses[$index];

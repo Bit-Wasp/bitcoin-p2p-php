@@ -247,12 +247,15 @@ class Factory
         Buffer $reason,
         Buffer $data = null
     ) {
-        $extraData = $data ?: new Buffer();
+        if (null === $data) {
+            $data = new Buffer();
+        }
+
         return new Reject(
             $message,
             $code,
             $reason,
-            $extraData
+            $data
         );
     }
 

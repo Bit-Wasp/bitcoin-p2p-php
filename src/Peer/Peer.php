@@ -5,7 +5,7 @@ namespace BitWasp\Bitcoin\Networking\Peer;
 use BitWasp\Bitcoin\Block\BlockInterface;
 use BitWasp\Bitcoin\Block\FilteredBlock;
 use BitWasp\Bitcoin\Bloom\BloomFilter;
-use BitWasp\Bitcoin\Networking\BlockLocator;
+use BitWasp\Bitcoin\Chain\BlockLocator;
 use BitWasp\Bitcoin\Networking\Messages\Version;
 use BitWasp\Bitcoin\Networking\Messages\FilterAdd;
 use BitWasp\Bitcoin\Networking\Messages\FilterLoad;

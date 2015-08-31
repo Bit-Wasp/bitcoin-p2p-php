@@ -25,7 +25,7 @@
     "php": ">=5.4.0",
     "ext-gmp": "*",
     "ext-json": "*",
-    "bitwasp/bitcoin": "0.0.9",
+    "bitwasp/bitcoin": "0.0.10",
     "symfony/console": "~2.6",
     "react/socket-client": "~0.4",
     "react/socket": "~0.4",

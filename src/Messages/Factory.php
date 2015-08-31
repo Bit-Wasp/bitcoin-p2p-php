@@ -14,7 +14,7 @@ use BitWasp\Bitcoin\Networking\Structure\InventoryVector;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
 use BitWasp\Bitcoin\Networking\Serializer\NetworkMessageSerializer;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressTimestamp;
-use BitWasp\Bitcoin\Signature\SignatureInterface;
+use BitWasp\Bitcoin\Crypto\EcAdapter\Signature\SignatureInterface;
 use BitWasp\Bitcoin\Transaction\TransactionInterface;
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Buffertools\Parser;

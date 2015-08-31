@@ -6,7 +6,7 @@ use BitWasp\Bitcoin\Networking\NetworkSerializable;
 use BitWasp\Bitcoin\Networking\Structure\AlertDetail;
 use BitWasp\Bitcoin\Networking\Serializer\Message\AlertSerializer;
 use BitWasp\Bitcoin\Networking\Serializer\Structure\AlertDetailSerializer;
-use BitWasp\Bitcoin\Signature\SignatureInterface;
+use BitWasp\Bitcoin\Crypto\EcAdapter\Signature\SignatureInterface;
 
 class Alert extends NetworkSerializable
 {

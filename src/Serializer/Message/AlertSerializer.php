@@ -58,7 +58,7 @@ class AlertSerializer
 
             // Parse using native EcAdapter
             /** @var \BitWasp\Bitcoin\Crypto\EcAdapter\Serializer\Signature\DerSignatureSerializerInterface $serializer */
-            $serializer = EcSerializer::getSerializer($adapter,'BitWasp\Bitcoin\Crypto\EcAdapter\Serializer\Signature\DerSignatureSerializerInterface');
+            $serializer = EcSerializer::getSerializer($adapter, 'BitWasp\Bitcoin\Crypto\EcAdapter\Serializer\Signature\DerSignatureSerializerInterface');
             $sig = $serializer->parse($serialized);
         } else {
             $sig = new \BitWasp\Bitcoin\Crypto\EcAdapter\Impl\PhpEcc\Signature\Signature($adapter, $sigR, $sigS);

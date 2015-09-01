@@ -7,8 +7,6 @@ use BitWasp\Bitcoin\Block\FilteredBlock;
 use BitWasp\Bitcoin\Bloom\BloomFilter;
 use BitWasp\Bitcoin\Chain\BlockLocator;
 use BitWasp\Bitcoin\Networking\Messages\Version;
-use BitWasp\Bitcoin\Networking\Messages\FilterAdd;
-use BitWasp\Bitcoin\Networking\Messages\FilterLoad;
 use BitWasp\Bitcoin\Networking\Messages\Ping;
 use BitWasp\Bitcoin\Networking\NetworkMessage;
 use BitWasp\Bitcoin\Networking\NetworkSerializable;
@@ -16,8 +14,7 @@ use BitWasp\Bitcoin\Networking\Structure\AlertDetail;
 use BitWasp\Bitcoin\Networking\Structure\InventoryVector;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressTimestamp;
-use BitWasp\Bitcoin\Script\Interpreter\InterpreterInterface;
-use BitWasp\Bitcoin\Signature\SignatureInterface;
+use BitWasp\Bitcoin\Crypto\EcAdapter\Signature\SignatureInterface;
 use BitWasp\Bitcoin\Transaction\TransactionInterface;
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Buffertools\Parser;
@@ -110,6 +107,8 @@ class Peer extends EventEmitter
      */
     private $relayToPeer = false;
 
+    private $downloadPeer = false;
+
     /**
      * @param NetworkAddressInterface $local
      * @param \BitWasp\Bitcoin\Networking\Messages\Factory $msgs
@@ -124,6 +123,26 @@ class Peer extends EventEmitter
         $this->msgs = $msgs;
         $this->loop = $loop;
         $this->lastPongTime = time();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDownloadPeer()
+    {
+        return $this->downloadPeer;
+    }
+
+    /**
+     * @param $flag
+     */
+    public function setDownloadPeerFlag($flag)
+    {
+        if (!is_bool($flag)) {
+            throw new \InvalidArgumentException('Flag must be a bool');
+        }
+
+        $this->downloadPeer = $flag;
     }
 
     /**
@@ -243,65 +262,16 @@ class Peer extends EventEmitter
             $this->emit('data');
         });
 
+        $this->stream->on('close', function () {
+            $this->close();
+        });
+
         $this->on('data', function () {
             $this->onData();
         });
 
         $this->on('msg', function (Peer $peer, NetworkMessage $msg) {
-            if ($this->exchangedVersion) {
-                echo " [ received " . $msg->getCommand() . " - " . $this->getRemoteAddr()->getIp() . "]\n";
-            } else {
-                echo " [ received " . $msg->getCommand() . "] \n";
-            }
             $this->emit($msg->getCommand(), [$peer, $msg->getPayload()]);
-        });
-
-        $this->on('close', function () {
-            echo "Connection was closed\n";
-        });
-
-        $this->on('peerdisconnect', function () {
-            echo 'peer disconnected';
-        });
-
-        $this->on('send', function (NetworkMessage $msg) {
-            echo " [ sending " . $msg->getCommand() . " - " . $this->getRemoteAddr()->getIp() . "]\n";
-        });
-
-        $this->on('ping', function (Peer $peer, Ping $ping) {
-            $peer->pong($ping);
-        });
-
-        $this->on('filterload', function (Peer $peer, FilterLoad $filterLoad) {
-            $filter = $filterLoad->getFilter();
-            if (false === $filter->hasAcceptableSize()) {
-                $this->close();
-                return;
-            }
-            $this->filter = $filter;
-            $this->relayToPeer = true;
-        });
-
-        $this->on('filteradd', function (Peer $peer, FilterAdd $filterAdd) {
-            if (!$this->hasFilter()) {
-                // misbehaving
-                $this->close();
-                return;
-            }
-
-            $data = $filterAdd->getData();
-            if ($data->getSize() > InterpreterInterface::MAX_SCRIPT_ELEMENT_SIZE) {
-                // misbehaving
-                $this->close();
-                return;
-            }
-
-            $this->filter->insertData($data);
-        });
-
-        $this->on('filterclear', function () {
-            $this->filter = null;
-            $this->relayToPeer = true;
         });
 
         return $this;
@@ -319,29 +289,6 @@ class Peer extends EventEmitter
                     $this->intentionalClose();
                 }
                 $timer->cancel();
-            });
-        });
-
-        return $this;
-    }
-
-    /**
-     * @return $this
-     */
-    public function sendPings()
-    {
-        $this->on('ready', function () {
-            $this->loop->addPeriodicTimer($this->pingInterval, function (\React\EventLoop\Timer\Timer $timer) {
-                if (!$this->stream->isReadable()) {
-                    $timer->cancel();
-                }
-                $this->ping();
-                if ($this->lastPongTime > time() - ($this->pingInterval + $this->pingInterval * 0.20)) {
-                    $this->missedPings++;
-                }
-                if ($this->missedPings > $this->maxMissedPings) {
-                    $this->close();
-                }
             });
         });
 

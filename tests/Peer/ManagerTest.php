@@ -15,9 +15,9 @@ class ManagerTest extends AbstractTestCase
         $loop = new \React\EventLoop\StreamSelectLoop();
         $factory = new \BitWasp\Bitcoin\Networking\Factory($loop);
         $peerFactory = $factory->getPeerFactory($factory->getDns());
-
+        $handler = $peerFactory->getPacketHandler();
         $locator = $peerFactory->getLocator();
-        $manager = $peerFactory->getManager($locator);
+        $manager = $peerFactory->getManager($locator, $handler);
 
         $deferred = new Deferred();
         $locator->queryDnsSeeds()->then(function () use ($manager, $deferred) {
@@ -50,7 +50,8 @@ class ManagerTest extends AbstractTestCase
         $peerFactory = $factory->getPeerFactory($factory->getDns());
         $connector = $peerFactory->getConnector();
         $locator = $peerFactory->getLocator($connector);
-        $manager = $peerFactory->getManager($locator);
+        $handler = $peerFactory->getPacketHandler();
+        $manager = $peerFactory->getManager($locator, $handler);
 
         $serverAddr = $peerFactory->getAddress('127.0.0.1', 31234);
 
@@ -100,7 +101,8 @@ class ManagerTest extends AbstractTestCase
 
         $peerFactory = $factory->getPeerFactory($factory->getDns());
         $locator = $peerFactory->getLocator();
-        $manager = $peerFactory->getManager($locator, true);
+        $handler = $peerFactory->getPacketHandler();
+        $manager = $peerFactory->getManager($locator, $handler, true);
 
         $deferred = new Deferred();
 

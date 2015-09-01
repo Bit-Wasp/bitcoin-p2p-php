@@ -111,13 +111,22 @@ class Factory
     }
 
     /**
+     * @return PacketHandler
+     */
+    public function getPacketHandler()
+    {
+        return new PacketHandler();
+    }
+
+    /**
      * @param Locator $locator
+     * @param PacketHandler $handler
      * @param bool|false $shouldRelay
      * @return Manager
      */
-    public function getManager(Locator $locator, $shouldRelay = false)
+    public function getManager(Locator $locator, PacketHandler $handler, $shouldRelay = false)
     {
-        return new Manager($this, $locator, $shouldRelay);
+        return new Manager($this, $locator, $handler, $shouldRelay);
     }
 
     /**

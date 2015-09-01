@@ -29,6 +29,11 @@ class Manager extends EventEmitter
     private $outPeers = [];
 
     /**
+     * @var PacketHandler
+     */
+    private $handler;
+
+    /**
      * @var Peer[]
      */
     private $inPeers = [];
@@ -51,13 +56,23 @@ class Manager extends EventEmitter
     /**
      * @param Factory $factory
      * @param Locator $locator
+     * @param PacketHandler $handler
      * @param bool|false $requestRelay
      */
-    public function __construct(Factory $factory, Locator $locator, $requestRelay = false)
+    public function __construct(Factory $factory, Locator $locator, PacketHandler $handler, $requestRelay = false)
     {
         $this->peerFactory = $factory;
         $this->locator = $locator;
         $this->requestRelay = $requestRelay;
+        $this->handler = $handler;
+    }
+
+    /**
+     * @return PacketHandler
+     */
+    public function getPacketHandler()
+    {
+        return $this->handler;
     }
 
     /**
@@ -102,6 +117,7 @@ class Manager extends EventEmitter
         });
 
         $this->outPeers[$next] = $peer;
+        $this->handler->emit('outbound', [$peer]);
         $this->emit('outbound', [$peer]);
         return $peer;
     }
@@ -176,7 +192,9 @@ class Manager extends EventEmitter
         $peer->on('close', function () use ($next) {
             unset($this->inPeers[$next]);
         });
+        $this->handler->emit('outbound', [$peer]);
         $this->emit('inbound', [$peer]);
+
     }
 
     /**

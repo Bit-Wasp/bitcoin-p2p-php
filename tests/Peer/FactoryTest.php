@@ -17,6 +17,7 @@ class FactoryTest extends AbstractTestCase
     private $locatorType = '\BitWasp\Bitcoin\Networking\Peer\Locator';
     private $listenerType = '\BitWasp\Bitcoin\Networking\Peer\Listener';
     private $managerType = '\BitWasp\Bitcoin\Networking\Peer\Manager';
+    private $handlerType = '\BitWasp\Bitcoin\Networking\Peer\PacketHandler';
 
     public function testMethods()
     {
@@ -46,7 +47,10 @@ class FactoryTest extends AbstractTestCase
         $listener = $factory->getListener($server);
         $this->assertInstanceOf($this->listenerType, $listener);
 
-        $manager = $factory->getManager($locator);
+        $handler = $factory->getPacketHandler();
+        $this->assertInstanceOf($this->handlerType, $handler);
+
+        $manager = $factory->getManager($locator, $handler);
         $this->assertInstanceOf($this->managerType, $manager);
 
     }

@@ -38,10 +38,9 @@ class Node
      * @param $chain
      * @param Manager $manager
      */
-    public function __construct(NetworkAddress $local, $chain, Manager $manager)
+    public function __construct(NetworkAddress $local, Manager $manager)
     {
         $this->local = $local;
-        $this->chain = $chain;
         $this->manager = $manager;
     }
 
@@ -105,32 +104,21 @@ class Node
 
     public function onHeaders(Peer $peer, Headers $headers)
     {
-        $vHeaders = $headers->getHeaders();
-
-        for ($i = 0, $nHeaders = count($vHeaders); $i < $nHeaders; $i++) {
-            $this->chain()->process($vHeaders[$i]);
-        }
-
-        if ($nHeaders == 2000) {
-            $peer->getheaders($this->locator(true));
-        }
-    }
-
-    public function startManager($nPeers = 8)
-    {
-        $locator = $this->locator(true);
-
-        $this->manager->on('outbound', function (Peer $peer) use ($locator) {
-            if (!$this->downloading) {
-                $this->inviteToSync($peer, $locator);
+        if ($peer->isDownloadPeer()) {
+            $vHeaders = $headers->getHeaders();
+            for ($i = 0, $nHeaders = count($vHeaders); $i < $nHeaders; $i++) {
+                $this->chain()->process($vHeaders[$i]);
             }
-        });
 
-        return $this->manager->connectToPeers($nPeers);
+            if ($nHeaders == 2000) {
+                $peer->getheaders($this->locator(true));
+            }
+        }
+
     }
 
     public function start($nPeers = 8)
     {
-        $this->startManager($nPeers);
+        return $this->manager->connectToPeers($nPeers);
     }
 }

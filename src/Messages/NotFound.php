@@ -3,7 +3,7 @@
 namespace BitWasp\Bitcoin\Networking\Messages;
 
 use BitWasp\Bitcoin\Networking\Serializer\Message\NotFoundSerializer;
-use BitWasp\Bitcoin\Networking\Serializer\Structure\InventoryVectorSerializer;
+use BitWasp\Bitcoin\Networking\Serializer\Structure\InventorySerializer;
 
 class NotFound extends AbstractInventory
 {
@@ -21,6 +21,6 @@ class NotFound extends AbstractInventory
      */
     public function getBuffer()
     {
-        return (new NotFoundSerializer(new InventoryVectorSerializer()))->serialize($this);
+        return (new NotFoundSerializer(new InventorySerializer()))->serialize($this);
     }
 }

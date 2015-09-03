@@ -28,7 +28,7 @@ use BitWasp\Bitcoin\Networking\Serializer\Message\PongSerializer;
 use BitWasp\Bitcoin\Networking\Serializer\Message\RejectSerializer;
 use BitWasp\Bitcoin\Networking\Serializer\Message\VersionSerializer;
 use BitWasp\Bitcoin\Networking\Serializer\Structure\AlertDetailSerializer;
-use BitWasp\Bitcoin\Networking\Serializer\Structure\InventoryVectorSerializer;
+use BitWasp\Bitcoin\Networking\Serializer\Structure\InventorySerializer;
 use BitWasp\Bitcoin\Networking\Serializer\Structure\NetworkAddressSerializer;
 use BitWasp\Bitcoin\Networking\Serializer\Structure\NetworkAddressTimestampSerializer;
 use BitWasp\Bitcoin\Serializer\Bloom\BloomFilterSerializer;
@@ -81,16 +81,11 @@ class NetworkMessageSerializer
     {
         $math = Bitcoin::getMath();
 
-        $parsed = $this->getHeaderTemplate()->parse($parser);
-
+        list ($netBytes, $command, $payloadSize, $checksum) = $this->getHeaderTemplate()->parse($parser);
         /** @var Buffer $netBytes */
-        $netBytes = $parsed[0];
         /** @var Buffer $command */
-        $command = $parsed[1];
         /** @var int|string $payloadSize */
-        $payloadSize = $parsed[2];
         /** @var Buffer $checksum */
-        $checksum = $parsed[3];
 
         if ($netBytes->getHex() !== $this->network->getNetMagicBytes()) {
             throw new \RuntimeException('Invalid magic bytes for network');
@@ -119,15 +114,15 @@ class NetworkMessageSerializer
                 $payload = $serializer->parse($buffer);
                 break;
             case 'inv':
-                $serializer = new InvSerializer(new InventoryVectorSerializer());
+                $serializer = new InvSerializer(new InventorySerializer());
                 $payload = $serializer->parse($buffer);
                 break;
             case 'getdata':
-                $serializer = new GetDataSerializer(new InventoryVectorSerializer());
+                $serializer = new GetDataSerializer(new InventorySerializer());
                 $payload = $serializer->parse($buffer);
                 break;
             case 'notfound':
-                $serializer = new NotFoundSerializer(new InventoryVectorSerializer());
+                $serializer = new NotFoundSerializer(new InventorySerializer());
                 $payload = $serializer->parse($buffer);
                 break;
             case 'getblocks':

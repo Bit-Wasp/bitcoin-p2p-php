@@ -2,14 +2,14 @@
 
 namespace BitWasp\Bitcoin\Networking\Serializer\Structure;
 
-use BitWasp\Bitcoin\Networking\Structure\InventoryVector;
+use BitWasp\Bitcoin\Networking\Structure\Inventory;
 use BitWasp\Buffertools\Parser;
 use BitWasp\Buffertools\TemplateFactory;
 
-class InventoryVectorSerializer
+class InventorySerializer
 {
     /**
-     * @return mixed
+     * @return \BitWasp\Buffertools\Template
      */
     public function getTemplate()
     {
@@ -20,10 +20,10 @@ class InventoryVectorSerializer
     }
 
     /**
-     * @param InventoryVector $inv
-     * @return mixed
+     * @param Inventory $inv
+     * @return \BitWasp\Buffertools\Buffer
      */
-    public function serialize(InventoryVector $inv)
+    public function serialize(Inventory $inv)
     {
         return $this->getTemplate()->write([
             $inv->getType(),
@@ -33,20 +33,20 @@ class InventoryVectorSerializer
 
     /**
      * @param Parser $parser
-     * @return mixed
+     * @return Inventory
      */
     public function fromParser(Parser & $parser)
     {
         list($type, $hash) = $this->getTemplate()->parse($parser);
-        return new InventoryVector(
+        return new Inventory(
             $type,
             $hash
         );
     }
 
     /**
-     * @param $data
-     * @return mixed
+     * @param string|\BitWasp\Buffertools\Buffer $data
+     * @return Inventory
      */
     public function parse($data)
     {

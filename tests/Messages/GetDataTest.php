@@ -8,7 +8,7 @@ use BitWasp\Bitcoin\Networking\Messages\Factory;
 use BitWasp\Bitcoin\Networking\Serializer\NetworkMessageSerializer;
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Bitcoin\Networking\Messages\GetData;
-use BitWasp\Bitcoin\Networking\Structure\InventoryVector;
+use BitWasp\Bitcoin\Networking\Structure\Inventory;
 use BitWasp\Bitcoin\Tests\Networking\AbstractTestCase;
 
 class GetDataTest extends AbstractTestCase
@@ -25,8 +25,8 @@ class GetDataTest extends AbstractTestCase
 
         $data1 = Buffer::hex('4141414141414141414141414141414141414141414141414141414141414141');
         $data2 = Buffer::hex('6541414141414141414141414141414141414141414141414141414141414142');
-        $inv1 = new InventoryVector(InventoryVector::MSG_TX, $data1);
-        $inv2 = new InventoryVector(InventoryVector::MSG_TX, $data2);
+        $inv1 = new Inventory(Inventory::MSG_TX, $data1);
+        $inv2 = new Inventory(Inventory::MSG_TX, $data2);
         $get = new GetData([$inv1, $inv2]);
         $this->assertEquals(2, count($get));
     }
@@ -36,8 +36,8 @@ class GetDataTest extends AbstractTestCase
         $data1 = Buffer::hex('4141414141414141414141414141414141414141414141414141414141414141');
         $data2 = Buffer::hex('6541414141414141414141414141414141414141414141414141414141414142');
         $array = [
-            new InventoryVector(InventoryVector::MSG_TX, $data1),
-            new InventoryVector(InventoryVector::MSG_TX, $data2)
+            new Inventory(Inventory::MSG_TX, $data1),
+            new Inventory(Inventory::MSG_TX, $data2)
         ];
 
         $get = new GetData($array);
@@ -63,8 +63,8 @@ class GetDataTest extends AbstractTestCase
         $parser = new NetworkMessageSerializer($net);
         $factory = new Factory($net, new Random());
         $getdata = $factory->getdata([
-            new InventoryVector(
-                InventoryVector::MSG_BLOCK,
+            new Inventory(
+                Inventory::MSG_BLOCK,
                 Buffer::hex('4141414141414141414141414141414141414141414141414141414141414141')
             )
         ]);

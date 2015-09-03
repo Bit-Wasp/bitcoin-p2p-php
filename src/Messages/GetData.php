@@ -3,7 +3,7 @@
 namespace BitWasp\Bitcoin\Networking\Messages;
 
 use BitWasp\Bitcoin\Networking\Serializer\Message\GetDataSerializer;
-use BitWasp\Bitcoin\Networking\Serializer\Structure\InventoryVectorSerializer;
+use BitWasp\Bitcoin\Networking\Serializer\Structure\InventorySerializer;
 
 class GetData extends AbstractInventory
 {
@@ -21,6 +21,6 @@ class GetData extends AbstractInventory
      */
     public function getBuffer()
     {
-        return (new GetDataSerializer(new InventoryVectorSerializer()))->serialize($this);
+        return (new GetDataSerializer(new InventorySerializer()))->serialize($this);
     }
 }

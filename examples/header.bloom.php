@@ -10,7 +10,7 @@ use BitWasp\Bitcoin\Chain\BlockIndex;
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Bitcoin\Networking\Peer\Peer;
 use BitWasp\Bitcoin\Flags;
-use BitWasp\Bitcoin\Networking\Structure\InventoryVector;
+use BitWasp\Bitcoin\Networking\Structure\Inventory;
 
 function decodeInv(Peer $peer, \BitWasp\Bitcoin\Networking\Messages\Inv $inv)
 {
@@ -71,8 +71,8 @@ $manager->on('outbound', function (Peer $peer) use (&$node, $filter) {
             if ($item->isBlock()) {
                 $key = $item->getHash()->getHex();
                 if (!$node->chain()->index()->height()->contains($key)) {
-                    $filtered[] = new InventoryVector(
-                        InventoryVector::MSG_FILTERED_BLOCK,
+                    $filtered[] = new Inventory(
+                        Inventory::MSG_FILTERED_BLOCK,
                         $item->getHash()
                     );
                 }

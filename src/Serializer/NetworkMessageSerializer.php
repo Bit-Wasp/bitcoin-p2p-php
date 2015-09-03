@@ -28,7 +28,7 @@ use BitWasp\Bitcoin\Networking\Serializer\Message\PongSerializer;
 use BitWasp\Bitcoin\Networking\Serializer\Message\RejectSerializer;
 use BitWasp\Bitcoin\Networking\Serializer\Message\VersionSerializer;
 use BitWasp\Bitcoin\Networking\Serializer\Structure\AlertDetailSerializer;
-use BitWasp\Bitcoin\Networking\Serializer\Structure\InventoryVectorSerializer;
+use BitWasp\Bitcoin\Networking\Serializer\Structure\InventorySerializer;
 use BitWasp\Bitcoin\Networking\Serializer\Structure\NetworkAddressSerializer;
 use BitWasp\Bitcoin\Networking\Serializer\Structure\NetworkAddressTimestampSerializer;
 use BitWasp\Bitcoin\Serializer\Bloom\BloomFilterSerializer;
@@ -51,11 +51,128 @@ class NetworkMessageSerializer
     private $network;
 
     /**
+     * @var TransactionSerializer
+     */
+    private $txSerializer;
+
+    /**
+     * @var BlockHeaderSerializer
+     */
+    private $headerSerializer;
+
+    /**
+     * @var BlockSerializer
+     */
+    private $blockSerializer;
+
+    /**
+     * @var FilteredBlockSerializer
+     */
+    private $filteredBlockSerializer;
+
+    /**
+     * @var HeadersSerializer
+     */
+    private $headersSerializer;
+
+    /**
+     * @var FilterAddSerializer
+     */
+    private $filterAddSerializer;
+
+    /**
+     * @var FilterLoadSerializer
+     */
+    private $filterLoadSerializer;
+
+    /**
+     * @var MerkleBlockSerializer
+     */
+    private $merkleBlockSerializer;
+
+    /**
+     * @var PingSerializer
+     */
+    private $pingSerializer;
+
+    /**
+     * @var AlertSerializer
+     */
+    private $alertSerializer;
+
+    /**
+     * @var InventorySerializer
+     */
+    private $inventorySerializer;
+
+    /**
+     * @var NotFoundSerializer
+     */
+    private $notFoundSerializer;
+
+    /**
+     * @var RejectSerializer
+     */
+    private $rejectSerializer;
+
+    /**
+     * @var BlockLocatorSerializer
+     */
+    private $blockLocatorSerializer;
+
+    /**
+     * @var GetBlocksSerializer
+     */
+    private $getBlocksSerializer;
+
+    /**
+     * @var GetHeadersSerializer
+     */
+    private $getHeadersSerializer;
+
+    /**
+     * @var PongSerializer
+     */
+    private $pongSerializer;
+
+    /**
+     * @var VersionSerializer
+     */
+    private $versionSerializer;
+
+    /**
+     * @var AddrSerializer
+     */
+    private $addrSerializer;
+
+    /**
      * @param NetworkInterface $network
      */
     public function __construct(NetworkInterface $network)
     {
+        $this->math = Bitcoin::getMath();
         $this->network = $network;
+        $this->txSerializer = new TransactionSerializer();
+        $this->headerSerializer = new BlockHeaderSerializer();
+        $this->blockSerializer = new BlockSerializer($this->math, $this->headerSerializer, $this->txSerializer);
+        $this->filteredBlockSerializer = new FilteredBlockSerializer($this->headerSerializer, new PartialMerkleTreeSerializer());
+        $this->headersSerializer = new HeadersSerializer($this->headerSerializer);
+        $this->filterAddSerializer = new FilterAddSerializer();
+        $this->filterLoadSerializer = new FilterLoadSerializer(new BloomFilterSerializer());
+        $this->merkleBlockSerializer = new MerkleBlockSerializer($this->filteredBlockSerializer);
+        $this->pingSerializer = new PingSerializer();
+        $this->pongSerializer = new PongSerializer();
+        $this->alertSerializer = new AlertSerializer(new AlertDetailSerializer());
+        $this->inventorySerializer = new InventorySerializer();
+        $this->getDataSerializer = new GetDataSerializer($this->inventorySerializer);
+        $this->invSerializer = new InvSerializer($this->inventorySerializer);
+        $this->notFoundSerializer = new NotFoundSerializer($this->inventorySerializer);
+        $this->rejectSerializer = new RejectSerializer();
+        $this->blockLocatorSerializer = new BlockLocatorSerializer();
+        $this->getBlocksSerializer = new GetBlocksSerializer($this->blockLocatorSerializer);
+        $this->getHeadersSerializer = new GetHeadersSerializer($this->blockLocatorSerializer);
+        $this->versionSerializer = new VersionSerializer(new NetworkAddressSerializer());
+        $this->addrSerializer = new AddrSerializer(new NetworkAddressTimestampSerializer());
     }
 
     /**
@@ -79,18 +196,11 @@ class NetworkMessageSerializer
      */
     public function fromParser(Parser & $parser)
     {
-        $math = Bitcoin::getMath();
-
-        $parsed = $this->getHeaderTemplate()->parse($parser);
-
+        list ($netBytes, $command, $payloadSize, $checksum) = $this->getHeaderTemplate()->parse($parser);
         /** @var Buffer $netBytes */
-        $netBytes = $parsed[0];
         /** @var Buffer $command */
-        $command = $parsed[1];
         /** @var int|string $payloadSize */
-        $payloadSize = $parsed[2];
         /** @var Buffer $checksum */
-        $checksum = $parsed[3];
 
         if ($netBytes->getHex() !== $this->network->getNetMagicBytes()) {
             throw new \RuntimeException('Invalid magic bytes for network');
@@ -108,47 +218,37 @@ class NetworkMessageSerializer
         $cmd = trim($command->getBinary());
         switch ($cmd) {
             case 'version':
-                $serializer = new VersionSerializer(new NetworkAddressSerializer());
-                $payload = $serializer->parse($buffer);
+                $payload = $this->versionSerializer->parse($buffer);
                 break;
             case 'verack':
                 $payload = new VerAck();
                 break;
             case 'addr':
-                $serializer = new AddrSerializer(new NetworkAddressTimestampSerializer());
-                $payload = $serializer->parse($buffer);
+                $payload = $this->addrSerializer->parse($buffer);
                 break;
             case 'inv':
-                $serializer = new InvSerializer(new InventoryVectorSerializer());
-                $payload = $serializer->parse($buffer);
+                $payload = $this->invSerializer->parse($buffer);
                 break;
             case 'getdata':
-                $serializer = new GetDataSerializer(new InventoryVectorSerializer());
-                $payload = $serializer->parse($buffer);
+                $payload = $this->getDataSerializer->parse($buffer);
                 break;
             case 'notfound':
-                $serializer = new NotFoundSerializer(new InventoryVectorSerializer());
-                $payload = $serializer->parse($buffer);
+                $payload = $this->notFoundSerializer->parse($buffer);
                 break;
             case 'getblocks':
-                $serializer = new GetBlocksSerializer(new BlockLocatorSerializer());
-                $payload = $serializer->parse($buffer);
+                $payload = $this->getBlocksSerializer->parse($buffer);
                 break;
             case 'getheaders':
-                $serializer = new GetHeadersSerializer(new BlockLocatorSerializer());
-                $payload = $serializer->parse($buffer);
+                $payload = $this->getHeadersSerializer->parse($buffer);
                 break;
             case 'tx':
-                $serializer = new TransactionSerializer();
-                $payload = new Tx($serializer->parse($buffer));
+                $payload = new Tx($this->txSerializer->parse($buffer));
                 break;
             case 'block':
-                $serializer = new BlockSerializer($math, new BlockHeaderSerializer(), new TransactionSerializer());
-                $payload = new Block($serializer->parse($buffer));
+                $payload = new Block($this->blockSerializer->parse($buffer));
                 break;
             case 'headers':
-                $serializer = new HeadersSerializer(new BlockHeaderSerializer());
-                $payload = $serializer->parse($buffer);
+                $payload = $this->headersSerializer->parse($buffer);
                 break;
             case 'getaddr':
                 $payload = new GetAddr();
@@ -157,35 +257,28 @@ class NetworkMessageSerializer
                 $payload = new MemPool();
                 break;
             case 'filterload':
-                $serializer = new FilterLoadSerializer(new BloomFilterSerializer());
-                $payload = $serializer->parse($buffer);
+                $payload = $this->filterLoadSerializer->parse($buffer);
                 break;
             case 'filteradd':
-                $serializer = new FilterAddSerializer();
-                $payload = $serializer->parse($buffer);
+                $payload = $this->filterAddSerializer->parse($buffer);
                 break;
             case 'filterclear':
                 $payload = new FilterClear();
                 break;
             case 'merkleblock':
-                $serializer = new MerkleBlockSerializer(new FilteredBlockSerializer(new BlockHeaderSerializer(), new PartialMerkleTreeSerializer()));
-                $payload = $serializer->parse($buffer);
+                $payload = $this->merkleBlockSerializer->parse($buffer);
                 break;
             case 'ping':
-                $serializer = new PingSerializer();
-                $payload = $serializer->parse($buffer);
+                $payload = $this->pingSerializer->parse($buffer);
                 break;
             case 'pong':
-                $serializer = new PongSerializer();
-                $payload = $serializer->parse($buffer);
+                $payload = $this->pongSerializer->parse($buffer);
                 break;
             case 'reject':
-                $serializer = new RejectSerializer();
-                $payload = $serializer->parse($buffer);
+                $payload = $this->rejectSerializer->parse($buffer);
                 break;
             case 'alert':
-                $serializer = new AlertSerializer(new AlertDetailSerializer());
-                $payload = $serializer->parse($buffer);
+                $payload = $this->alertSerializer->parse($buffer);
                 break;
             default:
                 throw new \RuntimeException('Invalid command');

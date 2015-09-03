@@ -11,7 +11,7 @@ use BitWasp\Bitcoin\Networking\Messages\Ping;
 use BitWasp\Bitcoin\Networking\NetworkMessage;
 use BitWasp\Bitcoin\Networking\NetworkSerializable;
 use BitWasp\Bitcoin\Networking\Structure\AlertDetail;
-use BitWasp\Bitcoin\Networking\Structure\InventoryVector;
+use BitWasp\Bitcoin\Networking\Structure\Inventory;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressTimestamp;
 use BitWasp\Bitcoin\Crypto\EcAdapter\Signature\SignatureInterface;
@@ -406,7 +406,7 @@ class Peer extends EventEmitter
     }
 
     /**
-     * @param InventoryVector[] $vInv
+     * @param Inventory[] $vInv
      */
     public function inv(array $vInv)
     {
@@ -414,7 +414,7 @@ class Peer extends EventEmitter
     }
 
     /**
-     * @param InventoryVector[] $vInv
+     * @param Inventory[] $vInv
      */
     public function getdata(array $vInv)
     {

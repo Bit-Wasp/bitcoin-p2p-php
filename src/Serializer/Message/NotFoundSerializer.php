@@ -3,21 +3,21 @@
 namespace BitWasp\Bitcoin\Networking\Serializer\Message;
 
 use BitWasp\Bitcoin\Networking\Messages\NotFound;
-use BitWasp\Bitcoin\Networking\Serializer\Structure\InventoryVectorSerializer;
+use BitWasp\Bitcoin\Networking\Serializer\Structure\InventorySerializer;
 use BitWasp\Buffertools\Parser;
 use BitWasp\Buffertools\TemplateFactory;
 
 class NotFoundSerializer
 {
     /**
-     * @var InventoryVectorSerializer
+     * @var InventorySerializer
      */
     private $invSerializer;
 
     /**
-     * @param InventoryVectorSerializer $inv
+     * @param InventorySerializer $inv
      */
-    public function __construct(InventoryVectorSerializer $inv)
+    public function __construct(InventorySerializer $inv)
     {
         $this->invSerializer = $inv;
     }

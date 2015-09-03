@@ -3,17 +3,17 @@
 namespace BitWasp\Bitcoin\Networking\Messages;
 
 use BitWasp\Bitcoin\Networking\NetworkSerializable;
-use BitWasp\Bitcoin\Networking\Structure\InventoryVector;
+use BitWasp\Bitcoin\Networking\Structure\Inventory;
 
 abstract class AbstractInventory extends NetworkSerializable implements \Countable
 {
     /**
-     * @var InventoryVector[]
+     * @var Inventory[]
      */
     private $items = [];
 
     /**
-     * @param InventoryVector[] $vector
+     * @param Inventory[] $vector
      */
     public function __construct(array $vector)
     {
@@ -23,9 +23,9 @@ abstract class AbstractInventory extends NetworkSerializable implements \Countab
     }
 
     /**
-     * @param InventoryVector $item
+     * @param Inventory $item
      */
-    private function addItem(InventoryVector $item)
+    private function addItem(Inventory $item)
     {
         $this->items[] = $item;
     }
@@ -39,7 +39,7 @@ abstract class AbstractInventory extends NetworkSerializable implements \Countab
     }
 
     /**
-     * @return InventoryVector[]
+     * @return Inventory[]
      */
     public function getItems()
     {
@@ -48,7 +48,7 @@ abstract class AbstractInventory extends NetworkSerializable implements \Countab
 
     /**
      * @param int $index
-     * @return InventoryVector
+     * @return Inventory
      */
     public function getItem($index)
     {

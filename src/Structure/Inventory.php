@@ -2,11 +2,11 @@
 
 namespace BitWasp\Bitcoin\Networking\Structure;
 
-use BitWasp\Bitcoin\Networking\Serializer\Structure\InventoryVectorSerializer;
+use BitWasp\Bitcoin\Networking\Serializer\Structure\InventorySerializer;
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Bitcoin\Serializable;
 
-class InventoryVector extends Serializable
+class Inventory extends Serializable
 {
     const ERROR = 0;
     const MSG_TX = 1;
@@ -24,7 +24,7 @@ class InventoryVector extends Serializable
     private $hash;
 
     /**
-     * @param $type
+     * @param int $type
      * @param Buffer $hash
      */
     public function __construct($type, Buffer $hash)
@@ -90,7 +90,7 @@ class InventoryVector extends Serializable
     }
 
     /**
-     * @param $type
+     * @param  int $type
      * @return bool
      */
     private function checkType($type)
@@ -103,6 +103,6 @@ class InventoryVector extends Serializable
      */
     public function getBuffer()
     {
-        return (new InventoryVectorSerializer())->serialize($this);
+        return (new InventorySerializer())->serialize($this);
     }
 }

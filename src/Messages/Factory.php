@@ -10,7 +10,7 @@ use BitWasp\Bitcoin\Crypto\Random\Random;
 use BitWasp\Bitcoin\Network\NetworkInterface;
 use BitWasp\Bitcoin\Networking\NetworkMessage;
 use BitWasp\Bitcoin\Networking\Structure\AlertDetail;
-use BitWasp\Bitcoin\Networking\Structure\InventoryVector;
+use BitWasp\Bitcoin\Networking\Structure\Inventory;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
 use BitWasp\Bitcoin\Networking\Serializer\NetworkMessageSerializer;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressTimestamp;
@@ -93,7 +93,7 @@ class Factory
     }
 
     /**
-     * @param InventoryVector[] $vectors
+     * @param Inventory[] $vectors
      * @return Inv
      */
     public function inv(array $vectors)
@@ -102,7 +102,7 @@ class Factory
     }
 
     /**
-     * @param InventoryVector[] $vectors
+     * @param Inventory[] $vectors
      * @return GetData
      */
     public function getdata(array $vectors)
@@ -111,7 +111,7 @@ class Factory
     }
 
     /**
-     * @param InventoryVector[] $vectors
+     * @param Inventory[] $vectors
      * @return NotFound
      */
     public function notfound(array $vectors)

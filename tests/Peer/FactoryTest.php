@@ -50,7 +50,7 @@ class FactoryTest extends AbstractTestCase
         $handler = $factory->getPacketHandler();
         $this->assertInstanceOf($this->handlerType, $handler);
 
-        $manager = $factory->getManager($locator, $handler);
+        $manager = $factory->getManager();
         $this->assertInstanceOf($this->managerType, $manager);
 
     }

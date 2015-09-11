@@ -74,21 +74,6 @@ class Peer extends EventEmitter
     /**
      * @var int
      */
-    private $pingInterval = 600;
-
-    /**
-     * @var int
-     */
-    private $maxMissedPings = 5;
-
-    /**
-     * @var int
-     */
-    private $missedPings = 0;
-
-    /**
-     * @var int
-     */
     private $lastPongTime;
 
     /**

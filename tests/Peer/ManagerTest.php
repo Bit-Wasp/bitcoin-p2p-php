@@ -15,17 +15,18 @@ class ManagerTest extends AbstractTestCase
         $loop = new \React\EventLoop\StreamSelectLoop();
         $factory = new \BitWasp\Bitcoin\Networking\Factory($loop);
         $peerFactory = $factory->getPeerFactory($factory->getDns());
-        $handler = $peerFactory->getPacketHandler();
         $locator = $peerFactory->getLocator();
-        $manager = $peerFactory->getManager($locator, $handler);
+        $manager = $peerFactory->getManager();
 
         $deferred = new Deferred();
-        $locator->queryDnsSeeds()->then(function () use ($manager, $deferred) {
-            $manager->connectToPeers(1)->then(function ($vPeers) use ($deferred) {
-                $deferred->resolve(true);
-            }, function () use ($deferred) {
-                $deferred->resolve(false);
-            });
+        $locator->queryDnsSeeds(1)->then(function () use ($manager, $locator, $deferred) {
+            for ($i = 0; $i < 2; $i++) {
+                $manager->connectToPeers($locator, 1)->then(function () use ($deferred) {
+                    $deferred->resolve(true);
+                }, function () use ($deferred) {
+                    $deferred->resolve(false);
+                });
+            }
         });
 
         $worked = false;
@@ -43,54 +44,48 @@ class ManagerTest extends AbstractTestCase
 
     public function testListeningManager()
     {
-        $hadInbound = false;
+        $listenerHadInbound = false;
+        $managerHadInboundPropagated = false;
 
         $loop = new \React\EventLoop\StreamSelectLoop();
         $factory = new \BitWasp\Bitcoin\Networking\Factory($loop);
         $peerFactory = $factory->getPeerFactory($factory->getDns());
         $connector = $peerFactory->getConnector();
-        $locator = $peerFactory->getLocator($connector);
-        $handler = $peerFactory->getPacketHandler();
-        $manager = $peerFactory->getManager($locator, $handler);
+        $manager = $peerFactory->getManager();
 
+        // Create a listening server
         $serverAddr = $peerFactory->getAddress('127.0.0.1', 31234);
-
         $server = $peerFactory->getServer();
         $listener = $peerFactory->getListener($server);
-        $listener->on('connection', function (Peer $peer) use (&$hadInbound, $listener) {
+        $listener->listen($serverAddr->getPort());
+
+        // Hangup on successful + mark listener received our peer
+        $listener->on('connection', function () use (&$listenerHadInbound, $listener) {
+            $listenerHadInbound = true;
             $listener->close();
         });
 
-        $manager->on('inbound', function (Peer $peer) use ($loop, &$hadInbound) {
-            $hadInbound = true;
+        // Check event propagated to manager, and stop the loop
+        $manager->on('inbound', function () use ($loop, &$managerHadInboundPropagated) {
+            $managerHadInboundPropagated = true;
             $loop->stop();
         });
+
+        // Register the listener to the manager. $managerHadInbound checks this.
         $manager->registerListener($listener);
-        $listener->listen($serverAddr->getPort());
 
-        // After connecting to the peer, have a new peer connect to the listening port.
-        $handleConnected = function () use ($peerFactory, $serverAddr) {
-            $peerFactory
-                ->getPeer()
-                ->connect($peerFactory->getConnector(), $serverAddr)
-            ;
-        };
-
-        // After querying DNS seeds: connect to 1 peer
-        $handleSeeded = function () use ($manager, $handleConnected) {
-            $manager
-                ->connectToPeers(1)
-                ->then($handleConnected);
-        };
-
-        // Begin sequence.
-        $locator
-            ->queryDnsSeeds()
-            ->then($handleSeeded);
+        // Attempt to connect to the listening server
+        $peerFactory->getPeer()->connect($connector, $serverAddr)
+            ->then(
+                function (Peer $peer) {
+                    $peer->close();
+                }
+            );
 
         $loop->run();
 
-        $this->assertTrue($hadInbound);
+        $this->assertTrue($listenerHadInbound);
+        $this->assertTrue($managerHadInboundPropagated);
     }
 
 
@@ -101,27 +96,32 @@ class ManagerTest extends AbstractTestCase
 
         $peerFactory = $factory->getPeerFactory($factory->getDns());
         $locator = $peerFactory->getLocator();
-        $handler = $peerFactory->getPacketHandler();
-        $manager = $peerFactory->getManager($locator, $handler, true);
+        $manager = $peerFactory->getManager(true);
 
         $deferred = new Deferred();
 
-        $locator->queryDnsSeeds()->then(function (Locator $locator) use ($manager, $deferred, $loop) {
-            $manager->connectNextPeer()->then(function (Peer $peer) use ($deferred, $loop) {
-                $peer->on('inv', function (Peer $peer, Inv $inv) use ($deferred, $loop) {
-                    foreach ($inv->getItems() as $item) {
-                        if ($item->isTx()) {
-                            $peer->close();
-                            $deferred->resolve($item);
-                        }
-                    }
-                });
-            }, function ($err) use ($loop) {
-                echo $err;
-                $loop->stop();
-            });
-        }, function ($err) use ($loop) {
-            echo $err;
+        $onInv = function (Peer $peer, Inv $inv) use ($deferred, $loop) {
+            foreach ($inv->getItems() as $item) {
+                if ($item->isTx()) {
+                    $peer->close();
+                    $deferred->resolve($item);
+                }
+            }
+        };
+
+        $onSeeds = function (Locator $locator) use ($manager, $deferred, $onInv, $loop) {
+            for ($i = 0; $i < 8; $i++) {
+                $manager
+                    ->connectNextPeer($locator)
+                    ->then(function (Peer $peer) use ($onInv) {
+                        $peer->on('inv', $onInv);
+                    }, function ($err) use ($loop) {
+                        $loop->stop();
+                    });
+            }
+        };
+
+        $locator->queryDnsSeeds(1)->then($onSeeds, function ($err) use ($loop) {
             $loop->stop();
         });
 

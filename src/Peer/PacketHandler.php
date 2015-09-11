@@ -9,7 +9,6 @@ use Evenement\EventEmitter;
 
 class PacketHandler extends EventEmitter
 {
-
     // listens for:
     // outbound, inbound
 

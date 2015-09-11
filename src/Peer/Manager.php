@@ -9,11 +9,6 @@ use React\Promise\Deferred;
 class Manager extends EventEmitter
 {
     /**
-     * @var Locator
-     */
-    private $locator;
-
-    /**
      * @var Factory
      */
     private $peerFactory;
@@ -27,11 +22,6 @@ class Manager extends EventEmitter
      * @var Peer[]
      */
     private $outPeers = [];
-
-    /**
-     * @var PacketHandler
-     */
-    private $handler;
 
     /**
      * @var Peer[]
@@ -49,30 +39,83 @@ class Manager extends EventEmitter
     private $nInPeers = 0;
 
     /**
-     * @var null|Recorder
-     */
-    private $recorder;
-
-    /**
      * @param Factory $factory
-     * @param Locator $locator
-     * @param PacketHandler $handler
      * @param bool|false $requestRelay
      */
-    public function __construct(Factory $factory, Locator $locator, PacketHandler $handler, $requestRelay = false)
+    public function __construct(Factory $factory, $requestRelay = false)
     {
         $this->peerFactory = $factory;
-        $this->locator = $locator;
         $this->requestRelay = $requestRelay;
-        $this->handler = $handler;
     }
 
     /**
-     * @return PacketHandler
+     * Store the newly connected peer, and trigger a new connection if they go away.
+     *
+     * @param Peer $peer
+     * @return Peer
      */
-    public function getPacketHandler()
+    public function registerOutboundPeer(Peer $peer)
     {
-        return $this->handler;
+        $next = $this->nOutPeers++;
+        $peer->on('close', function ($peer) use ($next) {
+            $this->emit('disconnect', [$peer]);
+            unset($this->outPeers[$next]);
+        });
+
+        $this->outPeers[$next] = $peer;
+        $this->emit('outbound', [$peer]);
+        return $peer;
+    }
+
+    /**
+     * @param Peer $peer
+     */
+    public function registerInboundPeer(Peer $peer)
+    {
+        $next = $this->nInPeers++;
+        $this->inPeers[$next] = $peer;
+        $peer->on('close', function () use ($next) {
+            unset($this->inPeers[$next]);
+        });
+        $this->emit('inbound', [$peer]);
+    }
+
+    /**
+     * @param Listener $listener
+     * @return $this
+     */
+    public function registerListener(Listener $listener)
+    {
+        $listener->on('connection', function (Peer $peer) {
+            $this->registerInboundPeer($peer);
+        });
+
+        return $this;
+    }
+
+    /**
+     * @param Recorder $recorder
+     */
+    public function registerRecorder(Recorder $recorder)
+    {
+        $this->on('outbound', function (Peer $peer) use ($recorder) {
+            $recorder->save($peer->getRemoteAddr());
+        });
+    }
+
+    /**
+     * @param PacketHandler $packetHandler
+     */
+    public function registerHandler(PacketHandler $packetHandler)
+    {
+        $attach = function ($connectionType) use ($packetHandler) {
+            return function (Peer $peer) use ($connectionType, $packetHandler) {
+                $packetHandler->emit($connectionType, $peer);
+            };
+        };
+
+        $this->on('inbound', $attach('inbound'));
+        $this->on('outbound', $attach('outbound'));
     }
 
     /**
@@ -103,50 +146,22 @@ class Manager extends EventEmitter
     }
 
     /**
-     * Store the newly connected peer, and trigger a new connection if they go away.
-     *
-     * @param Peer $peer
-     * @return Peer
-     */
-    public function registerOutboundPeer(Peer $peer)
-    {
-        $next = $this->nOutPeers++;
-        $peer->on('close', function () use ($next) {
-            unset($this->outPeers[$next]);
-            $this->connectNextPeer();
-        });
-
-        $this->outPeers[$next] = $peer;
-        $this->handler->emit('outbound', [$peer]);
-        $this->emit('outbound', [$peer]);
-        return $peer;
-    }
-
-    /**
-     * Execute connection with the next available peer, and register it if it succeeds.
-     *
+     * @param Locator $locator
      * @return \React\Promise\ExtendedPromiseInterface|\React\Promise\Promise|static
-     * @throws \Exception
      */
-    public function connectNextPeer()
+    public function connectNextPeer(Locator $locator)
     {
         $deferred = new Deferred();
 
-        // If there is an available peer in the Recorder, use it.
-        if ($this->recorder && $this->recorder->count() > 0) {
-            $val = $this->recorder->pop();
-            $deferred->resolve($val);
-        } else {
-            // Otherwise, rely on the Locator.
-            try {
-                $deferred->resolve($this->locator->popAddress());
-            } catch (\Exception $e) {
-                $this->locator->queryDnsSeeds()->then(
-                    function () use ($deferred) {
-                        $deferred->resolve($this->locator->popAddress());
-                    }
-                );
-            }
+        // Otherwise, rely on the Locator.
+        try {
+            $deferred->resolve($locator->popAddress());
+        } catch (\Exception $e) {
+            $locator->queryDnsSeeds()->then(
+                function () use ($deferred, $locator) {
+                    $deferred->resolve($locator->popAddress());
+                }
+            );
         }
 
         return $deferred
@@ -161,8 +176,8 @@ class Manager extends EventEmitter
                     );
                 }
             )
-            ->otherwise(function () {
-                return $this->connectNextPeer();
+            ->otherwise(function () use ($locator) {
+                return $this->connectNextPeer($locator);
             });
     }
 
@@ -170,54 +185,17 @@ class Manager extends EventEmitter
      * Create $n connections to clients available in the PeerLocator
      * @param int $n
      *
+     * @param Locator $locator
+     * @param $n
      * @return null|\React\Promise\FulfilledPromise|\React\Promise\Promise|\React\Promise\PromiseInterface|\React\Promise\RejectedPromise|static
      */
-    public function connectToPeers($n)
+    public function connectToPeers(Locator $locator, $n)
     {
         $peers = [];
         for ($i = 0; $i < $n; $i++) {
-            $peers[$i] = $this->connectNextPeer();
+            $peers[$i] = $this->connectNextPeer($locator);
         }
 
         return \React\Promise\all($peers);
-    }
-
-    /**
-     * @param Peer $peer
-     */
-    public function registerInboundPeer(Peer $peer)
-    {
-        $next = $this->nInPeers++;
-        $this->inPeers[$next] = $peer;
-        $peer->on('close', function () use ($next) {
-            unset($this->inPeers[$next]);
-        });
-        $this->handler->emit('outbound', [$peer]);
-        $this->emit('inbound', [$peer]);
-
-    }
-
-    /**
-     * @param Listener $listener
-     * @return $this
-     */
-    public function registerListener(Listener $listener)
-    {
-        $listener->on('connection', function (Peer $peer) {
-            $this->registerInboundPeer($peer);
-        });
-
-        return $this;
-    }
-
-    /**
-     * @param Recorder $recorder
-     */
-    public function registerRecorder(Recorder $recorder)
-    {
-        $this->recorder = $recorder;
-        $this->on('outbound', function (Peer $peer) {
-            $this->recorder->save($peer->getRemoteAddr());
-        });
     }
 }

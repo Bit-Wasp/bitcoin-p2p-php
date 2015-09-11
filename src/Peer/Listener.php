@@ -3,6 +3,7 @@
 namespace BitWasp\Bitcoin\Networking\Peer;
 
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
+use BitWasp\Bitcoin\Networking\Messages\Factory as MessageFactory;
 use Evenement\EventEmitter;
 use React\EventLoop\LoopInterface;
 use React\Socket\Connection;
@@ -21,9 +22,9 @@ class Listener extends EventEmitter
     private $loop;
 
     /**
-     * @var \BitWasp\Bitcoin\Networking\Messages\Factory
+     * @var MessageFactory
      */
-    private $msgs;
+    private $messageFactory;
 
     /**
      * @var Server
@@ -32,18 +33,18 @@ class Listener extends EventEmitter
 
     /**
      * @param NetworkAddressInterface $localAddr
-     * @param \BitWasp\Bitcoin\Networking\Messages\Factory $messageFactory
+     * @param MessageFactory $messageFactory
      * @param Server $server
      * @param LoopInterface $loop
      */
     public function __construct(
         NetworkAddressInterface $localAddr,
-        \BitWasp\Bitcoin\Networking\Messages\Factory $messageFactory,
+        MessageFactory $messageFactory,
         Server $server,
         LoopInterface $loop
     ) {
         $this->local = $localAddr;
-        $this->msgs = $messageFactory;
+        $this->messageFactory = $messageFactory;
         $this->server = $server;
         $this->loop = $loop;
 
@@ -57,7 +58,7 @@ class Listener extends EventEmitter
     {
         return new Peer(
             $this->local,
-            $this->msgs,
+            $this->messageFactory,
             $this->loop
         );
     }
@@ -72,7 +73,7 @@ class Listener extends EventEmitter
             ->getPeer()
             ->inboundConnection($connection)
             ->then(
-                function (Peer $peer) use (&$deferred) {
+                function (Peer $peer) {
                     $this->emit('connection', [$peer]);
                 }
             );

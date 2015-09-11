@@ -37,8 +37,10 @@ class Locator
     {
         $seeds = [
             'seed.bitcoin.sipa.be',
+            'dnsseed.bluematt.me',
             'dnsseed.bitcoin.dashjr.org',
             'seed.bitcoinstats.com',
+            'bitseed.xf2.org',
             'seed.bitnodes.io',
             "seed.bitcoin.jonasschnelli.ch"
         ];
@@ -53,7 +55,7 @@ class Locator
     /**
      * Connect to $numSeeds DNS seeds
      *
-     * @param $numSeeds
+     * @param int $numSeeds
      * @return \React\Promise\Promise|\React\Promise\PromiseInterface
      */
     public function queryDnsSeeds($numSeeds = 1)
@@ -85,6 +87,8 @@ class Locator
             ->promise()
             ->then(
                 function (array $vPeerVAddrs) {
+                    shuffle($vPeerVAddrs);
+
                     /** @var NetworkAddressInterface[] $addresses */
                     $addresses = [];
                     array_map(

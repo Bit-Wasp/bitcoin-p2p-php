@@ -110,7 +110,7 @@ class Manager extends EventEmitter
     {
         $attach = function ($connectionType) use ($packetHandler) {
             return function (Peer $peer) use ($connectionType, $packetHandler) {
-                $packetHandler->emit($connectionType, $peer);
+                $packetHandler->emit($connectionType, [$peer]);
             };
         };
 

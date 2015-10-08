@@ -15,7 +15,7 @@ class InventorySerializer
     {
         return (new TemplateFactory())
             ->uint32le()
-            ->bytestring(32)
+            ->bytestringle(32)
             ->getTemplate();
     }
 

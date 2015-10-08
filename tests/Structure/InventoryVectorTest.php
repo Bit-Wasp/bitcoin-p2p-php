@@ -6,6 +6,7 @@ use BitWasp\Bitcoin\Tests\Networking\AbstractTestCase;
 use BitWasp\Bitcoin\Networking\Serializer\Structure\InventorySerializer;
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Bitcoin\Networking\Structure\Inventory;
+use BitWasp\Buffertools\Buffertools;
 
 class InventoryVectorTest extends AbstractTestCase
 {
@@ -69,6 +70,25 @@ class InventoryVectorTest extends AbstractTestCase
 
         $parsed = $serializer->parse($serialized);
         $this->assertEquals($inv, $parsed);
+    }
 
+    public function testStaticMethodCodes()
+    {
+        $buffer = Buffer::hex('0001020300010203000102030001020300010203000102030001020300010203');
+        $block = Inventory::block($buffer);
+        $tx = Inventory::tx($buffer);
+        $filtered = Inventory::filteredBlock($buffer);
+        $this->assertEquals(Inventory::MSG_BLOCK, $block->getType());
+        $this->assertEquals(Inventory::MSG_TX, $tx->getType());
+        $this->assertEquals(Inventory::MSG_FILTERED_BLOCK, $filtered->getType());
+    }
+
+    public function testHashIsSerializedInReverseOrder()
+    {
+        $buffer = Buffer::hex('0001020300010203000102030001020300010203000102030001020300010203');
+        $inv = Inventory::block($buffer);
+        $results = unpack("Vtype/H64hash", $inv->getBinary());
+        $parsedBuffer = Buffer::hex($results['hash']);
+        $this->assertEquals($buffer->getHex(), Buffertools::flipBytes($parsedBuffer)->getHex());
     }
 }

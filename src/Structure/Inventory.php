@@ -42,6 +42,33 @@ class Inventory extends Serializable
     }
 
     /**
+     * @param Buffer $hash
+     * @return Inventory
+     */
+    public static function tx(Buffer $hash)
+    {
+        return new self(self::MSG_TX, $hash);
+    }
+
+    /**
+     * @param Buffer $hash
+     * @return Inventory
+     */
+    public static function block(Buffer $hash)
+    {
+        return new self(self::MSG_BLOCK, $hash);
+    }
+
+    /**
+     * @param Buffer $hash
+     * @return Inventory
+     */
+    public static function filteredBlock(Buffer $hash)
+    {
+        return new self(self::MSG_FILTERED_BLOCK, $hash);
+    }
+
+    /**
      * @return int
      */
     public function getType()

@@ -97,13 +97,13 @@ class AlertDetailSerializer
         $setCancels = [];
         foreach ($detail->getSetCancel() as $toCancel) {
             $t = new Parser();
-            $setCancels[] = $t->writeInt(4, $toCancel, true)->getBuffer();
+            $setCancels[] = $t->writeBytes(4, Buffer::int($toCancel), true)->getBuffer();
         }
 
         $setSubVers = [];
         foreach ($detail->getSetSubVer() as $subVer) {
             $t = new Parser();
-            $setSubVers[] = $t->writeInt(4, $subVer, true)->getBuffer();
+            $setSubVers[] = $t->writeBytes(4, Buffer::int($subVer), true)->getBuffer();
         }
 
         return $this->getTemplate()->write([

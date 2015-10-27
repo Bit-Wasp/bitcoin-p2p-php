@@ -4,6 +4,7 @@ namespace BitWasp\Bitcoin\Networking\Serializer\Message;
 
 use BitWasp\Bitcoin\Networking\Messages\Headers;
 use BitWasp\Bitcoin\Serializer\Block\BlockHeaderSerializer;
+use BitWasp\Buffertools\Buffer;
 use BitWasp\Buffertools\Parser;
 use BitWasp\Buffertools\TemplateFactory;
 use phpDocumentor\Transformer\Template;
@@ -48,7 +49,7 @@ class HeadersSerializer
     }
 
     /**
-     * @param $data
+     * @param \BitWasp\Buffertools\Buffer|string $data
      * @return Headers
      */
     public function parse($data)
@@ -63,9 +64,10 @@ class HeadersSerializer
     public function serialize(Headers $msg)
     {
         $headers = [];
+        $null = new Buffer("\x00");
         foreach ($msg->getHeaders() as $header) {
             $temp = new Parser($header->getBuffer());
-            $temp->writeInt(1, 0);
+            $temp->writeBytes(1, $null);
             $headers[] = $temp->getBuffer();
         }
 

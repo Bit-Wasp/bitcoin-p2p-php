@@ -361,6 +361,7 @@ class Peer extends EventEmitter
      */
     public function close()
     {
+        $this->emit('close', [$this]);
         $this->stream->end();
         $this->removeAllListeners();
     }

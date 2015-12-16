@@ -10,6 +10,7 @@ use BitWasp\Bitcoin\Math\Math;
 use BitWasp\Bitcoin\Network\NetworkFactory;
 use BitWasp\Bitcoin\Networking\Messages\Factory;
 use BitWasp\Bitcoin\Tests\Networking\AbstractTestCase;
+use BitWasp\Buffertools\Buffer;
 use BitWasp\Buffertools\Parser;
 
 class MerkleBlockTest extends AbstractTestCase
@@ -23,7 +24,7 @@ class MerkleBlockTest extends AbstractTestCase
         $math = new Math();
 
         $filter = BloomFilter::create($math, 10, 0.000001, 0, new Flags(BloomFilter::UPDATE_ALL));
-        $filter->insertHash('63194f18be0af63f2c6bc9dc0f777cbefed3d9415c4af83f3ee3a3d669c00cb5');
+        $filter->insertData(Buffer::hex('63194f18be0af63f2c6bc9dc0f777cbefed3d9415c4af83f3ee3a3d669c00cb5', 32));
 
         // Check that Merkleblock message is serialized correctly
         $filtered = $block->filter($filter);

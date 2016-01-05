@@ -70,7 +70,6 @@ class Locator
         /** @var Peer[] $vNetAddr */
         $vNetAddr = [];
         foreach ($seeds as $seed) {
-            echo " [ query DNS seed: " . $seed . " ] \n";
             $this->dns
                 ->resolve($seed)
                 ->then(function ($ipList) use (&$vNetAddr, $peerList, &$numSeeds) {

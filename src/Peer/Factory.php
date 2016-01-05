@@ -136,12 +136,4 @@ class Factory
         return new Listener($this->local, $this->msgFactory, $server, $this->loop);
     }
 
-    /**
-     * @param Cache $cache
-     * @return Recorder
-     */
-    public function getRecorder(Cache $cache)
-    {
-        return new Recorder($cache);
-    }
 }

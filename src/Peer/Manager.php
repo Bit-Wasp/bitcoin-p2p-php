@@ -94,16 +94,6 @@ class Manager extends EventEmitter
     }
 
     /**
-     * @param Recorder $recorder
-     */
-    public function registerRecorder(Recorder $recorder)
-    {
-        $this->on('outbound', function (Peer $peer) use ($recorder) {
-            $recorder->save($peer->getRemoteAddr());
-        });
-    }
-
-    /**
      * @param PacketHandler $packetHandler
      */
     public function registerHandler(PacketHandler $packetHandler)

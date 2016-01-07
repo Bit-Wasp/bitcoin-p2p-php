@@ -135,5 +135,4 @@ class Factory
     {
         return new Listener($this->local, $this->msgFactory, $server, $this->loop);
     }
-
 }

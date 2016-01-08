@@ -84,6 +84,14 @@ class Factory
     }
 
     /**
+     * @return SendHeaders
+     */
+    public function sendheaders()
+    {
+        return new SendHeaders();
+    }
+
+    /**
      * @param NetworkAddressTimestamp[] $addrs
      * @return Addr
      */

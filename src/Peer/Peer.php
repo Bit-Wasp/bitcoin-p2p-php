@@ -392,6 +392,14 @@ class Peer extends EventEmitter
     }
 
     /**
+     *
+     */
+    public function sendheaders()
+    {
+        $this->send($this->msgs->sendheaders());
+    }
+
+    /**
      * @param Inventory[] $vInv
      */
     public function inv(array $vInv)

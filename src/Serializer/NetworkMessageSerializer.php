@@ -9,6 +9,7 @@ use BitWasp\Bitcoin\Networking\Messages\Block;
 use BitWasp\Bitcoin\Networking\Messages\FilterClear;
 use BitWasp\Bitcoin\Networking\Messages\GetAddr;
 use BitWasp\Bitcoin\Networking\Messages\MemPool;
+use BitWasp\Bitcoin\Networking\Messages\SendHeaders;
 use BitWasp\Bitcoin\Networking\Messages\Tx;
 use BitWasp\Bitcoin\Networking\Messages\VerAck;
 use BitWasp\Bitcoin\Networking\NetworkMessage;
@@ -222,6 +223,9 @@ class NetworkMessageSerializer
                 break;
             case 'verack':
                 $payload = new VerAck();
+                break;
+            case 'sendheaders':
+                $payload = new SendHeaders();
                 break;
             case 'addr':
                 $payload = $this->addrSerializer->parse($buffer);

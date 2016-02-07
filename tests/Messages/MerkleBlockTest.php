@@ -23,7 +23,8 @@ class MerkleBlockTest extends AbstractTestCase
         $block = BlockFactory::fromHex($hex);
         $math = new Math();
 
-        $filter = BloomFilter::create($math, 10, 0.000001, 0, new Flags(BloomFilter::UPDATE_ALL));
+        $flags = BloomFilter::UPDATE_ALL;
+        $filter = BloomFilter::create($math, 10, 0.000001, 0, $flags);
         $filter->insertData(Buffer::hex('63194f18be0af63f2c6bc9dc0f777cbefed3d9415c4af83f3ee3a3d669c00cb5', 32));
 
         // Check that Merkleblock message is serialized correctly

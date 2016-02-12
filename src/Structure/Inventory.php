@@ -5,6 +5,7 @@ namespace BitWasp\Bitcoin\Networking\Structure;
 use BitWasp\Bitcoin\Networking\Serializer\Structure\InventorySerializer;
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Bitcoin\Serializable;
+use BitWasp\Buffertools\BufferInterface;
 
 class Inventory extends Serializable
 {
@@ -19,15 +20,15 @@ class Inventory extends Serializable
     private $type;
 
     /**
-     * @var Buffer
+     * @var BufferInterface
      */
     private $hash;
 
     /**
      * @param int $type
-     * @param Buffer $hash
+     * @param BufferInterface $hash
      */
-    public function __construct($type, Buffer $hash)
+    public function __construct($type, BufferInterface $hash)
     {
         if (false === $this->checkType($type)) {
             throw new \InvalidArgumentException('Invalid type in InventoryVector');
@@ -42,28 +43,28 @@ class Inventory extends Serializable
     }
 
     /**
-     * @param Buffer $hash
+     * @param BufferInterface $hash
      * @return Inventory
      */
-    public static function tx(Buffer $hash)
+    public static function tx(BufferInterface $hash)
     {
         return new self(self::MSG_TX, $hash);
     }
 
     /**
-     * @param Buffer $hash
+     * @param BufferInterface $hash
      * @return Inventory
      */
-    public static function block(Buffer $hash)
+    public static function block(BufferInterface $hash)
     {
         return new self(self::MSG_BLOCK, $hash);
     }
 
     /**
-     * @param Buffer $hash
+     * @param BufferInterface $hash
      * @return Inventory
      */
-    public static function filteredBlock(Buffer $hash)
+    public static function filteredBlock(BufferInterface $hash)
     {
         return new self(self::MSG_FILTERED_BLOCK, $hash);
     }
@@ -109,7 +110,7 @@ class Inventory extends Serializable
     }
 
     /**
-     * @return Buffer
+     * @return BufferInterface
      */
     public function getHash()
     {
@@ -126,7 +127,7 @@ class Inventory extends Serializable
     }
 
     /**
-     * @return Buffer
+     * @return BufferInterface
      */
     public function getBuffer()
     {

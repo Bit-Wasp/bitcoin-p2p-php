@@ -5,6 +5,7 @@ namespace BitWasp\Bitcoin\Networking\Messages;
 use BitWasp\Bitcoin\Networking\Serializer\Message\RejectSerializer;
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Bitcoin\Networking\NetworkSerializable;
+use BitWasp\Buffertools\BufferInterface;
 
 class Reject extends NetworkSerializable
 {
@@ -18,7 +19,7 @@ class Reject extends NetworkSerializable
     const REJECT_CHECKPOINT = 0x43;
 
     /**
-     * @var Buffer
+     * @var BufferInterface
      */
     private $message;
 
@@ -28,26 +29,26 @@ class Reject extends NetworkSerializable
     private $ccode;
 
     /**
-     * @var Buffer
+     * @var BufferInterface
      */
     private $reason;
 
     /**
-     * @var Buffer
+     * @var BufferInterface
      */
     private $data;
 
     /**
-     * @param Buffer $message
+     * @param BufferInterface $message
      * @param int $ccode
-     * @param Buffer $reason
-     * @param Buffer|null $data - can be any data, but Bitcoin Core only uses this for a missed hash
+     * @param BufferInterface $reason
+     * @param BufferInterface|null $data - can be any data, but Bitcoin Core only uses this for a missed hash
      */
     public function __construct(
-        Buffer $message,
+        BufferInterface $message,
         $ccode,
-        Buffer $reason,
-        Buffer $data = null
+        BufferInterface $reason,
+        BufferInterface $data = null
     ) {
         if (false === $this->checkCCode($ccode)) {
             throw new \InvalidArgumentException('Invalid code provided to reject message');
@@ -85,7 +86,7 @@ class Reject extends NetworkSerializable
     }
 
     /**
-     * @return Buffer
+     * @return BufferInterface
      */
     public function getMessage()
     {
@@ -101,7 +102,7 @@ class Reject extends NetworkSerializable
     }
 
     /**
-     * @return Buffer
+     * @return BufferInterface
      */
     public function getReason()
     {
@@ -109,7 +110,7 @@ class Reject extends NetworkSerializable
     }
 
     /**
-     * @return Buffer
+     * @return BufferInterface
      */
     public function getData()
     {
@@ -117,7 +118,7 @@ class Reject extends NetworkSerializable
     }
 
     /**
-     * @return Buffer
+     * @return BufferInterface
      */
     public function getBuffer()
     {

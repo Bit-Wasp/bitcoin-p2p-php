@@ -4,6 +4,7 @@ namespace BitWasp\Bitcoin\Networking\Serializer\Structure;
 
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
 use BitWasp\Buffertools\Buffer;
+use BitWasp\Buffertools\BufferInterface;
 use BitWasp\Buffertools\Parser;
 use BitWasp\Buffertools\TemplateFactory;
 
@@ -23,7 +24,7 @@ class NetworkAddressSerializer
 
     /**
      * @param string $ip
-     * @return Buffer
+     * @return BufferInterface
      */
     private function getIpBuffer($ip)
     {
@@ -34,7 +35,7 @@ class NetworkAddressSerializer
         return $buffer;
     }
 
-    private function parseIpBuffer(Buffer $ip)
+    private function parseIpBuffer(BufferInterface $ip)
     {
         $end = $ip->slice(12, 4);
 
@@ -51,7 +52,7 @@ class NetworkAddressSerializer
 
     /**
      * @param NetworkAddress $addr
-     * @return Buffer
+     * @return BufferInterface
      */
     public function serialize(NetworkAddress $addr)
     {

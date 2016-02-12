@@ -6,6 +6,7 @@ use BitWasp\Bitcoin\Networking\Dns\Resolver;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
 use BitWasp\Buffertools\Buffer;
+use BitWasp\Buffertools\BufferInterface;
 use Doctrine\Common\Cache\Cache;
 use React\EventLoop\LoopInterface;
 use React\Socket\Server;
@@ -78,10 +79,10 @@ class Factory
     /**
      * @param string $ipAddress
      * @param int $port
-     * @param Buffer|null $services
+     * @param BufferInterface|null $services
      * @return NetworkAddress
      */
-    public function getAddress($ipAddress, $port = 8333, Buffer $services = null)
+    public function getAddress($ipAddress, $port = 8333, BufferInterface $services = null)
     {
         return new NetworkAddress(
             $services ?: Buffer::hex('0000000000000001'),

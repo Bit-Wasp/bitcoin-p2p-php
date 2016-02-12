@@ -2,11 +2,11 @@
 
 namespace BitWasp\Bitcoin\Networking;
 
-use BitWasp\Buffertools\Buffer;
 use BitWasp\Bitcoin\Crypto\Hash;
 use BitWasp\Bitcoin\Serializable;
 use BitWasp\Bitcoin\Network\NetworkInterface;
 use BitWasp\Bitcoin\Networking\Serializer\NetworkMessageSerializer;
+use BitWasp\Buffertools\BufferInterface;
 
 class NetworkMessage extends Serializable
 {
@@ -47,7 +47,7 @@ class NetworkMessage extends Serializable
     }
 
     /**
-     * @return Buffer
+     * @return BufferInterface
      */
     public function getChecksum()
     {
@@ -56,7 +56,7 @@ class NetworkMessage extends Serializable
     }
 
     /**
-     * @return Buffer
+     * @return BufferInterface
      */
     public function getBuffer()
     {

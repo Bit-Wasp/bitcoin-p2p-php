@@ -4,19 +4,19 @@ namespace BitWasp\Bitcoin\Networking\Messages;
 
 use BitWasp\Bitcoin\Networking\NetworkSerializable;
 use BitWasp\Bitcoin\Networking\Serializer\Message\FilterAddSerializer;
-use BitWasp\Buffertools\Buffer;
+use BitWasp\Buffertools\BufferInterface;
 
 class FilterAdd extends NetworkSerializable
 {
     /**
-     * @var Buffer
+     * @var BufferInterface
      */
     private $data;
 
     /**
-     * @param Buffer $data
+     * @param BufferInterface $data
      */
-    public function __construct(Buffer $data)
+    public function __construct(BufferInterface $data)
     {
         $this->data = $data;
     }
@@ -30,7 +30,7 @@ class FilterAdd extends NetworkSerializable
     }
 
     /**
-     * @return Buffer
+     * @return BufferInterface
      */
     public function getData()
     {
@@ -38,7 +38,7 @@ class FilterAdd extends NetworkSerializable
     }
 
     /**
-     * @return Buffer
+     * @return BufferInterface
      */
     public function getBuffer()
     {

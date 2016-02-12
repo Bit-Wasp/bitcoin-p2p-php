@@ -6,6 +6,7 @@ use BitWasp\Bitcoin\Networking\Serializer\Structure\AlertDetailSerializer;
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Bitcoin\Serializable;
 use BitWasp\Bitcoin\SerializableInterface;
+use BitWasp\Buffertools\BufferInterface;
 
 class AlertDetail extends Serializable
 {
@@ -62,12 +63,12 @@ class AlertDetail extends Serializable
     private $priority;
 
     /**
-     * @var Buffer
+     * @var BufferInterface
      */
     private $comment;
 
     /**
-     * @var Buffer
+     * @var BufferInterface
      */
     private $statusBar;
 
@@ -80,8 +81,8 @@ class AlertDetail extends Serializable
      * @param int $minVer
      * @param int $maxVer
      * @param int $priority
-     * @param Buffer $comment
-     * @param Buffer $statusBar
+     * @param BufferInterface $comment
+     * @param BufferInterface $statusBar
      * @param integer[] $setCancel
      * @param SerializableInterface[] $setSubVer
      */
@@ -94,8 +95,8 @@ class AlertDetail extends Serializable
         $minVer,
         $maxVer,
         $priority,
-        Buffer $comment,
-        Buffer $statusBar,
+        BufferInterface $comment,
+        BufferInterface $statusBar,
         array $setCancel = [],
         array $setSubVer = []
     ) {
@@ -178,7 +179,7 @@ class AlertDetail extends Serializable
     }
 
     /**
-     * @return Buffer
+     * @return BufferInterface
      */
     public function getComment()
     {
@@ -186,7 +187,7 @@ class AlertDetail extends Serializable
     }
 
     /**
-     * @return Buffer
+     * @return BufferInterface
      */
     public function getStatusBar()
     {
@@ -210,7 +211,7 @@ class AlertDetail extends Serializable
     }
     /**
      * @see \BitWasp\Bitcoin\SerializableInterface::getBuffer()
-     * @return Buffer
+     * @return BufferInterface
      */
     public function getBuffer()
     {

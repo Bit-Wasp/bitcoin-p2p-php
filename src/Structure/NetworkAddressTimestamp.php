@@ -4,6 +4,7 @@ namespace BitWasp\Bitcoin\Networking\Structure;
 
 use BitWasp\Bitcoin\Networking\Serializer\Structure\NetworkAddressTimestampSerializer;
 use BitWasp\Buffertools\Buffer;
+use BitWasp\Buffertools\BufferInterface;
 
 class NetworkAddressTimestamp extends NetworkAddress
 {
@@ -14,11 +15,11 @@ class NetworkAddressTimestamp extends NetworkAddress
 
     /**
      * @param int $time
-     * @param Buffer $services
-     * @param string ip
+     * @param BufferInterface $services
+     * @param string $ip
      * @param int|string $port
      */
-    public function __construct($time, Buffer $services, $ip, $port)
+    public function __construct($time, BufferInterface $services, $ip, $port)
     {
         $this->time = $time;
         parent::__construct($services, $ip, $port);
@@ -45,7 +46,7 @@ class NetworkAddressTimestamp extends NetworkAddress
     }
 
     /**
-     * @return Buffer
+     * @return BufferInterface
      */
     public function getBuffer()
     {

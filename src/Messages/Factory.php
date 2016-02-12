@@ -17,6 +17,7 @@ use BitWasp\Bitcoin\Networking\Structure\NetworkAddressTimestamp;
 use BitWasp\Bitcoin\Crypto\EcAdapter\Signature\SignatureInterface;
 use BitWasp\Bitcoin\Transaction\TransactionInterface;
 use BitWasp\Buffertools\Buffer;
+use BitWasp\Buffertools\BufferInterface;
 use BitWasp\Buffertools\Parser;
 
 class Factory
@@ -43,22 +44,22 @@ class Factory
 
     /**
      * @param int $version
-     * @param Buffer $services
+     * @param BufferInterface $services
      * @param int $timestamp
      * @param NetworkAddressInterface $addrRecv
      * @param NetworkAddressInterface $addrFrom
-     * @param Buffer $userAgent
+     * @param BufferInterface $userAgent
      * @param int $startHeight
      * @param bool $relay
      * @return Version
      */
     public function version(
         $version,
-        Buffer $services,
+        BufferInterface $services,
         $timestamp,
         NetworkAddressInterface $addrRecv,
         NetworkAddressInterface $addrFrom,
-        Buffer $userAgent,
+        BufferInterface $userAgent,
         $startHeight,
         $relay
     ) {
@@ -191,10 +192,10 @@ class Factory
     }
 
     /**
-     * @param Buffer $data
+     * @param BufferInterface $data
      * @return FilterAdd
      */
-    public function filteradd(Buffer $data)
+    public function filteradd(BufferInterface $data)
     {
         return new FilterAdd($data);
     }
@@ -243,17 +244,17 @@ class Factory
     }
 
     /**
-     * @param Buffer $message
+     * @param BufferInterface $message
      * @param int $code
-     * @param Buffer $reason
-     * @param Buffer|null $data
+     * @param BufferInterface $reason
+     * @param BufferInterface|null $data
      * @return Reject
      */
     public function reject(
-        Buffer $message,
+        BufferInterface $message,
         $code,
-        Buffer $reason,
-        Buffer $data = null
+        BufferInterface $reason,
+        BufferInterface $data = null
     ) {
         if (null === $data) {
             $data = new Buffer();

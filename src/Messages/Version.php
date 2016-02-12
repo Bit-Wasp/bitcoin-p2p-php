@@ -11,6 +11,7 @@ use BitWasp\Buffertools\Buffer;
 use BitWasp\Bitcoin\Crypto\Random\Random;
 use BitWasp\Bitcoin\Networking\NetworkSerializable;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
+use BitWasp\Buffertools\BufferInterface;
 
 class Version extends NetworkSerializable
 {
@@ -23,7 +24,7 @@ class Version extends NetworkSerializable
     private $version;
 
     /**
-     * @var Buffer
+     * @var BufferInterface
      */
     private $services;
 
@@ -43,7 +44,7 @@ class Version extends NetworkSerializable
     private $addrFrom;
 
     /**
-     * @var Buffer
+     * @var BufferInterface
      */
     private $userAgent;
 
@@ -64,23 +65,23 @@ class Version extends NetworkSerializable
 
     /**
      * @param int $version
-     * @param Buffer $services
+     * @param BufferInterface $services
      * @param int $timestamp
      * @param NetworkAddressInterface $addrRecv
      * @param NetworkAddressInterface $addrFrom
      * @param int $nonce
-     * @param Buffer $userAgent
+     * @param BufferInterface $userAgent
      * @param int $startHeight
      * @param bool $relay
      */
     public function __construct(
         $version,
-        Buffer $services,
+        BufferInterface $services,
         $timestamp,
         NetworkAddressInterface $addrRecv,
         NetworkAddressInterface $addrFrom,
         $nonce,
-        Buffer $userAgent,
+        BufferInterface $userAgent,
         $startHeight,
         $relay
     ) {
@@ -140,7 +141,7 @@ class Version extends NetworkSerializable
     }
 
     /**
-     * @return Buffer
+     * @return BufferInterface
      */
     public function getServices()
     {
@@ -172,7 +173,7 @@ class Version extends NetworkSerializable
     }
 
     /**
-     * @return Buffer
+     * @return BufferInterface
      */
     public function getUserAgent()
     {
@@ -196,7 +197,7 @@ class Version extends NetworkSerializable
     }
 
     /**
-     * @return Buffer
+     * @return BufferInterface
      */
     public function getBuffer()
     {

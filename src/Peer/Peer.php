@@ -17,6 +17,7 @@ use BitWasp\Bitcoin\Networking\Structure\NetworkAddressTimestamp;
 use BitWasp\Bitcoin\Crypto\EcAdapter\Signature\SignatureInterface;
 use BitWasp\Bitcoin\Transaction\TransactionInterface;
 use BitWasp\Buffertools\Buffer;
+use BitWasp\Buffertools\BufferInterface;
 use BitWasp\Buffertools\Parser;
 use Evenement\EventEmitter;
 use React\EventLoop\LoopInterface;
@@ -511,9 +512,9 @@ class Peer extends EventEmitter
     }
 
     /**
-     * @param Buffer $data
+     * @param BufferInterface $data
      */
-    public function filteradd(Buffer $data)
+    public function filteradd(BufferInterface $data)
     {
         $this->send($this->msgs->filteradd($data));
     }
@@ -553,12 +554,12 @@ class Peer extends EventEmitter
     /**
      * Issue a Reject message, with a required $msg, $code, and $reason
      *
-     * @param Buffer $msg
+     * @param BufferInterface $msg
      * @param int $code
-     * @param Buffer $reason
-     * @param Buffer $data
+     * @param BufferInterface $reason
+     * @param BufferInterface $data
      */
-    public function reject(Buffer $msg, $code, Buffer $reason, Buffer $data = null)
+    public function reject(BufferInterface $msg, $code, BufferInterface $reason, BufferInterface $data = null)
     {
         $this->send($this->msgs->reject($msg, $code, $reason, $data));
     }

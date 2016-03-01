@@ -192,6 +192,15 @@ class Factory
     }
 
     /**
+     * @param int $feeRate
+     * @return FeeFilter
+     */
+    public function feefilter($feeRate)
+    {
+        return new FeeFilter($feeRate);
+    }
+
+    /**
      * @param BufferInterface $data
      * @return FilterAdd
      */

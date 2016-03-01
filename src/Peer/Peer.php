@@ -512,6 +512,14 @@ class Peer extends EventEmitter
     }
 
     /**
+     * @param int $feeRate
+     */
+    public function feefilter($feeRate)
+    {
+        $this->send($this->msgs->feefilter($feeRate));
+    }
+
+    /**
      * @param BufferInterface $data
      */
     public function filteradd(BufferInterface $data)

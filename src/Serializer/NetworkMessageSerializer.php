@@ -15,6 +15,7 @@ use BitWasp\Bitcoin\Networking\Messages\VerAck;
 use BitWasp\Bitcoin\Networking\NetworkMessage;
 use BitWasp\Bitcoin\Networking\Serializer\Message\AddrSerializer;
 use BitWasp\Bitcoin\Networking\Serializer\Message\AlertSerializer;
+use BitWasp\Bitcoin\Networking\Serializer\Message\FeeFilterSerializer;
 use BitWasp\Bitcoin\Networking\Serializer\Message\FilterAddSerializer;
 use BitWasp\Bitcoin\Networking\Serializer\Message\FilterLoadSerializer;
 use BitWasp\Bitcoin\Networking\Serializer\Message\GetBlocksSerializer;
@@ -142,6 +143,11 @@ class NetworkMessageSerializer
     private $versionSerializer;
 
     /**
+     * @var FeeFilterSerializer
+     */
+    private $feeFilterSerializer;
+
+    /**
      * @var AddrSerializer
      */
     private $addrSerializer;
@@ -168,6 +174,7 @@ class NetworkMessageSerializer
         $this->getDataSerializer = new GetDataSerializer($this->inventorySerializer);
         $this->invSerializer = new InvSerializer($this->inventorySerializer);
         $this->notFoundSerializer = new NotFoundSerializer($this->inventorySerializer);
+        $this->feeFilterSerializer = new FeeFilterSerializer();
         $this->rejectSerializer = new RejectSerializer();
         $this->blockLocatorSerializer = new BlockLocatorSerializer();
         $this->getBlocksSerializer = new GetBlocksSerializer($this->blockLocatorSerializer);
@@ -259,6 +266,9 @@ class NetworkMessageSerializer
                 break;
             case 'mempool':
                 $payload = new MemPool();
+                break;
+            case 'feefilter':
+                $payload = $this->feeFilterSerializer->parse($buffer);
                 break;
             case 'filterload':
                 $payload = $this->filterLoadSerializer->parse($buffer);

@@ -7,7 +7,6 @@ use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Buffertools\BufferInterface;
-use Doctrine\Common\Cache\Cache;
 use React\EventLoop\LoopInterface;
 use React\Socket\Server;
 use React\SocketClient\Connector;
@@ -109,14 +108,6 @@ class Factory
     public function getLocator()
     {
         return new Locator($this->dns);
-    }
-
-    /**
-     * @return PacketHandler
-     */
-    public function getPacketHandler()
-    {
-        return new PacketHandler();
     }
 
     /**

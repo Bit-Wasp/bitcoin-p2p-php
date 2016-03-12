@@ -2,7 +2,6 @@
 
 namespace BitWasp\Bitcoin\Networking;
 
-
 class Protocol
 {
     const GETHEADERS = 31800;

@@ -12,10 +12,10 @@ $dns = $factory->getDns();
 $host = $factory->getAddress('80.57.227.14');
 $local = $factory->getAddress('192.168.192.39');
 
-$params = new \BitWasp\Bitcoin\Networking\Peer\ConnectionParams($msgs);
+$params = new \BitWasp\Bitcoin\Networking\Peer\ConnectionParams();
 $params->requestTxRelay(true);
 
-$connector = new \BitWasp\Bitcoin\Networking\Peer\P2PConnector(
+$connector = new \BitWasp\Bitcoin\Networking\Peer\Connector(
     $msgs,
     $params,
     $loop,

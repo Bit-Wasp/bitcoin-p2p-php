@@ -2,14 +2,13 @@
 
 namespace BitWasp\Bitcoin\Networking\Peer;
 
-
 use BitWasp\Bitcoin\Networking\Messages\Factory as MsgFactory;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
 use React\Dns\Resolver\Resolver;
 use React\EventLoop\LoopInterface;
 use React\Stream\Stream;
 
-class P2PConnector extends \React\SocketClient\Connector
+class Connector extends \React\SocketClient\Connector
 {
     /**
      * @var ConnectionParams

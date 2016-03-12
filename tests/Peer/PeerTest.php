@@ -7,14 +7,13 @@ use BitWasp\Bitcoin\Crypto\Random\Random;
 use BitWasp\Bitcoin\Networking\Messages\Factory;
 use BitWasp\Bitcoin\Networking\Peer\ConnectionParams;
 use BitWasp\Bitcoin\Networking\Peer\Listener;
-use BitWasp\Bitcoin\Networking\Peer\P2PConnector;
+use BitWasp\Bitcoin\Networking\Peer\Connector;
 use BitWasp\Bitcoin\Networking\Peer\Peer;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
 use BitWasp\Bitcoin\Tests\Networking\AbstractTestCase;
 use BitWasp\Buffertools\Buffer;
 use React\EventLoop\StreamSelectLoop;
 use React\Socket\Server;
-use React\SocketClient\Connector;
 
 class PeerTest extends AbstractTestCase
 {
@@ -70,7 +69,7 @@ class PeerTest extends AbstractTestCase
             new Random()
         );
 
-        $params = new ConnectionParams($msgs);
+        $params = new ConnectionParams();
 
         $serverReceivedConnection = false;
         $serverListener = new Listener($params, $msgs, $reactServer, $loop);
@@ -81,7 +80,7 @@ class PeerTest extends AbstractTestCase
         });
         $serverListener->listen($server->getPort());
 
-        $connector = new P2PConnector(
+        $connector = new Connector(
             $msgs,
             $params,
             $loop,

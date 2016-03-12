@@ -2,49 +2,43 @@
 
 require_once "../vendor/autoload.php";
 
+use React\Promise\Deferred;
+use BitWasp\Bitcoin\Networking\Factory;
 use BitWasp\Bitcoin\Networking\Peer\Peer;
+use BitWasp\Bitcoin\Networking\Peer\Locator;
+use BitWasp\Bitcoin\Networking\Peer\ConnectionParams;
+use BitWasp\Bitcoin\Networking\Peer\Connector;
+use BitWasp\Bitcoin\Networking\Messages\Version;
 
 $loop = React\EventLoop\Factory::create();
-$factory = new \BitWasp\Bitcoin\Networking\Factory($loop);
+$factory = new Factory($loop);
+$dns = $factory->getDns();
+$msgs = $factory->getMessages();
 
-$peerFactory = $factory->getPeerFactory($factory->getDns());
-$host = $peerFactory->getAddress('80.57.227.14');
-$local = $peerFactory->getAddress('192.168.192.39');
+$locator = new Locator($dns);
+$params = new ConnectionParams();
+$connector = new Connector($msgs, $params, $loop, $dns);
 
-$deferred = new \React\Promise\Deferred();
+$host = $factory->getAddress('80.57.227.14');
+$local = $factory->getAddress('192.168.192.39');
 
-$peer = $peerFactory->getPeer();
-$peer->on('version', function (Peer $peer, \BitWasp\Bitcoin\Networking\Messages\Version $ver) use ($deferred) {
-    echo 'Received version'.PHP_EOL;
-    $deferred->resolve($ver);
-});
+$connector
+    ->rawConnect($host)
+    ->then(function (Peer $peer) use ($host, $params) {
+        $deferred = new Deferred();
+        $peer->on('version', function (Peer $peer, Version $ver) use ($deferred) {
+            echo 'Received version'.PHP_EOL;
+            $deferred->resolve($ver);
+            $peer->close();
+        });
 
-$peer->on('verack', function (Peer $peer, \BitWasp\Bitcoin\Networking\Messages\Version $ver) use ($deferred) {
-    echo 'Received verack'.PHP_EOL;
-    $deferred->resolve($ver);
-});
+        $peer->outboundHandshake($host, $params);
 
-$peer->on('ready', function (Peer $peer) use ($factory) {
-    echo 'Peer was initialized after exchanging version'.PHP_EOL;
-    $peer->close();
-});
-
-$params = new \BitWasp\Bitcoin\Networking\Peer\ConnectionParams();
-$params
-    ->requestTxRelay(true);
-
-$connector = $peerFactory->getConnector();
-$peer->connect($connector, $host)->then(function (Peer $peer) use ($params) {
-    echo "Connected!\n";
-    $peer->outboundHandshake($params)->then(function (Peer $peer) {
-        echo "initialized, now closing\n";
-        $peer->close();
+        return $deferred->promise();
+    })
+    ->then(function ($msg) use ($loop) {
+        print_r($msg);
+        $loop->stop();
     });
-});
-
-$deferred->promise()->then(function ($msg) use ($loop) {
-    print_r($msg);
-    $loop->stop();
-});
 
 $loop->run();

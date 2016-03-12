@@ -2,7 +2,6 @@
 
 namespace BitWasp\Bitcoin\Networking\Peer;
 
-
 use BitWasp\Bitcoin\Networking\Messages\Factory as MsgFactory;
 use BitWasp\Bitcoin\Networking\Messages\Version;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
@@ -65,20 +64,6 @@ class ConnectionParams
     private $userAgent;
 
     /**
-     * @var MsgFactory
-     */
-    private $msgs;
-
-    /**
-     * ConnectionParams constructor.
-     * @param MsgFactory $msgs
-     */
-    public function __construct(MsgFactory $msgs)
-    {
-        $this->msgs = $msgs;
-    }
-
-    /**
      * @param bool $optRelay
      * @return $this
      */
@@ -88,7 +73,7 @@ class ConnectionParams
             throw new \InvalidArgumentException('Invalid txrelay setting, must be a boolean');
         }
 
-        $this->txRelay;
+        $this->txRelay = $optRelay;
         return $this;
     }
 
@@ -189,10 +174,11 @@ class ConnectionParams
     }
 
     /**
+     * @param MsgFactory $messageFactory
      * @param NetworkAddressInterface $remoteAddress
      * @return Version
      */
-    public function produceVersion(NetworkAddressInterface $remoteAddress)
+    public function produceVersion(MsgFactory $messageFactory, NetworkAddressInterface $remoteAddress)
     {
         $protocolVersion = is_null($this->protocolVersion) ? $this->defaultProtocolVersion : $this->protocolVersion;
         $localServices = is_null($this->localServices) ? new Buffer('', 8) : $this->localServices;
@@ -216,6 +202,6 @@ class ConnectionParams
 
         $relay = is_null($this->txRelay) ? $this->defaultTxRelay : $this->txRelay;
 
-        return $this->msgs->version($protocolVersion, $localServices, $timestamp, $remoteAddress, $localAddr, $userAgent, $bestHeight, $relay);
+        return $messageFactory->version($protocolVersion, $localServices, $timestamp, $remoteAddress, $localAddr, $userAgent, $bestHeight, $relay);
     }
 }

@@ -2,7 +2,6 @@
 
 namespace BitWasp\Bitcoin\Networking\Peer;
 
-use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
 use BitWasp\Bitcoin\Networking\Messages\Factory as MessageFactory;
 use Evenement\EventEmitter;
 use React\EventLoop\LoopInterface;

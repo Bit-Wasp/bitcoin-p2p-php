@@ -5,28 +5,31 @@ require_once "../vendor/autoload.php";
 
 use BitWasp\Bitcoin\Networking\Peer\Peer;
 use BitWasp\Bitcoin\Networking\Messages\Addr;
+use BitWasp\Bitcoin\Networking\Peer\ConnectionParams;
+use BitWasp\Bitcoin\Networking\Peer\Connector;
 
 $network = BitWasp\Bitcoin\Bitcoin::getDefaultNetwork();
 $loop = React\EventLoop\Factory::create();
 
 $factory = new \BitWasp\Bitcoin\Networking\Factory($loop);
-$peerFactory = $factory->getPeerFactory($factory->getDns());
-$host = $peerFactory->getAddress('172.245.6.4');
-$peer = $peerFactory->getPeer();
+$dns = $factory->getDns();
+$host = $factory->getAddress('109.255.217.175');
+$msgs = $factory->getMessages();
+$params = new ConnectionParams();
+$connector = new Connector($msgs, $params, $loop, $dns);
 
-$peer->on('ready', function (Peer $peer) use ($factory) {
-    $peer->getaddr();
-    $peer->on('addr', function (Peer $peer, Addr $addr) {
-        echo "Nodes: " . count($addr->getAddresses());
+$connector
+    ->connect($host)
+    ->then(function (Peer $peer) use ($factory) {
+        $peer->on('addr', function (Peer $peer, Addr $addr) {
+            echo "Nodes: " . count($addr->getAddresses());
+            foreach ($addr->getAddresses() as $addr) {
+                echo $addr->getIp().PHP_EOL;
+            }
+            $peer->close();
+        });
+
+        $peer->getaddr();
     });
-    $peer->close();
-    echo "shutting down\n";
-});
-
-$peer->on('version', function (Peer $peer, \BitWasp\Bitcoin\Networking\Messages\Version $msg) {
-    echo $msg->getNetworkMessage()->getHex() . "\n";
-});
-
-$peer->connect($peerFactory->getConnector(), $host);
 
 $loop->run();

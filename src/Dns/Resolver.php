@@ -2,9 +2,18 @@
 
 namespace BitWasp\Bitcoin\Networking\Dns;
 
+use React\Dns\Query\Query;
+use React\Dns\Model\Message;
+
 class Resolver extends \React\Dns\Resolver\Resolver
 {
-    public function extractAddress(\React\Dns\Query\Query $query, \React\Dns\Model\Message $response)
+    /**
+     * @param Query $query
+     * @param Message $response
+     * @return array
+     * @throws \React\Dns\RecordNotFoundException
+     */
+    public function extractAddress(Query $query, Message $response)
     {
         $answers = $response->answers;
         $addresses = $this->resolveAliases($answers, $query->name);

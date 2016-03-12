@@ -2,7 +2,6 @@
 
 namespace BitWasp\Bitcoin\Networking;
 
-
 class Services
 {
     const NETWORK = 1;

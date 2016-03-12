@@ -171,7 +171,7 @@ class Peer extends EventEmitter
 
         $this->on('version', function (Peer $peer, Version $version) use ($params) {
             $this->remoteVersion = $version;
-            $this->localVersion = $localVersion = $params->produceVersion($version->getSenderAddress());
+            $this->localVersion = $localVersion = $params->produceVersion($this->msgs, $version->getSenderAddress());
             $this->send($localVersion);
         });
 
@@ -209,7 +209,7 @@ class Peer extends EventEmitter
             }
         });
 
-        $this->localVersion = $version = $params->produceVersion($remotePeer);
+        $this->localVersion = $version = $params->produceVersion($this->msgs, $remotePeer);
         $this->send($version);
 
         return $deferred->promise();

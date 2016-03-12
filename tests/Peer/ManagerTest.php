@@ -2,35 +2,35 @@
 
 namespace BitWasp\Bitcoin\Tests\Networking\Peer;
 
-use BitWasp\Bitcoin\Bitcoin;
-use BitWasp\Bitcoin\Crypto\Random\Random;
 use BitWasp\Bitcoin\Networking\Peer\ConnectionParams;
 use BitWasp\Bitcoin\Networking\Peer\Listener;
 use BitWasp\Bitcoin\Networking\Peer\Locator;
 use BitWasp\Bitcoin\Networking\Peer\Manager;
-use BitWasp\Bitcoin\Networking\Peer\P2PConnector;
+use BitWasp\Bitcoin\Networking\Peer\Connector;
 use BitWasp\Bitcoin\Networking\Peer\Peer;
 use BitWasp\Bitcoin\Tests\Networking\AbstractTestCase;
 use React\Promise\Deferred;
+use React\EventLoop\StreamSelectLoop;
+use BitWasp\Bitcoin\Networking\Factory as NetworkFactory;
 use React\Socket\Server;
 
 class ManagerTest extends AbstractTestCase
 {
     public function testManager()
     {
-        $loop = new \React\EventLoop\StreamSelectLoop();
-        $factory = new \BitWasp\Bitcoin\Networking\Factory($loop);
+        $loop = new StreamSelectLoop();
+        $factory = new NetworkFactory($loop);
         $dns = $factory->getDns();
-        $random = new Random();
         $locator = new Locator($dns);
-        $msgsFactory = new \BitWasp\Bitcoin\Networking\Messages\Factory(Bitcoin::getNetwork(), $random);
-        $params = new ConnectionParams($msgsFactory);
-        $connector = new P2PConnector($msgsFactory, $params, $loop, $dns);
+        $connector = new Connector($factory->getMessages(), new ConnectionParams(), $loop, $dns);
         $manager = new Manager($connector);
 
         $deferred = new Deferred();
-        $locator->queryDnsSeeds(1)->then(function () use ($manager, $locator, $deferred) {
-            $manager->connectToPeers($locator, 2)->then(function () use ($deferred) {
+        $locator->queryDnsSeeds(1)->then(function (Locator $locator) use ($manager, $deferred) {
+            $manager->connectToPeers($locator, 2)->then(function (array $peers) use ($deferred) {
+                foreach ($peers as $peer) {
+                    $peer->close();
+                }
                 $deferred->resolve(true);
             }, function () use ($deferred) {
                 $deferred->resolve(false);
@@ -55,14 +55,13 @@ class ManagerTest extends AbstractTestCase
         $listenerHadInbound = false;
         $managerHadInboundPropagated = false;
 
-        $loop = new \React\EventLoop\StreamSelectLoop();
-        $factory = new \BitWasp\Bitcoin\Networking\Factory($loop);
+        $loop = new StreamSelectLoop();
+        $factory = new NetworkFactory($loop);
 
         $dns = $factory->getDns();
-        $random = new Random();
-        $msgsFactory = new \BitWasp\Bitcoin\Networking\Messages\Factory(Bitcoin::getNetwork(), $random);
-        $params = new ConnectionParams($msgsFactory);
-        $connector = new P2PConnector($msgsFactory, $params, $loop, $dns);
+        $msgsFactory = $factory->getMessages();
+        $params = new ConnectionParams();
+        $connector = new Connector($msgsFactory, $params, $loop, $dns);
         $manager = new Manager($connector);
 
         // Create a listening server

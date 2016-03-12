@@ -9,7 +9,7 @@ use React\Promise\Deferred;
 class Manager extends EventEmitter
 {
     /**
-     * @var P2PConnector
+     * @var Connector
      */
     private $connector;
 
@@ -35,9 +35,9 @@ class Manager extends EventEmitter
 
     /**
      * Manager constructor.
-     * @param P2PConnector $connector
+     * @param Connector $connector
      */
-    public function __construct(P2PConnector $connector)
+    public function __construct(Connector $connector)
     {
         $this->connector = $connector;
     }

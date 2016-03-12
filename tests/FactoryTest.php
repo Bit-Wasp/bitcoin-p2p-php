@@ -14,6 +14,5 @@ class FactoryTest extends AbstractTestCase
         $dns = $factory->getDns();
         $this->assertInstanceOf('BitWasp\Bitcoin\Networking\Dns\Resolver', $dns);
         $this->assertInstanceOf('BitWasp\Bitcoin\Networking\Messages\Factory', $factory->getMessages());
-        $this->assertInstanceOf('BitWasp\Bitcoin\Networking\Peer\Factory', $factory->getPeerFactory($dns));
     }
 }

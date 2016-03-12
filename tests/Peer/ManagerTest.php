@@ -2,31 +2,39 @@
 
 namespace BitWasp\Bitcoin\Tests\Networking\Peer;
 
-use BitWasp\Bitcoin\Networking\Messages\Inv;
+use BitWasp\Bitcoin\Networking\Peer\ConnectionParams;
+use BitWasp\Bitcoin\Networking\Peer\Listener;
 use BitWasp\Bitcoin\Networking\Peer\Locator;
+use BitWasp\Bitcoin\Networking\Peer\Manager;
+use BitWasp\Bitcoin\Networking\Peer\Connector;
 use BitWasp\Bitcoin\Networking\Peer\Peer;
 use BitWasp\Bitcoin\Tests\Networking\AbstractTestCase;
 use React\Promise\Deferred;
+use React\EventLoop\StreamSelectLoop;
+use BitWasp\Bitcoin\Networking\Factory as NetworkFactory;
+use React\Socket\Server;
 
 class ManagerTest extends AbstractTestCase
 {
     public function testManager()
     {
-        $loop = new \React\EventLoop\StreamSelectLoop();
-        $factory = new \BitWasp\Bitcoin\Networking\Factory($loop);
-        $peerFactory = $factory->getPeerFactory($factory->getDns());
-        $locator = $peerFactory->getLocator();
-        $manager = $peerFactory->getManager();
+        $loop = new StreamSelectLoop();
+        $factory = new NetworkFactory($loop);
+        $dns = $factory->getDns();
+        $locator = new Locator($dns);
+        $connector = new Connector($factory->getMessages(), new ConnectionParams(), $loop, $dns);
+        $manager = new Manager($connector);
 
         $deferred = new Deferred();
-        $locator->queryDnsSeeds(1)->then(function () use ($manager, $locator, $deferred) {
-            for ($i = 0; $i < 2; $i++) {
-                $manager->connectToPeers($locator, 1)->then(function () use ($deferred) {
-                    $deferred->resolve(true);
-                }, function () use ($deferred) {
-                    $deferred->resolve(false);
-                });
-            }
+        $locator->queryDnsSeeds(1)->then(function (Locator $locator) use ($manager, $deferred) {
+            $manager->connectToPeers($locator, 2)->then(function (array $peers) use ($deferred) {
+                foreach ($peers as $peer) {
+                    $peer->close();
+                }
+                $deferred->resolve(true);
+            }, function () use ($deferred) {
+                $deferred->resolve(false);
+            });
         });
 
         $worked = false;
@@ -47,16 +55,18 @@ class ManagerTest extends AbstractTestCase
         $listenerHadInbound = false;
         $managerHadInboundPropagated = false;
 
-        $loop = new \React\EventLoop\StreamSelectLoop();
-        $factory = new \BitWasp\Bitcoin\Networking\Factory($loop);
-        $peerFactory = $factory->getPeerFactory($factory->getDns());
-        $connector = $peerFactory->getConnector();
-        $manager = $peerFactory->getManager();
+        $loop = new StreamSelectLoop();
+        $factory = new NetworkFactory($loop);
+
+        $dns = $factory->getDns();
+        $msgsFactory = $factory->getMessages();
+        $params = new ConnectionParams();
+        $connector = new Connector($msgsFactory, $params, $loop, $dns);
+        $manager = new Manager($connector);
 
         // Create a listening server
-        $serverAddr = $peerFactory->getAddress('127.0.0.1', 31234);
-        $server = $peerFactory->getServer();
-        $listener = $peerFactory->getListener($server);
+        $serverAddr = $factory->getAddress('127.0.0.1', 31234);
+        $listener = new Listener($params, $msgsFactory, new Server($loop), $loop);
         $listener->listen($serverAddr->getPort());
 
         // Hangup on successful + mark listener received our peer
@@ -75,7 +85,8 @@ class ManagerTest extends AbstractTestCase
         $manager->registerListener($listener);
 
         // Attempt to connect to the listening server
-        $peerFactory->getPeer()->connect($connector, $serverAddr)
+        $connector
+            ->connect($serverAddr)
             ->then(
                 function (Peer $peer) {
                     $peer->close();
@@ -86,55 +97,5 @@ class ManagerTest extends AbstractTestCase
 
         $this->assertTrue($listenerHadInbound);
         $this->assertTrue($managerHadInboundPropagated);
-    }
-
-
-    public function testConnectingToPeerRequestingRelay()
-    {
-        $loop = new \React\EventLoop\StreamSelectLoop();
-        $factory = new \BitWasp\Bitcoin\Networking\Factory($loop);
-
-        $peerFactory = $factory->getPeerFactory($factory->getDns());
-        $locator = $peerFactory->getLocator();
-        $manager = $peerFactory->getManager(true);
-
-        $deferred = new Deferred();
-
-        $onInv = function (Peer $peer, Inv $inv) use ($deferred, $loop) {
-            foreach ($inv->getItems() as $item) {
-                if ($item->isTx()) {
-                    $peer->close();
-                    $deferred->resolve($item);
-                }
-            }
-        };
-
-        $onSeeds = function (Locator $locator) use ($manager, $deferred, $onInv, $loop) {
-            for ($i = 0; $i < 8; $i++) {
-                $manager
-                    ->connectNextPeer($locator)
-                    ->then(function (Peer $peer) use ($onInv) {
-                        $peer->on('inv', $onInv);
-                    }, function ($err) use ($loop) {
-                        $loop->stop();
-                    });
-            }
-        };
-
-        $locator->queryDnsSeeds(1)->then($onSeeds, function ($err) use ($loop) {
-            $loop->stop();
-        });
-
-        $receivedTx = false;
-        $deferred->promise()
-            ->then(function () use (&$receivedTx) {
-                $receivedTx = true;
-            })->always(function () use ($loop) {
-                $loop->stop();
-            });
-
-            $loop->run();
-            $this->assertTrue($receivedTx);
-
     }
 }

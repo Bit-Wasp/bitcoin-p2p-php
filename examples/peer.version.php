@@ -2,32 +2,43 @@
 
 require_once "../vendor/autoload.php";
 
+use React\Promise\Deferred;
+use BitWasp\Bitcoin\Networking\Factory;
 use BitWasp\Bitcoin\Networking\Peer\Peer;
+use BitWasp\Bitcoin\Networking\Peer\Locator;
+use BitWasp\Bitcoin\Networking\Peer\ConnectionParams;
+use BitWasp\Bitcoin\Networking\Peer\Connector;
+use BitWasp\Bitcoin\Networking\Messages\Version;
 
 $loop = React\EventLoop\Factory::create();
-$factory = new \BitWasp\Bitcoin\Networking\Factory($loop);
+$factory = new Factory($loop);
+$dns = $factory->getDns();
+$msgs = $factory->getMessages();
 
-$peerFactory = $factory->getPeerFactory($factory->getDns());
-$host = $peerFactory->getAddress('147.87.116.162');
-$local = $peerFactory->getAddress('192.168.192.39');
+$locator = new Locator($dns);
+$params = new ConnectionParams();
+$connector = new Connector($msgs, $params, $loop, $dns);
 
-$deferred = new \React\Promise\Deferred();
+$host = $factory->getAddress('80.57.227.14');
+$local = $factory->getAddress('192.168.192.39');
 
-$peer = $peerFactory->getPeer();
-$peer->on('version', function (Peer $peer, \BitWasp\Bitcoin\Networking\Messages\Version $ver) use ($deferred) {
-    $deferred->resolve($ver);
-});
+$connector
+    ->rawConnect($host)
+    ->then(function (Peer $peer) use ($host, $params) {
+        $deferred = new Deferred();
+        $peer->on('version', function (Peer $peer, Version $ver) use ($deferred) {
+            echo 'Received version'.PHP_EOL;
+            $deferred->resolve($ver);
+            $peer->close();
+        });
 
-$peer->on('ready', function (Peer $peer) use ($factory) {
-    $peer->close();
-});
+        $peer->outboundHandshake($host, $params);
 
-$connector = $peerFactory->getConnector();
-$peer->requestRelay()->connect($connector, $host);
-
-$deferred->promise()->then(function ($msg) use ($loop) {
-    print_r($msg);
-    $loop->stop();
-});
+        return $deferred->promise();
+    })
+    ->then(function ($msg) use ($loop) {
+        print_r($msg);
+        $loop->stop();
+    });
 
 $loop->run();

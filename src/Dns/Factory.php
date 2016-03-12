@@ -7,14 +7,14 @@ use React\EventLoop\LoopInterface;
 class Factory extends \React\Dns\Resolver\Factory
 {
     /**
-     * @param string $nameserver
+     * @param string $nameServer
      * @param LoopInterface $loop
      * @return Resolver
      */
-    public function create($nameserver, LoopInterface $loop)
+    public function create($nameServer, LoopInterface $loop)
     {
-        $nameserver = $this->addPortToServerIfMissing($nameserver);
+        $nameServer = $this->addPortToServerIfMissing($nameServer);
         $executor = $this->createRetryExecutor($loop);
-        return new Resolver($nameserver, $executor);
+        return new Resolver($nameServer, $executor);
     }
 }

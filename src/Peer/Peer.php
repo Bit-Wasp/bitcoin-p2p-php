@@ -21,36 +21,15 @@ use BitWasp\Buffertools\BufferInterface;
 use BitWasp\Buffertools\Parser;
 use Evenement\EventEmitter;
 use React\EventLoop\LoopInterface;
-use React\EventLoop\Timer\Timer;
 use React\Promise\Deferred;
-use React\Socket\Connection;
-use React\SocketClient\Connector;
 use React\Stream\Stream;
 
 class Peer extends EventEmitter
 {
-    const USER_AGENT = "bitcoin-php/v0.1";
-    const PROTOCOL_VERSION = "70000";
-
     /**
      * @var string
      */
     private $buffer = '';
-
-    /**
-     * @var NetworkAddressInterface
-     */
-    private $localAddr;
-
-    /**
-     * @var NetworkAddressInterface
-     */
-    private $remoteAddr;
-
-    /**
-     * @var BloomFilter
-     */
-    private $filter;
 
     /**
      * @var LoopInterface
@@ -68,139 +47,57 @@ class Peer extends EventEmitter
     private $stream;
 
     /**
+     * @var Version
+     */
+    private $localVersion;
+
+    /**
+     * @var Version
+     */
+    private $remoteVersion;
+
+    /**
+     * @var ConnectionParams
+     */
+    private $connectionParams;
+
+    /**
      * @var bool
      */
     private $exchangedVersion = false;
 
     /**
-     * @var int
-     */
-    private $lastPongTime;
-
-    /**
-     * @var bool
-     */
-    private $inbound;
-
-    /**
-     * Whether we want this peer to relay tx's to us.
-     * @var bool
-     */
-    private $relayToUs = false;
-
-    /**
-     * @var bool
-     */
-    private $relayToPeer = false;
-
-    private $downloadPeer = false;
-
-    /**
-     * @param NetworkAddressInterface $local
      * @param \BitWasp\Bitcoin\Networking\Messages\Factory $msgs
      * @param LoopInterface $loop
      */
-    public function __construct(
-        NetworkAddressInterface $local,
-        \BitWasp\Bitcoin\Networking\Messages\Factory $msgs,
-        LoopInterface $loop
-    ) {
-        $this->localAddr = $local;
+    public function __construct(\BitWasp\Bitcoin\Networking\Messages\Factory $msgs, LoopInterface $loop)
+    {
         $this->msgs = $msgs;
         $this->loop = $loop;
-        $this->lastPongTime = time();
     }
 
     /**
-     * @return bool
+     * @return Version
      */
-    public function isDownloadPeer()
+    public function getLocalVersion()
     {
-        return $this->downloadPeer;
+        return $this->localVersion;
     }
 
     /**
-     * @param $flag
+     * @return Version
      */
-    public function setDownloadPeerFlag($flag)
+    public function getRemoteVersion()
     {
-        if (!is_bool($flag)) {
-            throw new \InvalidArgumentException('Flag must be a bool');
-        }
-
-        $this->downloadPeer = $flag;
+        return $this->remoteVersion;
     }
 
     /**
-     * @return NetworkAddressInterface
+     * @return ConnectionParams
      */
-    public function getRemoteAddr()
+    public function getConnectionParams()
     {
-        return $this->remoteAddr;
-    }
-
-    /**
-     * @return NetworkAddressInterface
-     */
-    public function getLocalAddr()
-    {
-        return $this->localAddr;
-    }
-
-    /**
-     * Set to true by calling requestRelay()
-     * @return bool
-     */
-    public function checkWeRequestedRelay()
-    {
-        return $this->relayToUs;
-    }
-
-    /**
-     * Check if peer sent version message requesting relay, or, set a filter.
-     * @return bool
-     */
-    public function checkPeerRequestedRelay()
-    {
-        return $this->relayToPeer;
-    }
-
-    /**
-     * Must be called before connect(). This tells the remote node to relay transactions to us.
-     */
-    public function requestRelay()
-    {
-        $this->relayToUs = true;
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function hasFilter()
-    {
-        return $this->filter !== null;
-    }
-
-    /**
-     * @return BloomFilter
-     * @throws \Exception
-     */
-    public function getFilter()
-    {
-        if (!$this->hasFilter()) {
-            throw new \Exception('No filter set for peer');
-        }
-
-        return $this->filter;
-    }
-
-    /**
-     * @return bool
-     */
-    public function ready()
-    {
-        return $this->exchangedVersion;
+        return $this->connectionParams;
     }
 
     /**
@@ -225,10 +122,9 @@ class Peer extends EventEmitter
         try {
             while ($message = $this->msgs->parse($parser)) {
                 $tmp = $parser->getBuffer()->slice($parser->getPosition())->getBinary();
-                $command = $message->getCommand();
-                if ($this->exchangedVersion || ($command == 'version' || $command == 'verack')) {
-                    $this->emit('msg', [$this, $message]);
-                }
+                //if ($this->exchangedVersion || ($command == 'version' || $command == 'verack')) {
+                $this->emit('msg', [$this, $message]);
+                //}
             }
         } catch (\Exception $e) {
             $this->buffer = $tmp;
@@ -237,12 +133,12 @@ class Peer extends EventEmitter
     }
 
     /**
-     * Initializes basic peer functionality - used in server and client contexts
-     *
+     * @param Stream $stream
      * @return $this
      */
-    private function setupConnection()
+    public function setupStream(Stream $stream)
     {
+        $this->stream = $stream;
         $this->stream->on('data', function ($data) {
             $this->buffer .= $data;
             $this->emit('data');
@@ -264,37 +160,19 @@ class Peer extends EventEmitter
     }
 
     /**
-     * @param int $timeout
-     * @return $this
-     */
-    public function timeoutWithoutVersion($timeout = 20)
-    {
-        $this->once('data', function () use ($timeout) {
-            $this->loop->addPeriodicTimer($timeout, function (Timer $timer) {
-                if (false === $this->exchangedVersion) {
-                    $this->intentionalClose();
-                }
-                $timer->cancel();
-            });
-        });
-
-        return $this;
-    }
-
-    /**
-     * @param Connection $connection
+     * @param Stream $connection
+     * @param ConnectionParams $params
      * @return \React\Promise\Promise|\React\Promise\PromiseInterface
      */
-    public function inboundConnection(Connection $connection)
+    public function inboundHandshake(Stream $connection, ConnectionParams $params)
     {
-        $this->stream = $connection;
-        $this->inbound = true;
-        $this->setupConnection();
+        $this->setupStream($connection);
         $deferred = new Deferred();
 
-        $this->on('version', function (Peer $peer, Version $version) {
-            $this->remoteAddr = $version->getSenderAddress();
-            $this->version();
+        $this->on('version', function (Peer $peer, Version $version) use ($params) {
+            $this->remoteVersion = $version;
+            $this->localVersion = $localVersion = $params->produceVersion($this->msgs, $version->getSenderAddress());
+            $this->send($localVersion);
         });
 
         $this->on('verack', function () use ($deferred) {
@@ -308,42 +186,31 @@ class Peer extends EventEmitter
 
         return $deferred->promise();
     }
-    
+
     /**
-     * @param Connector $connector
-     * @param NetworkAddressInterface $remoteAddr
+     * @param NetworkAddressInterface $remotePeer
+     * @param ConnectionParams $params
      * @return \React\Promise\Promise|\React\Promise\PromiseInterface
      */
-    public function connect(Connector $connector, NetworkAddressInterface $remoteAddr)
+    public function outboundHandshake(NetworkAddressInterface $remotePeer, ConnectionParams $params)
     {
         $deferred = new Deferred();
-        $this->remoteAddr = $remoteAddr;
-        $this->inbound = false;
 
-        $connector
-            ->create($this->remoteAddr->getIp(), $this->remoteAddr->getPort())
-            ->then(function (Stream $stream) use ($deferred) {
-                $this->stream = $stream;
-                $this->setupConnection();
+        $this->on('version', function (Peer $peer, Version $version) {
+            $this->remoteVersion = $version;
+            $this->verack();
+        });
 
-                $this->on('version', function () {
-                    $this->verack();
-                });
+        $this->on('verack', function () use ($deferred) {
+            if (false === $this->exchangedVersion) {
+                $this->exchangedVersion = true;
+                $this->emit('ready', [$this]);
+                $deferred->resolve($this);
+            }
+        });
 
-                $this->on('verack', function () use ($deferred) {
-                    if (false === $this->exchangedVersion) {
-                        $this->exchangedVersion = true;
-                        $this->emit('ready', [$this]);
-                        $deferred->resolve($this);
-                    }
-                });
-
-                $this->version();
-
-            }, function ($error) use ($deferred) {
-                $deferred->reject($error);
-            });
-
+        $this->localVersion = $version = $params->produceVersion($this->msgs, $remotePeer);
+        $this->send($version);
 
         return $deferred->promise();
     }
@@ -368,19 +235,34 @@ class Peer extends EventEmitter
     }
 
     /**
-     * @return \BitWasp\Bitcoin\Networking\Messages\Version
+     * @param int $protocolVersion
+     * @param BufferInterface $services
+     * @param int $timestamp
+     * @param NetworkAddressInterface $remoteAddr
+     * @param NetworkAddressInterface $localAddr
+     * @param string $userAgent
+     * @param int $blockHeight
+     * @param bool $relayToUs
      */
-    public function version()
-    {
+    public function version(
+        $protocolVersion,
+        BufferInterface $services,
+        $timestamp,
+        NetworkAddressInterface $remoteAddr,
+        NetworkAddressInterface $localAddr,
+        $userAgent,
+        $blockHeight,
+        $relayToUs
+    ) {
         $this->send($this->msgs->version(
-            self::PROTOCOL_VERSION,
-            Buffer::hex('0000000000000001', 8),
-            time(),
-            $this->remoteAddr,
-            $this->localAddr,
-            new Buffer(self::USER_AGENT),
-            '363709',
-            $this->relayToUs
+            $protocolVersion,
+            $services,
+            $timestamp,
+            $remoteAddr,
+            $localAddr,
+            new Buffer($userAgent),
+            $blockHeight,
+            $relayToUs
         ));
     }
 
@@ -470,7 +352,7 @@ class Peer extends EventEmitter
     public function getblocks(BlockLocator $locator)
     {
         $this->send($this->msgs->getblocks(
-            self::PROTOCOL_VERSION,
+            $this->localVersion->getVersion(),
             $locator
         ));
     }
@@ -481,7 +363,7 @@ class Peer extends EventEmitter
     public function getheaders(BlockLocator $locator)
     {
         $this->send($this->msgs->getheaders(
-            self::PROTOCOL_VERSION,
+            $this->localVersion->getVersion(),
             $locator
         ));
     }

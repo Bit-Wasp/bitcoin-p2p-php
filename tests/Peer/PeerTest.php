@@ -5,14 +5,15 @@ namespace BitWasp\Bitcoin\Tests\Networking\Peer;
 use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Crypto\Random\Random;
 use BitWasp\Bitcoin\Networking\Messages\Factory;
+use BitWasp\Bitcoin\Networking\Peer\ConnectionParams;
 use BitWasp\Bitcoin\Networking\Peer\Listener;
+use BitWasp\Bitcoin\Networking\Peer\Connector;
 use BitWasp\Bitcoin\Networking\Peer\Peer;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
 use BitWasp\Bitcoin\Tests\Networking\AbstractTestCase;
 use BitWasp\Buffertools\Buffer;
 use React\EventLoop\StreamSelectLoop;
 use React\Socket\Server;
-use React\SocketClient\Connector;
 
 class PeerTest extends AbstractTestCase
 {
@@ -47,9 +48,6 @@ class PeerTest extends AbstractTestCase
 
     public function testPeer()
     {
-        $localhost = '127.0.0.1';
-        $localport = '8333';
-
         $remotehost = '127.0.0.1';
         $remoteport = '9999';
 
@@ -59,12 +57,6 @@ class PeerTest extends AbstractTestCase
         $reactServer = new Server($loop);
 
         $network = Bitcoin::getDefaultNetwork();
-
-        $client = new NetworkAddress(
-            Buffer::hex('0000000000000001'),
-            $localhost,
-            $localport
-        );
 
         $server = new NetworkAddress(
             Buffer::hex('0000000000000001'),
@@ -77,8 +69,10 @@ class PeerTest extends AbstractTestCase
             new Random()
         );
 
+        $params = new ConnectionParams();
+
         $serverReceivedConnection = false;
-        $serverListener = new Listener($server, $msgs, $reactServer, $loop);
+        $serverListener = new Listener($params, $msgs, $reactServer, $loop);
         $serverListener->on('connection', function (Peer $peer) use (&$serverReceivedConnection, &$serverListener) {
             $peer->close();
             $serverReceivedConnection = true;
@@ -87,17 +81,13 @@ class PeerTest extends AbstractTestCase
         $serverListener->listen($server->getPort());
 
         $connector = new Connector(
+            $msgs,
+            $params,
             $loop,
             $dns
         );
 
-        $clientConnection = new Peer(
-            $client,
-            $msgs,
-            $loop
-        );
-
-        $clientConnection->connect($connector, $server)->then(
+        $connector->connect($server)->then(
             function (Peer $peer) use ($serverListener, &$loop) {
                 $peer->close();
                 $serverListener->close();

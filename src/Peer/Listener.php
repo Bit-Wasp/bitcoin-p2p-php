@@ -12,11 +12,6 @@ use React\Socket\Server;
 class Listener extends EventEmitter
 {
     /**
-     * @var NetworkAddressInterface
-     */
-    private $local;
-
-    /**
      * @var LoopInterface
      */
     private $loop;
@@ -32,18 +27,24 @@ class Listener extends EventEmitter
     private $server;
 
     /**
-     * @param NetworkAddressInterface $localAddr
+     * @var ConnectionParams
+     */
+    private $params;
+
+    /**
+     * Listener constructor.
+     * @param ConnectionParams $params
      * @param MessageFactory $messageFactory
      * @param Server $server
      * @param LoopInterface $loop
      */
     public function __construct(
-        NetworkAddressInterface $localAddr,
+        ConnectionParams $params,
         MessageFactory $messageFactory,
         Server $server,
         LoopInterface $loop
     ) {
-        $this->local = $localAddr;
+        $this->params = $params;
         $this->messageFactory = $messageFactory;
         $this->server = $server;
         $this->loop = $loop;
@@ -52,26 +53,13 @@ class Listener extends EventEmitter
     }
 
     /**
-     * @return Peer
-     */
-    public function getPeer()
-    {
-        return new Peer(
-            $this->local,
-            $this->messageFactory,
-            $this->loop
-        );
-    }
-
-    /**
      * @param Connection $connection
      * @return \React\Promise\Promise|\React\Promise\PromiseInterface
      */
     public function handleIncomingPeer(Connection $connection)
     {
-        $this
-            ->getPeer()
-            ->inboundConnection($connection)
+        return (new Peer($this->messageFactory, $this->loop))
+            ->inboundHandshake($connection, $this->params)
             ->then(
                 function (Peer $peer) {
                     $this->emit('connection', [$peer]);

@@ -6,7 +6,10 @@ use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Crypto\Random\Random;
 use BitWasp\Bitcoin\Network\NetworkInterface;
 use BitWasp\Bitcoin\Networking\Dns\Resolver;
+use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
+use BitWasp\Buffertools\Buffer;
+use BitWasp\Buffertools\BufferInterface;
 use React\EventLoop\LoopInterface;
 
 class Factory
@@ -66,6 +69,21 @@ class Factory
             $messageFactory ?: $this->getMessages(),
             $this->loop,
             $localAddr
+        );
+    }
+
+    /**
+     * @param string $ipAddress
+     * @param int $port
+     * @param BufferInterface|null $services
+     * @return NetworkAddress
+     */
+    public function getAddress($ipAddress, $port = 8333, BufferInterface $services = null)
+    {
+        return new NetworkAddress(
+            $services ?: Buffer::hex('0000000000000001'),
+            $ipAddress,
+            $port
         );
     }
 }

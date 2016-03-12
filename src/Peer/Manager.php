@@ -9,14 +9,9 @@ use React\Promise\Deferred;
 class Manager extends EventEmitter
 {
     /**
-     * @var Factory
+     * @var P2PConnector
      */
-    private $peerFactory;
-
-    /**
-     * @var bool|false
-     */
-    private $requestRelay;
+    private $connector;
 
     /**
      * @var Peer[]
@@ -39,13 +34,12 @@ class Manager extends EventEmitter
     private $nInPeers = 0;
 
     /**
-     * @param Factory $factory
-     * @param bool|false $requestRelay
+     * Manager constructor.
+     * @param P2PConnector $connector
      */
-    public function __construct(Factory $factory, $requestRelay = false)
+    public function __construct(P2PConnector $connector)
     {
-        $this->peerFactory = $factory;
-        $this->requestRelay = $requestRelay;
+        $this->connector = $connector;
     }
 
     /**
@@ -94,45 +88,13 @@ class Manager extends EventEmitter
     }
 
     /**
-     * @param PacketHandler $packetHandler
-     */
-    public function registerHandler(PacketHandler $packetHandler)
-    {
-        $attach = function ($connectionType) use ($packetHandler) {
-            return function (Peer $peer) use ($connectionType, $packetHandler) {
-                $packetHandler->emit($connectionType, [$peer]);
-            };
-        };
-
-        $this->on('inbound', $attach('inbound'));
-        $this->on('outbound', $attach('outbound'));
-    }
-
-    /**
      * @param NetworkAddressInterface $address
      * @return \React\Promise\Promise|\React\Promise\PromiseInterface
      * @throws \Exception
      */
     public function connect(NetworkAddressInterface $address)
     {
-        $peer = $this->peerFactory->getPeer();
-        if ($this->requestRelay) {
-            $peer->requestRelay();
-        }
-
-        $deferred = new Deferred();
-        $peer
-            ->connect($this->peerFactory->getConnector(), $address)
-            ->then(
-                function ($peer) use ($deferred) {
-                    $deferred->resolve($peer);
-                },
-                function () use ($deferred) {
-                    $deferred->reject();
-                }
-            );
-
-        return $deferred->promise();
+        return $this->connector->connect($address);
     }
 
     /**

@@ -4,6 +4,7 @@ namespace BitWasp\Bitcoin\Tests\Networking\Peer;
 
 use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Crypto\Random\Random;
+use BitWasp\Bitcoin\Networking\Peer\ConnectionParams;
 use BitWasp\Bitcoin\Networking\Peer\Factory;
 use BitWasp\Bitcoin\Tests\Networking\AbstractTestCase;
 use BitWasp\Buffertools\Buffer;
@@ -28,13 +29,12 @@ class FactoryTest extends AbstractTestCase
         $messages = new \BitWasp\Bitcoin\Networking\Messages\Factory($network, $random);
         $factory = new Factory($dns, $messages, $loop);
 
-        $this->assertInstanceOf($this->peerType, $factory->getPeer());
-
         $services = Buffer::hex('00', 8);
         $address = $factory->getAddress('127.0.0.1', 8332, $services);
         $this->assertInstanceOf($this->addrType, $address);
 
-        $connector = $factory->getConnector();
+        $params = new ConnectionParams($messages);
+        $connector = $factory->getConnector($params);
         $this->assertInstanceOf($this->connType, $connector);
 
         $server = $factory->getServer();
@@ -43,10 +43,7 @@ class FactoryTest extends AbstractTestCase
         $locator = $factory->getLocator();
         $this->assertInstanceOf($this->locatorType, $locator);
 
-        $listener = $factory->getListener($server);
-        $this->assertInstanceOf($this->listenerType, $listener);
-
-        $manager = $factory->getManager();
+        $manager = $factory->getManager($connector);
         $this->assertInstanceOf($this->managerType, $manager);
 
     }

@@ -19,11 +19,6 @@ class Factory
     private $dns;
 
     /**
-     * @var NetworkAddressInterface
-     */
-    private $local;
-
-    /**
      * @var LoopInterface
      */
     private $loop;
@@ -34,29 +29,28 @@ class Factory
     private $msgFactory;
 
     /**
+     * Factory constructor.
      * @param Resolver $dns
      * @param \BitWasp\Bitcoin\Networking\Messages\Factory $factory
      * @param LoopInterface $loop
-     * @param NetworkAddressInterface $localAddress
      */
     public function __construct(
         Resolver $dns,
         \BitWasp\Bitcoin\Networking\Messages\Factory $factory,
-        LoopInterface $loop,
-        NetworkAddressInterface $localAddress = null
+        LoopInterface $loop
     ) {
         $this->dns = $dns;
         $this->msgFactory = $factory;
         $this->loop = $loop;
-        $this->setLocalAddr($localAddress ?: $this->getAddress('0.0.0.0'));
     }
 
     /**
-     * @return Connector
+     * @param ConnectionParams $params
+     * @return P2PConnector
      */
-    public function getConnector()
+    public function getConnector(ConnectionParams $params)
     {
-        return new Connector($this->loop, $this->dns);
+        return new P2PConnector($this->msgFactory, $params, $this->loop, $this->dns);
     }
 
     /**
@@ -65,14 +59,6 @@ class Factory
     public function getServer()
     {
         return new Server($this->loop);
-    }
-
-    /**
-     * @param NetworkAddressInterface $localAddress
-     */
-    public function setLocalAddr(NetworkAddressInterface $localAddress)
-    {
-        $this->local = $localAddress;
     }
 
     /**
@@ -91,18 +77,6 @@ class Factory
     }
 
     /**
-     * @return Peer
-     */
-    public function getPeer()
-    {
-        return new Peer(
-            $this->local,
-            $this->msgFactory,
-            $this->loop
-        );
-    }
-
-    /**
      * @return Locator
      */
     public function getLocator()
@@ -111,20 +85,11 @@ class Factory
     }
 
     /**
-     * @param bool|false $shouldRelay
+     * @param P2PConnector $connector
      * @return Manager
      */
-    public function getManager($shouldRelay = false)
+    public function getManager(P2PConnector $connector)
     {
-        return new Manager($this, $shouldRelay);
-    }
-
-    /**
-     * @param Server $server
-     * @return Listener
-     */
-    public function getListener(Server $server)
-    {
-        return new Listener($this->local, $this->msgFactory, $server, $this->loop);
+        return new Manager($connector);
     }
 }

@@ -3,6 +3,7 @@
 namespace BitWasp\Bitcoin\Networking\Messages;
 
 use BitWasp\Bitcoin\Block\FilteredBlock;
+use BitWasp\Bitcoin\Networking\Messages;
 use BitWasp\Bitcoin\Networking\NetworkSerializable;
 use BitWasp\Bitcoin\Networking\Serializer\Message\MerkleBlockSerializer;
 use BitWasp\Bitcoin\Serializer\Block\BlockHeaderSerializer;
@@ -29,7 +30,7 @@ class MerkleBlock extends NetworkSerializable
      */
     public function getNetworkCommand()
     {
-        return 'merkleblock';
+        return Messages::MERKLEBLOCK;
     }
 
     /**

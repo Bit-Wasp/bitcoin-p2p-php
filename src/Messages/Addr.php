@@ -2,6 +2,7 @@
 
 namespace BitWasp\Bitcoin\Networking\Messages;
 
+use BitWasp\Bitcoin\Networking\Messages;
 use BitWasp\Bitcoin\Networking\Serializer\Message\AddrSerializer;
 use BitWasp\Bitcoin\Networking\Serializer\Structure\NetworkAddressTimestampSerializer;
 use BitWasp\Bitcoin\Networking\NetworkSerializable;
@@ -29,7 +30,7 @@ class Addr extends NetworkSerializable implements \Countable
      */
     public function getNetworkCommand()
     {
-        return 'addr';
+        return Messages::ADDR;
     }
 
     /**

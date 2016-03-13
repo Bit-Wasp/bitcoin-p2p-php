@@ -2,6 +2,7 @@
 
 namespace BitWasp\Bitcoin\Networking\Messages;
 
+use BitWasp\Bitcoin\Networking\Messages;
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Bitcoin\Networking\NetworkSerializable;
 
@@ -12,7 +13,7 @@ class MemPool extends NetworkSerializable
      */
     public function getNetworkCommand()
     {
-        return 'mempool';
+        return Messages::MEMPOOL;
     }
 
     /**

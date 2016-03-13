@@ -3,6 +3,7 @@
 namespace BitWasp\Bitcoin\Networking\Messages;
 
 use BitWasp\Bitcoin\Block\BlockHeaderInterface;
+use BitWasp\Bitcoin\Networking\Messages;
 use BitWasp\Bitcoin\Networking\NetworkSerializable;
 use BitWasp\Bitcoin\Serializer\Block\BlockHeaderSerializer;
 use BitWasp\Bitcoin\Networking\Serializer\Message\HeadersSerializer;
@@ -38,7 +39,7 @@ class Headers extends NetworkSerializable implements \Countable
      */
     public function getNetworkCommand()
     {
-        return 'headers';
+        return Messages::HEADERS;
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace BitWasp\Bitcoin\Networking\Messages;
 
+use BitWasp\Bitcoin\Networking\Messages;
 use BitWasp\Bitcoin\Networking\NetworkSerializable;
 use BitWasp\Bitcoin\Networking\Serializer\Message\PongSerializer;
 
@@ -25,7 +26,7 @@ class Pong extends NetworkSerializable
      */
     public function getNetworkCommand()
     {
-        return 'pong';
+        return Messages::PONG;
     }
 
     /**

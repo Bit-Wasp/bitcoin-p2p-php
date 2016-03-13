@@ -2,6 +2,7 @@
 
 namespace BitWasp\Bitcoin\Networking\Messages;
 
+use BitWasp\Bitcoin\Networking\Messages;
 use BitWasp\Bitcoin\Networking\NetworkSerializable;
 use BitWasp\Bitcoin\Networking\Serializer\Message\FeeFilterSerializer;
 
@@ -34,7 +35,7 @@ class FeeFilter extends NetworkSerializable
      */
     public function getNetworkCommand()
     {
-        return 'feefilter';
+        return Messages::FEEFILTER;
     }
 
     /**

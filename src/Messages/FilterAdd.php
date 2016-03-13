@@ -2,6 +2,7 @@
 
 namespace BitWasp\Bitcoin\Networking\Messages;
 
+use BitWasp\Bitcoin\Networking\Messages;
 use BitWasp\Bitcoin\Networking\NetworkSerializable;
 use BitWasp\Bitcoin\Networking\Serializer\Message\FilterAddSerializer;
 use BitWasp\Buffertools\BufferInterface;
@@ -26,7 +27,7 @@ class FilterAdd extends NetworkSerializable
      */
     public function getNetworkCommand()
     {
-        return 'filteradd';
+        return Messages::FILTERADD;
     }
 
     /**

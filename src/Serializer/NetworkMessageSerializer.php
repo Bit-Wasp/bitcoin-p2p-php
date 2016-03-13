@@ -5,6 +5,7 @@ namespace BitWasp\Bitcoin\Networking\Serializer;
 use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Crypto\Hash;
 use BitWasp\Bitcoin\Network\NetworkInterface;
+use BitWasp\Bitcoin\Networking\Messages;
 use BitWasp\Bitcoin\Networking\Messages\Block;
 use BitWasp\Bitcoin\Networking\Messages\FilterClear;
 use BitWasp\Bitcoin\Networking\Messages\GetAddr;
@@ -225,73 +226,73 @@ class NetworkMessageSerializer
 
         $cmd = trim($command->getBinary());
         switch ($cmd) {
-            case 'version':
+            case Messages::VERSION:
                 $payload = $this->versionSerializer->parse($buffer);
                 break;
-            case 'verack':
+            case Messages::VERACK:
                 $payload = new VerAck();
                 break;
-            case 'sendheaders':
+            case Messages::SENDHEADERS:
                 $payload = new SendHeaders();
                 break;
-            case 'addr':
+            case Messages::ADDR:
                 $payload = $this->addrSerializer->parse($buffer);
                 break;
-            case 'inv':
+            case Messages::INV:
                 $payload = $this->invSerializer->parse($buffer);
                 break;
-            case 'getdata':
+            case Messages::GETDATA:
                 $payload = $this->getDataSerializer->parse($buffer);
                 break;
-            case 'notfound':
+            case Messages::NOTFOUND:
                 $payload = $this->notFoundSerializer->parse($buffer);
                 break;
-            case 'getblocks':
+            case Messages::GETBLOCKS:
                 $payload = $this->getBlocksSerializer->parse($buffer);
                 break;
-            case 'getheaders':
+            case Messages::GETHEADERS:
                 $payload = $this->getHeadersSerializer->parse($buffer);
                 break;
-            case 'tx':
+            case Messages::TX:
                 $payload = new Tx($this->txSerializer->parse($buffer));
                 break;
-            case 'block':
+            case Messages::BLOCK:
                 $payload = new Block($this->blockSerializer->parse($buffer));
                 break;
-            case 'headers':
+            case Messages::HEADERS:
                 $payload = $this->headersSerializer->parse($buffer);
                 break;
-            case 'getaddr':
+            case Messages::GETADDR:
                 $payload = new GetAddr();
                 break;
-            case 'mempool':
+            case Messages::MEMPOOL:
                 $payload = new MemPool();
                 break;
-            case 'feefilter':
+            case Messages::FEEFILTER:
                 $payload = $this->feeFilterSerializer->parse($buffer);
                 break;
-            case 'filterload':
+            case Messages::FILTERLOAD:
                 $payload = $this->filterLoadSerializer->parse($buffer);
                 break;
-            case 'filteradd':
+            case Messages::FILTERADD:
                 $payload = $this->filterAddSerializer->parse($buffer);
                 break;
-            case 'filterclear':
+            case Messages::FILTERCLEAR:
                 $payload = new FilterClear();
                 break;
-            case 'merkleblock':
+            case Messages::MERKLEBLOCK:
                 $payload = $this->merkleBlockSerializer->parse($buffer);
                 break;
-            case 'ping':
+            case Messages::PING:
                 $payload = $this->pingSerializer->parse($buffer);
                 break;
-            case 'pong':
+            case Messages::PONG:
                 $payload = $this->pongSerializer->parse($buffer);
                 break;
-            case 'reject':
+            case Messages::REJECT:
                 $payload = $this->rejectSerializer->parse($buffer);
                 break;
-            case 'alert':
+            case Messages::ALERT:
                 $payload = $this->alertSerializer->parse($buffer);
                 break;
             default:

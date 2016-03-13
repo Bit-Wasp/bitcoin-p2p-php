@@ -2,6 +2,7 @@
 
 namespace BitWasp\Bitcoin\Networking\Messages;
 
+use BitWasp\Bitcoin\Networking\Messages;
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Bitcoin\Networking\NetworkSerializable;
 
@@ -13,7 +14,7 @@ class VerAck extends NetworkSerializable
      */
     public function getNetworkCommand()
     {
-        return 'verack';
+        return Messages::VERACK;
     }
 
     /**

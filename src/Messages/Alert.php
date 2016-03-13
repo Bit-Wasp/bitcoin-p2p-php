@@ -2,6 +2,7 @@
 
 namespace BitWasp\Bitcoin\Networking\Messages;
 
+use BitWasp\Bitcoin\Networking\Messages;
 use BitWasp\Bitcoin\Networking\NetworkSerializable;
 use BitWasp\Bitcoin\Networking\Structure\AlertDetail;
 use BitWasp\Bitcoin\Networking\Serializer\Message\AlertSerializer;
@@ -35,7 +36,7 @@ class Alert extends NetworkSerializable
      */
     public function getNetworkCommand()
     {
-        return 'alert';
+        return Messages::ALERT;
     }
 
     /**

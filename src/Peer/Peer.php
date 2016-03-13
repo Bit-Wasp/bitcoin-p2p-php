@@ -6,6 +6,7 @@ use BitWasp\Bitcoin\Block\BlockInterface;
 use BitWasp\Bitcoin\Block\FilteredBlock;
 use BitWasp\Bitcoin\Bloom\BloomFilter;
 use BitWasp\Bitcoin\Chain\BlockLocator;
+use BitWasp\Bitcoin\Networking\Messages;
 use BitWasp\Bitcoin\Networking\Messages\Version;
 use BitWasp\Bitcoin\Networking\Messages\Ping;
 use BitWasp\Bitcoin\Networking\NetworkMessage;
@@ -185,7 +186,7 @@ class Peer extends EventEmitter
         $this->setupStream($connection);
         $deferred = new Deferred();
 
-        $this->on('version', function (Peer $peer, Version $version) use ($params) {
+        $this->on(Messages::VERSION, function (Peer $peer, Version $version) use ($params) {
             $split = str_split(stream_socket_get_name($this->stream->stream, true));
             if (count($split) === 2) {
                 list ($ip, $port) = $split;
@@ -199,7 +200,7 @@ class Peer extends EventEmitter
             $this->send($localVersion);
         });
 
-        $this->on('verack', function () use ($deferred) {
+        $this->on(Messages::VERACK, function () use ($deferred) {
             if (false === $this->exchangedVersion) {
                 $this->exchangedVersion = true;
                 $this->verack();
@@ -221,12 +222,12 @@ class Peer extends EventEmitter
     {
         $deferred = new Deferred();
 
-        $this->on('version', function (Peer $peer, Version $version) {
+        $this->on(Messages::VERSION, function (Peer $peer, Version $version) {
             $this->remoteVersion = $version;
             $this->verack();
         });
 
-        $this->on('verack', function () use ($deferred) {
+        $this->on(Messages::VERACK, function () use ($deferred) {
             if (false === $this->exchangedVersion) {
                 $this->exchangedVersion = true;
                 $this->emit('ready', [$this]);

@@ -2,7 +2,7 @@
 
 namespace BitWasp\Bitcoin\Networking\Messages;
 
-use BitWasp\Bitcoin\Networking\Messages;
+use BitWasp\Bitcoin\Networking\Message;
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Bitcoin\Networking\NetworkSerializable;
 
@@ -13,7 +13,7 @@ class GetAddr extends NetworkSerializable
      */
     public function getNetworkCommand()
     {
-        return Messages::GETADDR;
+        return Message::GETADDR;
     }
 
     /**

@@ -2,7 +2,7 @@
 
 namespace BitWasp\Bitcoin\Networking\Messages;
 
-use BitWasp\Bitcoin\Networking\Messages;
+use BitWasp\Bitcoin\Networking\Message;
 use BitWasp\Bitcoin\Networking\Serializer\Message\NotFoundSerializer;
 use BitWasp\Bitcoin\Networking\Serializer\Structure\InventorySerializer;
 
@@ -13,7 +13,7 @@ class NotFound extends AbstractInventory
      */
     public function getNetworkCommand()
     {
-        return Messages::NOTFOUND;
+        return Message::NOTFOUND;
     }
 
     /**

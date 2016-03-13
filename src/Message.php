@@ -2,7 +2,7 @@
 
 namespace BitWasp\Bitcoin\Networking;
 
-class Messages
+class Message
 {
     const ADDR = 'addr';
     const ALERT = 'alert';

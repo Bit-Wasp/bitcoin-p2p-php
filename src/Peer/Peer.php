@@ -12,6 +12,7 @@ use BitWasp\Bitcoin\Networking\NetworkMessage;
 use BitWasp\Bitcoin\Networking\NetworkSerializable;
 use BitWasp\Bitcoin\Networking\Structure\AlertDetail;
 use BitWasp\Bitcoin\Networking\Structure\Inventory;
+use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressTimestamp;
 use BitWasp\Bitcoin\Crypto\EcAdapter\Signature\SignatureInterface;
@@ -57,6 +58,11 @@ class Peer extends EventEmitter
     private $remoteVersion;
 
     /**
+     * @var NetworkAddressInterface
+     */
+    private $peerAddress;
+
+    /**
      * @var ConnectionParams
      */
     private $connectionParams;
@@ -93,6 +99,18 @@ class Peer extends EventEmitter
     }
 
     /**
+     * Reliably returns the remote peers NetAddr when known through
+     * the connection process. Often better than the data contained
+     * in a Version message.
+     *
+     * @return NetworkAddressInterface
+     */
+    public function getRemoteAddress()
+    {
+        return $this->peerAddress;
+    }
+
+    /**
      * @return ConnectionParams
      */
     public function getConnectionParams()
@@ -122,9 +140,7 @@ class Peer extends EventEmitter
         try {
             while ($message = $this->msgs->parse($parser)) {
                 $tmp = $parser->getBuffer()->slice($parser->getPosition())->getBinary();
-                //if ($this->exchangedVersion || ($command == 'version' || $command == 'verack')) {
                 $this->emit('msg', [$this, $message]);
-                //}
             }
         } catch (\Exception $e) {
             $this->buffer = $tmp;
@@ -170,6 +186,14 @@ class Peer extends EventEmitter
         $deferred = new Deferred();
 
         $this->on('version', function (Peer $peer, Version $version) use ($params) {
+            $split = str_split(stream_socket_get_name($this->stream->stream, true));
+            if (count($split) === 2) {
+                list ($ip, $port) = $split;
+                $this->peerAddress = new NetworkAddress($version->getServices(), $ip, $port);
+            } else {
+                $this->peerAddress = $version->getSenderAddress();
+            }
+
             $this->remoteVersion = $version;
             $this->localVersion = $localVersion = $params->produceVersion($this->msgs, $version->getSenderAddress());
             $this->send($localVersion);
@@ -183,6 +207,7 @@ class Peer extends EventEmitter
                 $deferred->resolve($this);
             }
         });
+
 
         return $deferred->promise();
     }
@@ -209,6 +234,7 @@ class Peer extends EventEmitter
             }
         });
 
+        $this->peerAddress = $remotePeer;
         $this->localVersion = $version = $params->produceVersion($this->msgs, $remotePeer);
         $this->send($version);
 

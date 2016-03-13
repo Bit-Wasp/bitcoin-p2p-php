@@ -5,7 +5,7 @@ namespace BitWasp\Bitcoin\Networking\Serializer;
 use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Crypto\Hash;
 use BitWasp\Bitcoin\Network\NetworkInterface;
-use BitWasp\Bitcoin\Networking\Messages;
+use BitWasp\Bitcoin\Networking\Message;
 use BitWasp\Bitcoin\Networking\Messages\Block;
 use BitWasp\Bitcoin\Networking\Messages\FilterClear;
 use BitWasp\Bitcoin\Networking\Messages\GetAddr;
@@ -226,73 +226,73 @@ class NetworkMessageSerializer
 
         $cmd = trim($command->getBinary());
         switch ($cmd) {
-            case Messages::VERSION:
+            case Message::VERSION:
                 $payload = $this->versionSerializer->parse($buffer);
                 break;
-            case Messages::VERACK:
+            case Message::VERACK:
                 $payload = new VerAck();
                 break;
-            case Messages::SENDHEADERS:
+            case Message::SENDHEADERS:
                 $payload = new SendHeaders();
                 break;
-            case Messages::ADDR:
+            case Message::ADDR:
                 $payload = $this->addrSerializer->parse($buffer);
                 break;
-            case Messages::INV:
+            case Message::INV:
                 $payload = $this->invSerializer->parse($buffer);
                 break;
-            case Messages::GETDATA:
+            case Message::GETDATA:
                 $payload = $this->getDataSerializer->parse($buffer);
                 break;
-            case Messages::NOTFOUND:
+            case Message::NOTFOUND:
                 $payload = $this->notFoundSerializer->parse($buffer);
                 break;
-            case Messages::GETBLOCKS:
+            case Message::GETBLOCKS:
                 $payload = $this->getBlocksSerializer->parse($buffer);
                 break;
-            case Messages::GETHEADERS:
+            case Message::GETHEADERS:
                 $payload = $this->getHeadersSerializer->parse($buffer);
                 break;
-            case Messages::TX:
+            case Message::TX:
                 $payload = new Tx($this->txSerializer->parse($buffer));
                 break;
-            case Messages::BLOCK:
+            case Message::BLOCK:
                 $payload = new Block($this->blockSerializer->parse($buffer));
                 break;
-            case Messages::HEADERS:
+            case Message::HEADERS:
                 $payload = $this->headersSerializer->parse($buffer);
                 break;
-            case Messages::GETADDR:
+            case Message::GETADDR:
                 $payload = new GetAddr();
                 break;
-            case Messages::MEMPOOL:
+            case Message::MEMPOOL:
                 $payload = new MemPool();
                 break;
-            case Messages::FEEFILTER:
+            case Message::FEEFILTER:
                 $payload = $this->feeFilterSerializer->parse($buffer);
                 break;
-            case Messages::FILTERLOAD:
+            case Message::FILTERLOAD:
                 $payload = $this->filterLoadSerializer->parse($buffer);
                 break;
-            case Messages::FILTERADD:
+            case Message::FILTERADD:
                 $payload = $this->filterAddSerializer->parse($buffer);
                 break;
-            case Messages::FILTERCLEAR:
+            case Message::FILTERCLEAR:
                 $payload = new FilterClear();
                 break;
-            case Messages::MERKLEBLOCK:
+            case Message::MERKLEBLOCK:
                 $payload = $this->merkleBlockSerializer->parse($buffer);
                 break;
-            case Messages::PING:
+            case Message::PING:
                 $payload = $this->pingSerializer->parse($buffer);
                 break;
-            case Messages::PONG:
+            case Message::PONG:
                 $payload = $this->pongSerializer->parse($buffer);
                 break;
-            case Messages::REJECT:
+            case Message::REJECT:
                 $payload = $this->rejectSerializer->parse($buffer);
                 break;
-            case Messages::ALERT:
+            case Message::ALERT:
                 $payload = $this->alertSerializer->parse($buffer);
                 break;
             default:

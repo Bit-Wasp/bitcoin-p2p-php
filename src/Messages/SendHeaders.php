@@ -2,7 +2,7 @@
 
 namespace BitWasp\Bitcoin\Networking\Messages;
 
-use BitWasp\Bitcoin\Networking\Messages;
+use BitWasp\Bitcoin\Networking\Message;
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Bitcoin\Networking\NetworkSerializable;
 
@@ -14,7 +14,7 @@ class SendHeaders extends NetworkSerializable
      */
     public function getNetworkCommand()
     {
-        return Messages::SENDHEADERS;
+        return Message::SENDHEADERS;
     }
 
     /**

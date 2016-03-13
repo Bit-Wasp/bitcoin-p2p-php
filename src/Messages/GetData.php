@@ -2,7 +2,7 @@
 
 namespace BitWasp\Bitcoin\Networking\Messages;
 
-use BitWasp\Bitcoin\Networking\Messages;
+use BitWasp\Bitcoin\Networking\Message;
 use BitWasp\Bitcoin\Networking\Serializer\Message\GetDataSerializer;
 use BitWasp\Bitcoin\Networking\Serializer\Structure\InventorySerializer;
 
@@ -13,7 +13,7 @@ class GetData extends AbstractInventory
      */
     public function getNetworkCommand()
     {
-        return Messages::GETDATA;
+        return Message::GETDATA;
     }
 
     /**

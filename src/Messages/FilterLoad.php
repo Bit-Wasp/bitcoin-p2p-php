@@ -3,7 +3,7 @@
 namespace BitWasp\Bitcoin\Networking\Messages;
 
 use BitWasp\Bitcoin\Bloom\BloomFilter;
-use BitWasp\Bitcoin\Networking\Messages;
+use BitWasp\Bitcoin\Networking\Message;
 use BitWasp\Bitcoin\Networking\NetworkSerializable;
 use BitWasp\Bitcoin\Serializer\Bloom\BloomFilterSerializer;
 use BitWasp\Bitcoin\Networking\Serializer\Message\FilterLoadSerializer;
@@ -29,7 +29,7 @@ class FilterLoad extends NetworkSerializable
      */
     public function getNetworkCommand()
     {
-        return Messages::FILTERLOAD;
+        return Message::FILTERLOAD;
     }
 
     /**

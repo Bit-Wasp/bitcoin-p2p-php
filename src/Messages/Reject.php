@@ -2,7 +2,7 @@
 
 namespace BitWasp\Bitcoin\Networking\Messages;
 
-use BitWasp\Bitcoin\Networking\Messages;
+use BitWasp\Bitcoin\Networking\Message;
 use BitWasp\Bitcoin\Networking\Serializer\Message\RejectSerializer;
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Bitcoin\Networking\NetworkSerializable;
@@ -66,7 +66,7 @@ class Reject extends NetworkSerializable
      */
     public function getNetworkCommand()
     {
-        return Messages::REJECT;
+        return Message::REJECT;
     }
 
     /**

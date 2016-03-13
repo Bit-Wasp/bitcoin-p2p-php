@@ -2,6 +2,7 @@
 
 namespace BitWasp\Bitcoin\Networking\Messages;
 
+use BitWasp\Bitcoin\Networking\Messages;
 use BitWasp\Bitcoin\Networking\NetworkSerializable;
 use BitWasp\Bitcoin\Transaction\TransactionInterface;
 
@@ -26,7 +27,7 @@ class Tx extends NetworkSerializable
      */
     public function getNetworkCommand()
     {
-        return 'tx';
+        return Messages::TX;
     }
 
     /**

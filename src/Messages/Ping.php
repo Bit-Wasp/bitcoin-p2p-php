@@ -2,6 +2,7 @@
 
 namespace BitWasp\Bitcoin\Networking\Messages;
 
+use BitWasp\Bitcoin\Networking\Messages;
 use BitWasp\Bitcoin\Networking\NetworkSerializable;
 use BitWasp\Bitcoin\Networking\Serializer\Message\PingSerializer;
 use BitWasp\Buffertools\Buffer;
@@ -27,7 +28,7 @@ class Ping extends NetworkSerializable
      */
     public function getNetworkCommand()
     {
-        return 'ping';
+        return Messages::PING;
     }
 
     /**

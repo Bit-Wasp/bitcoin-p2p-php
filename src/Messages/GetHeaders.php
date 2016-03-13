@@ -2,6 +2,7 @@
 
 namespace BitWasp\Bitcoin\Networking\Messages;
 
+use BitWasp\Bitcoin\Networking\Messages;
 use BitWasp\Bitcoin\Networking\Serializer\Message\GetHeadersSerializer;
 use BitWasp\Bitcoin\Serializer\Chain\BlockLocatorSerializer;
 
@@ -12,7 +13,7 @@ class GetHeaders extends AbstractBlockLocator
      */
     public function getNetworkCommand()
     {
-        return 'getheaders';
+        return Messages::GETHEADERS;
     }
 
     /**

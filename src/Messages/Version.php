@@ -3,6 +3,7 @@
 namespace BitWasp\Bitcoin\Networking\Messages;
 
 use BitWasp\Bitcoin\Bitcoin;
+use BitWasp\Bitcoin\Networking\Messages;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressTimestamp;
 use BitWasp\Bitcoin\Networking\Serializer\Message\VersionSerializer;
@@ -115,7 +116,7 @@ class Version extends NetworkSerializable
      */
     public function getNetworkCommand()
     {
-        return 'version';
+        return Messages::VERSION;
     }
 
     public function hasBlockchain()

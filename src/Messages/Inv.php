@@ -2,6 +2,7 @@
 
 namespace BitWasp\Bitcoin\Networking\Messages;
 
+use BitWasp\Bitcoin\Networking\Messages;
 use BitWasp\Bitcoin\Networking\Serializer\Message\InvSerializer;
 use BitWasp\Bitcoin\Networking\Serializer\Structure\InventorySerializer;
 
@@ -12,7 +13,7 @@ class Inv extends AbstractInventory
      */
     public function getNetworkCommand()
     {
-        return 'inv';
+        return Messages::INV;
     }
 
     /**

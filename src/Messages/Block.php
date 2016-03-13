@@ -3,6 +3,7 @@
 namespace BitWasp\Bitcoin\Networking\Messages;
 
 use BitWasp\Bitcoin\Block\BlockInterface;
+use BitWasp\Bitcoin\Networking\Messages;
 use BitWasp\Bitcoin\Networking\NetworkSerializable;
 
 class Block extends NetworkSerializable
@@ -26,7 +27,7 @@ class Block extends NetworkSerializable
      */
     public function getNetworkCommand()
     {
-        return 'block';
+        return Messages::BLOCK;
     }
 
     /**

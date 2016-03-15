@@ -60,7 +60,6 @@ class Locator
      */
     public function queryDnsSeeds($numSeeds = 1)
     {
-        echo "query dnsseeds\n";
         $peerList = new Deferred();
 
         // Take $numSeeds
@@ -74,7 +73,6 @@ class Locator
             $this->dns
                 ->resolve($seed)
                 ->then(function ($ipList) use (&$vNetAddr, $peerList, &$numSeeds) {
-                    echo 'list'.PHP_EOL;
                     $vNetAddr[] = $ipList;
                     if (count($vNetAddr) == $numSeeds) {
                         $peerList->resolve($vNetAddr);

@@ -263,7 +263,7 @@ class Peer extends EventEmitter
 
     /**
      * @param int $protocolVersion
-     * @param BufferInterface $services
+     * @param int $services
      * @param int $timestamp
      * @param NetworkAddressInterface $remoteAddr
      * @param NetworkAddressInterface $localAddr
@@ -273,7 +273,7 @@ class Peer extends EventEmitter
      */
     public function version(
         $protocolVersion,
-        BufferInterface $services,
+        $services,
         $timestamp,
         NetworkAddressInterface $remoteAddr,
         NetworkAddressInterface $localAddr,

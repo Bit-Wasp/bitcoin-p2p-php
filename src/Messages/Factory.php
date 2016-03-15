@@ -44,7 +44,7 @@ class Factory
 
     /**
      * @param int $version
-     * @param BufferInterface $services
+     * @param int $services
      * @param int $timestamp
      * @param NetworkAddressInterface $addrRecv
      * @param NetworkAddressInterface $addrFrom
@@ -55,7 +55,7 @@ class Factory
      */
     public function version(
         $version,
-        BufferInterface $services,
+        $services,
         $timestamp,
         NetworkAddressInterface $addrRecv,
         NetworkAddressInterface $addrFrom,

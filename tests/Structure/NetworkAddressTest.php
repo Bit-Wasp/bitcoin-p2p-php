@@ -2,6 +2,7 @@
 
 namespace BitWasp\Bitcoin\Tests\Networking\Structure;
 
+use BitWasp\Bitcoin\Networking\Services;
 use BitWasp\Bitcoin\Tests\Networking\AbstractTestCase;
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
@@ -26,7 +27,7 @@ class NetworkAddressTest extends AbstractTestCase
      */
     public function testNetworkAddress($ip, $port, $expected)
     {
-        $services = Buffer::hex('0000000000000001');
+        $services = Services::NETWORK;
         $from = new NetworkAddress($services, $ip, $port);
         $this->assertEquals($services, $from->getServices());
         $this->assertEquals($ip, $from->getIp());

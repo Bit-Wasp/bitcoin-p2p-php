@@ -4,6 +4,7 @@ namespace BitWasp\Bitcoin\Networking\Peer;
 
 use BitWasp\Bitcoin\Networking\Messages\Factory as MsgFactory;
 use BitWasp\Bitcoin\Networking\Messages\Version;
+use BitWasp\Bitcoin\Networking\Services;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
 use BitWasp\Buffertools\Buffer;
@@ -54,7 +55,7 @@ class ConnectionParams
     private $localPort;
 
     /**
-     * @var BufferInterface
+     * @var int
      */
     private $localServices;
 
@@ -128,10 +129,10 @@ class ConnectionParams
     }
 
     /**
-     * @param BufferInterface $services
+     * @param int $services
      * @return $this
      */
-    public function setLocalServices(BufferInterface $services)
+    public function setLocalServices($services)
     {
         $this->localServices = $services;
         return $this;
@@ -181,7 +182,7 @@ class ConnectionParams
     public function produceVersion(MsgFactory $messageFactory, NetworkAddressInterface $remoteAddress)
     {
         $protocolVersion = is_null($this->protocolVersion) ? $this->defaultProtocolVersion : $this->protocolVersion;
-        $localServices = is_null($this->localServices) ? new Buffer('', 8) : $this->localServices;
+        $localServices = is_null($this->localServices) ? Services::NONE : $this->localServices;
         $timestamp = is_null($this->timestamp) ? time() : $this->timestamp;
         $localAddr = new NetworkAddress(
             $localServices,

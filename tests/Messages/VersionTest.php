@@ -6,6 +6,7 @@ use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Crypto\Random\Random;
 use BitWasp\Bitcoin\Networking\Messages\Factory;
 use BitWasp\Bitcoin\Networking\Serializer\NetworkMessageSerializer;
+use BitWasp\Bitcoin\Networking\Services;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressTimestamp;
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Bitcoin\Networking\Messages\Version;
@@ -18,10 +19,10 @@ class VersionTest extends AbstractTestCase
     {
         $factory = new Factory(Bitcoin::getDefaultNetwork(), new Random());
         $v = '60002';
-        $services = Buffer::hex('0000000000000001');
+        $services = Services::NETWORK;
         $time = (string)time();
-        $recipient = new NetworkAddress(Buffer::hex('1'), '10.0.0.1', '8332');
-        $sender = new NetworkAddress(Buffer::hex('1'), '10.0.0.2', '8332');
+        $recipient = new NetworkAddress($services, '10.0.0.1', '8332');
+        $sender = new NetworkAddress($services, '10.0.0.2', '8332');
         $userAgent = new Buffer("/Satoshi:0.7.2/");
         $lastBlock = '212672';
 
@@ -46,17 +47,16 @@ class VersionTest extends AbstractTestCase
         $this->assertEquals($lastBlock, $version->getStartHeight());
         $this->assertInternalType('string', $version->getNonce());
         $this->assertTrue($version->getRelay());
-        $this->assertTrue($version->hasBlockchain());
     }
 
     public function testVersionWithTimestampedAddress()
     {
         $factory = new Factory(Bitcoin::getDefaultNetwork(), new Random());
         $v = '60002';
-        $services = Buffer::hex('0000000000000001');
+        $services = Services::NETWORK;
         $time = (string)time();
-        $recipient = new NetworkAddressTimestamp(1, Buffer::hex('1'), '10.0.0.1', '8332');
-        $sender = new NetworkAddressTimestamp(1, Buffer::hex('1'), '10.0.0.2', '8332');
+        $recipient = new NetworkAddressTimestamp(1, $services, '10.0.0.1', '8332');
+        $sender = new NetworkAddressTimestamp(1, $services, '10.0.0.2', '8332');
         $userAgent = new Buffer("/Satoshi:0.7.2/");
         $lastBlock = '212672';
 
@@ -77,42 +77,16 @@ class VersionTest extends AbstractTestCase
 
     }
 
-
-    public function testVersionWithoutBlockchain()
-    {
-        $factory = new Factory(Bitcoin::getDefaultNetwork(), new Random());
-        $v = '60002';
-        $services = Buffer::hex('0000000000000000');
-        $time = (string)time();
-        $recipient = new NetworkAddress(Buffer::hex('1'), '10.0.0.1', '8332');
-        $sender = new NetworkAddress(Buffer::hex('1'), '10.0.0.2', '8332');
-        $userAgent = new Buffer("/Satoshi:0.7.2/");
-        $lastBlock = '212672';
-
-        $version = $factory->version(
-            $v,
-            $services,
-            $time,
-            $recipient,
-            $sender,
-            $userAgent,
-            $lastBlock,
-            true
-        );
-
-        $this->assertFalse($version->hasBlockchain());
-    }
-
     /**
      * @expectedException \InvalidArgumentException
      */
     public function testVersionFails()
     {
         $v = '60002';
-        $services = Buffer::hex('0000000000000001');
+        $services = Services::NETWORK;
         $time = time();
-        $recipient = new NetworkAddress(Buffer::hex('1'), '10.0.0.1', '8332');
-        $sender = new NetworkAddress(Buffer::hex('1'), '10.0.0.2', '8332');
+        $recipient = new NetworkAddress($services, '10.0.0.1', '8332');
+        $sender = new NetworkAddress($services, '10.0.0.2', '8332');
         $userAgent = new Buffer("/Satoshi:0.7.2/");
         $lastBlock = '212672';
         $random = new Random();
@@ -133,10 +107,10 @@ class VersionTest extends AbstractTestCase
     public function testNetworkSerializer()
     {
         $v = '60002';
-        $services = Buffer::hex('0000000000000001');
+        $services = Services::NETWORK;
         $time = (string)time();
-        $recipient = new NetworkAddress(Buffer::hex('0000000000000001'), '10.0.0.1', '8332');
-        $sender = new NetworkAddress(Buffer::hex('0000000000000001'), '10.0.0.2', '8332');
+        $recipient = new NetworkAddress($services, '10.0.0.1', '8332');
+        $sender = new NetworkAddress($services, '10.0.0.2', '8332');
         $userAgent = new Buffer("/Satoshi:0.7.2/");
         $lastBlock = '212672';
         $random = new Random();

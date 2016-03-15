@@ -2,7 +2,6 @@
 
 namespace BitWasp\Bitcoin\Networking\Messages;
 
-use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Networking\Message;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressTimestamp;
@@ -16,16 +15,13 @@ use BitWasp\Buffertools\BufferInterface;
 
 class Version extends NetworkSerializable
 {
-    const NODE_NETWORK = 1;
-    const NODE_GETUTXOS = 2;
-
     /**
      * @var int|string
      */
     private $version;
 
     /**
-     * @var BufferInterface
+     * @var int
      */
     private $services;
 
@@ -66,7 +62,7 @@ class Version extends NetworkSerializable
 
     /**
      * @param int $version
-     * @param BufferInterface $services
+     * @param int $services
      * @param int $timestamp
      * @param NetworkAddressInterface $addrRecv
      * @param NetworkAddressInterface $addrFrom
@@ -77,7 +73,7 @@ class Version extends NetworkSerializable
      */
     public function __construct(
         $version,
-        BufferInterface $services,
+        $services,
         $timestamp,
         NetworkAddressInterface $addrRecv,
         NetworkAddressInterface $addrFrom,
@@ -119,12 +115,6 @@ class Version extends NetworkSerializable
         return Message::VERSION;
     }
 
-    public function hasBlockchain()
-    {
-        $math = Bitcoin::getMath();
-        return $math->cmp($math->bitwiseAnd($this->services->getInt(), self::NODE_NETWORK), self::NODE_NETWORK) == 0;
-    }
-
     /**
      * @return Buffer|int|string
      */
@@ -142,7 +132,7 @@ class Version extends NetworkSerializable
     }
 
     /**
-     * @return BufferInterface
+     * @return int
      */
     public function getServices()
     {

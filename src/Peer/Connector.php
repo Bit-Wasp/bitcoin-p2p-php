@@ -23,7 +23,7 @@ class Connector extends \React\SocketClient\Connector
     /**
      * @var LoopInterface
      */
-    private $loop;
+    private $eventLoop;
 
     /**
      * Connector constructor.
@@ -36,21 +36,21 @@ class Connector extends \React\SocketClient\Connector
     {
         $this->params = $params;
         $this->msgs = $msgs;
-        $this->loop = $loop;
+        $this->eventLoop = $loop;
 
         parent::__construct($loop, $resolver);
     }
 
     /**
      * @param NetworkAddressInterface $remotePeer
-     * @return \React\Promise\PromiseInterface|static
+     * @return \React\Promise\PromiseInterface
      */
     public function rawConnect(NetworkAddressInterface $remotePeer)
     {
         return $this
             ->create($remotePeer->getIp(), $remotePeer->getPort())
             ->then(function (Stream $stream) {
-                $peer = new Peer($this->msgs, $this->loop);
+                $peer = new Peer($this->msgs, $this->eventLoop);
                 $peer->setupStream($stream);
                 return $peer;
             });
@@ -58,7 +58,7 @@ class Connector extends \React\SocketClient\Connector
 
     /**
      * @param NetworkAddressInterface $remotePeer
-     * @return \React\Promise\PromiseInterface|static
+     * @return \React\Promise\PromiseInterface
      */
     public function connect(NetworkAddressInterface $remotePeer)
     {

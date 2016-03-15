@@ -8,7 +8,6 @@ use BitWasp\Bitcoin\Networking\Services;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
 use BitWasp\Buffertools\Buffer;
-use BitWasp\Buffertools\BufferInterface;
 
 class ConnectionParams
 {

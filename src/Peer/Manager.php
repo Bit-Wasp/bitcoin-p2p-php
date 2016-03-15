@@ -89,7 +89,7 @@ class Manager extends EventEmitter
 
     /**
      * @param NetworkAddressInterface $address
-     * @return \React\Promise\Promise|\React\Promise\PromiseInterface
+     * @return \React\Promise\PromiseInterface
      * @throws \Exception
      */
     public function connect(NetworkAddressInterface $address)
@@ -99,7 +99,7 @@ class Manager extends EventEmitter
 
     /**
      * @param Locator $locator
-     * @return \React\Promise\ExtendedPromiseInterface|\React\Promise\Promise|static
+     * @return \React\Promise\ExtendedPromiseInterface
      */
     public function connectNextPeer(Locator $locator)
     {

@@ -54,6 +54,11 @@ class NetworkMessageSerializer
     private $network;
 
     /**
+     * @var \BitWasp\Bitcoin\Math\Math
+     */
+    private $math;
+
+    /**
      * @var TransactionSerializer
      */
     private $txSerializer;
@@ -62,6 +67,16 @@ class NetworkMessageSerializer
      * @var BlockHeaderSerializer
      */
     private $headerSerializer;
+
+    /**
+     * @var GetDataSerializer
+     */
+    private $getDataSerializer;
+
+    /**
+     * @var InvSerializer
+     */
+    private $invSerializer;
 
     /**
      * @var BlockSerializer
@@ -217,7 +232,7 @@ class NetworkMessageSerializer
 
         $buffer = $payloadSize > 0
             ? $parser->readBytes($payloadSize)
-            : new Buffer();
+            : new Buffer('', 0, $this->math);
 
         // Compare payload checksum against header value
         if (Hash::sha256d($buffer)->slice(0, 4)->getBinary() !== $checksum->getBinary()) {
@@ -314,8 +329,8 @@ class NetworkMessageSerializer
         $payload = $object->getPayload()->getBuffer();
         $command = str_pad(unpack("H*", $object->getCommand())[1], 24, '0', STR_PAD_RIGHT);
         $header = $this->getHeaderTemplate()->write([
-            Buffer::hex($this->network->getNetMagicBytes()),
-            Buffer::hex($command),
+            Buffer::hex($this->network->getNetMagicBytes(), null, $this->math),
+            Buffer::hex($command, null, $this->math),
             $payload->getSize(),
             $object->getChecksum()
         ]);
@@ -330,6 +345,6 @@ class NetworkMessageSerializer
      */
     public function parse($data)
     {
-        return $this->fromParser(new Parser($data));
+        return $this->fromParser(new Parser($data, $this->math));
     }
 }

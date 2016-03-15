@@ -28,6 +28,7 @@ class ManagerTest extends AbstractTestCase
         $deferred = new Deferred();
         $locator->queryDnsSeeds(1)->then(function (Locator $locator) use ($manager, $deferred) {
             $manager->connectToPeers($locator, 2)->then(function (array $peers) use ($deferred) {
+                /** @var Peer[] $peers */
                 foreach ($peers as $peer) {
                     $peer->close();
                 }

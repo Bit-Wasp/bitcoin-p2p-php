@@ -15,11 +15,11 @@ class NetworkAddressTimestamp extends NetworkAddress
 
     /**
      * @param int $time
-     * @param BufferInterface $services
+     * @param int $services
      * @param string $ip
      * @param int|string $port
      */
-    public function __construct($time, BufferInterface $services, $ip, $port)
+    public function __construct($time, $services, $ip, $port)
     {
         $this->time = $time;
         parent::__construct($services, $ip, $port);

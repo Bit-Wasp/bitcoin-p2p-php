@@ -57,13 +57,13 @@ class Factory
     /**
      * @param string $ipAddress
      * @param int $port
-     * @param BufferInterface|null $services
+     * @param int $services
      * @return NetworkAddress
      */
-    public function getAddress($ipAddress, $port = 8333, BufferInterface $services = null)
+    public function getAddress($ipAddress, $port = 8333, $services = Services::NONE)
     {
         return new NetworkAddress(
-            $services ?: Buffer::hex('0000000000000001'),
+            $services,
             $ipAddress,
             $port
         );

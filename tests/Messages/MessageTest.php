@@ -7,6 +7,7 @@ use BitWasp\Bitcoin\Crypto\Hash;
 use BitWasp\Bitcoin\Crypto\Random\Random;
 use BitWasp\Bitcoin\Network\NetworkFactory;
 use BitWasp\Bitcoin\Networking\Messages\Version;
+use BitWasp\Bitcoin\Networking\Services;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
 use BitWasp\Bitcoin\Networking\Serializer\NetworkMessageSerializer;
 use BitWasp\Bitcoin\Tests\Networking\AbstractTestCase;
@@ -80,10 +81,10 @@ class MessageTest extends AbstractTestCase
     public function testInvalidChecksum()
     {
         $v = '60002';
-        $services = Buffer::hex('0000000000000001');
+        $services = Services::NETWORK;
         $time = '123456789';
-        $recipient = new NetworkAddress(Buffer::hex('0000000000000001'), '10.0.0.1', '8332');
-        $sender = new NetworkAddress(Buffer::hex('0000000000000001'), '10.0.0.2', '8332');
+        $recipient = new NetworkAddress($services, '10.0.0.1', '8332');
+        $sender = new NetworkAddress($services, '10.0.0.2', '8332');
         $userAgent = new Buffer("/Satoshi:0.7.2/");
         $lastBlock = '212672';
         $random = new Random();
@@ -122,10 +123,10 @@ class MessageTest extends AbstractTestCase
     public function testInvalidBytes()
     {
         $v = '60002';
-        $services = Buffer::hex('0000000000000001');
+        $services = Services::NETWORK;
         $time = '123456789';
-        $recipient = new NetworkAddress(Buffer::hex('0000000000000001'), '10.0.0.1', '8332');
-        $sender = new NetworkAddress(Buffer::hex('0000000000000001'), '10.0.0.2', '8332');
+        $recipient = new NetworkAddress($services, '10.0.0.1', '8332');
+        $sender = new NetworkAddress($services, '10.0.0.2', '8332');
         $userAgent = new Buffer("/Satoshi:0.7.2/");
         $lastBlock = '212672';
         $random = new Random();
@@ -143,7 +144,6 @@ class MessageTest extends AbstractTestCase
         );
 
         $bitcoin = new NetworkMessageSerializer(NetworkFactory::bitcoin());
-
         $serialized = $version->getNetworkMessage(NetworkFactory::viacoinTestnet())->getBuffer();
         $bitcoin->parse($serialized);
     }

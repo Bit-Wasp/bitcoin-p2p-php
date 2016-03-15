@@ -3,14 +3,13 @@
 namespace BitWasp\Bitcoin\Networking\Structure;
 
 use BitWasp\Bitcoin\Networking\Serializer\Structure\NetworkAddressSerializer;
-use BitWasp\Buffertools\Buffer;
 use BitWasp\Bitcoin\Serializable;
 use BitWasp\Buffertools\BufferInterface;
 
 class NetworkAddress extends Serializable implements NetworkAddressInterface
 {
     /**
-     * @var BufferInterface
+     * @var int
      */
     private $services;
 
@@ -25,22 +24,23 @@ class NetworkAddress extends Serializable implements NetworkAddressInterface
     private $port;
 
     /**
-     * @param BufferInterface $services
-     * @param $ip
-     * @param $port
+     * @param int $services
+     * @param string $ip
+     * @param int $port
      */
-    public function __construct(BufferInterface $services, $ip, $port)
+    public function __construct($services, $ip, $port)
     {
         if (false === filter_var($ip, FILTER_VALIDATE_IP) && false === filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
             throw new \InvalidArgumentException('NetworkAddress requires a valid IP address');
         }
+
         $this->services = $services;
         $this->ip = $ip;
         $this->port = $port;
     }
 
     /**
-     * @return BufferInterface
+     * @return int
      */
     public function getServices()
     {

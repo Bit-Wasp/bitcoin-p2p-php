@@ -29,7 +29,7 @@ class VersionSerializer
     {
         return (new TemplateFactory())
             ->uint32le()      // version
-            ->bytestringle(8)   // services
+            ->uint64le()   // services
             ->uint64le()      // timestamp
             ->bytestring(26)  // addrRecv
             ->bytestring(26)  // addrFrom

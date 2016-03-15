@@ -16,7 +16,7 @@ class NetworkAddressSerializer
     private function getTemplate()
     {
         return (new TemplateFactory())
-            ->bytestringle(8)
+            ->uint64le()
             ->bytestring(16)
             ->uint16()
             ->getTemplate();
@@ -35,6 +35,10 @@ class NetworkAddressSerializer
         return $buffer;
     }
 
+    /**
+     * @param BufferInterface $ip
+     * @return string
+     */
     private function parseIpBuffer(BufferInterface $ip)
     {
         $end = $ip->slice(12, 4);

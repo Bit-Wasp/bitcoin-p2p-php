@@ -9,6 +9,7 @@ use BitWasp\Bitcoin\Networking\Peer\ConnectionParams;
 use BitWasp\Bitcoin\Networking\Peer\Listener;
 use BitWasp\Bitcoin\Networking\Peer\Connector;
 use BitWasp\Bitcoin\Networking\Peer\Peer;
+use BitWasp\Bitcoin\Networking\Services;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
 use BitWasp\Bitcoin\Tests\Networking\AbstractTestCase;
 use BitWasp\Buffertools\Buffer;
@@ -59,7 +60,7 @@ class PeerTest extends AbstractTestCase
         $network = Bitcoin::getDefaultNetwork();
 
         $server = new NetworkAddress(
-            Buffer::hex('0000000000000001'),
+            Services::NETWORK,
             $remotehost,
             $remoteport
         );

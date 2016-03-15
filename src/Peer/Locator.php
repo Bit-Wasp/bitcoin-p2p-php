@@ -2,9 +2,9 @@
 
 namespace BitWasp\Bitcoin\Networking\Peer;
 
+use BitWasp\Bitcoin\Networking\Services;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
-use BitWasp\Buffertools\Buffer;
 use React\Dns\Resolver\Resolver;
 use React\Promise\Deferred;
 
@@ -60,6 +60,7 @@ class Locator
      */
     public function queryDnsSeeds($numSeeds = 1)
     {
+        echo "query dnsseeds\n";
         $peerList = new Deferred();
 
         // Take $numSeeds
@@ -73,6 +74,7 @@ class Locator
             $this->dns
                 ->resolve($seed)
                 ->then(function ($ipList) use (&$vNetAddr, $peerList, &$numSeeds) {
+                    echo 'list'.PHP_EOL;
                     $vNetAddr[] = $ipList;
                     if (count($vNetAddr) == $numSeeds) {
                         $peerList->resolve($vNetAddr);
@@ -94,7 +96,7 @@ class Locator
                         function (array $value) use (&$addresses) {
                             foreach ($value as $ip) {
                                 $addresses[] = new NetworkAddress(
-                                    Buffer::hex('01', 8),
+                                    Services::NETWORK,
                                     $ip,
                                     8333
                                 );

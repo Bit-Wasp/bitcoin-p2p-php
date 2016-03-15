@@ -5,6 +5,7 @@ namespace BitWasp\Bitcoin\Networking\Serializer\Structure;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Buffertools\BufferInterface;
+use BitWasp\Buffertools\Buffertools;
 use BitWasp\Buffertools\Parser;
 use BitWasp\Buffertools\TemplateFactory;
 
@@ -28,26 +29,20 @@ class NetworkAddressSerializer
      */
     private function getIpBuffer($ip)
     {
-        $hex = (string)dechex(ip2long($ip));
-        $hex = (strlen($hex) % 2 == 1) ? '0' . $hex : $hex;
-        $hex = '00000000000000000000'.'ffff' . $hex;
-        $buffer = Buffer::hex($hex);
-        return $buffer;
+        return Buffertools::concat(
+            Buffer::hex('00000000000000000000ffff'),
+            Buffer::int(ip2long($ip), 4)
+        );
     }
 
+    /**
+     * @param BufferInterface $ip
+     * @return string
+     */
     private function parseIpBuffer(BufferInterface $ip)
     {
         $end = $ip->slice(12, 4);
-
-        return implode(
-            ".",
-            array_map(
-                function ($int) {
-                    return unpack("C", $int)[1];
-                },
-                str_split($end->getBinary(), 1)
-            )
-        );
+        return long2ip($end->getInt());
     }
 
     /**

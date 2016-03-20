@@ -29,8 +29,7 @@
     "symfony/console": "~2.6",
     "react/socket-client": "~0.4",
     "react/socket": "~0.4",
-    "react/dns": "~0.4",
-    "doctrine/cache": "^1.4"
+    "react/dns": "~0.4"
   },
   "require-dev": {
     "bitwasp/testing-php": "~0.0",

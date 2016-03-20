@@ -189,7 +189,7 @@ class ConnectionParams
             is_null($this->localPort) ? $this->defaultLocalPort : $this->localPort
         );
 
-        $userAgent = new Buffer(is_null($this->userAgent) ? $this->defaultUserAgent : $this->userAgent);
+        $userAgent = is_null($this->userAgent) ? new Buffer($this->defaultUserAgent) : $this->userAgent;
 
         if (is_callable($this->bestBlockHeightCallback)) {
             $cb = $this->bestBlockHeightCallback;

@@ -45,4 +45,19 @@ class RejectTest extends AbstractTestCase
             new Buffer()
         );
     }
+    
+    public function testDefaultBuffer()
+    {
+        $net = Bitcoin::getDefaultNetwork();
+        $factory = new Factory($net, new Random());
+        $reject = $factory->reject(
+            new Buffer(),
+            Reject::REJECT_CHECKPOINT,
+            new Buffer()
+        );
+
+        $empty = new Buffer();
+        $data = $reject->getData();
+        $this->assertTrue($empty->equals($data));
+    }
 }

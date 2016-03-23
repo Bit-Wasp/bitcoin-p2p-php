@@ -2,7 +2,6 @@
 
 namespace BitWasp\Bitcoin\Networking\Ip;
 
-
 use Base32\Base32;
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Buffertools\BufferInterface;

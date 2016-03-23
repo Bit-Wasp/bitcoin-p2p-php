@@ -2,7 +2,6 @@
 
 namespace BitWasp\Bitcoin\Networking\Serializer\Ip;
 
-
 use Base32\Base32;
 use BitWasp\Bitcoin\Networking\Ip\IpInterface;
 use BitWasp\Bitcoin\Networking\Ip\Ipv4;

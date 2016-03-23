@@ -2,7 +2,6 @@
 
 namespace BitWasp\Bitcoin\Networking\Tests\Serializer\Ip;
 
-
 use BitWasp\Bitcoin\Networking\Ip\Ipv4;
 use BitWasp\Bitcoin\Networking\Ip\Ipv6;
 use BitWasp\Bitcoin\Networking\Ip\Onion;
@@ -21,7 +20,6 @@ class IpSerializerTest extends AbstractTestCase
             [ $ipSerializer, Onion::class, 'fd87d87eeb43edb108e43588e54635ca' /* hex */, '5wyqrzbvrdsumnok.onion' /* ip */],
         ];
     }
-
 
     /**
      * @dataProvider  getVectors

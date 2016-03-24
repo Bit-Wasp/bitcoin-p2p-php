@@ -57,4 +57,4 @@ class Onion implements IpInterface
     {
         return new Buffer(self::MAGIC . $this->identifier);
     }
-};
+}

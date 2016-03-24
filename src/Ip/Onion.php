@@ -15,6 +15,9 @@ class Onion implements IpInterface
      */
     private $host;
 
+    /**
+     * @var string
+     */
     private $identifier;
 
     /**

@@ -15,9 +15,9 @@ class IpSerializerTest extends AbstractTestCase
     {
         $ipSerializer = new IpSerializer();
         return [
-            [ $ipSerializer, Ipv6::class, '20010db83c4d001500000000abcdef12' /* hex */, '2001:0db8:3c4d:0015:0000:0000:abcd:ef12' /* ip */],
-            [ $ipSerializer, Ipv4::class, '00000000000000000000ffffffffffff' /* hex */, '255.255.255.255' /* ip */],
-            [ $ipSerializer, Onion::class, 'fd87d87eeb43edb108e43588e54635ca' /* hex */, '5wyqrzbvrdsumnok.onion' /* ip */],
+            [ $ipSerializer, 'BitWasp\Bitcoin\Networking\Ip\Ipv6', '20010db83c4d001500000000abcdef12' /* hex */, '2001:0db8:3c4d:0015:0000:0000:abcd:ef12' /* ip */],
+            [ $ipSerializer, 'BitWasp\Bitcoin\Networking\Ip\Ipv4', '00000000000000000000ffffffffffff' /* hex */, '255.255.255.255' /* ip */],
+            [ $ipSerializer, 'BitWasp\Bitcoin\Networking\Ip\Onion', 'fd87d87eeb43edb108e43588e54635ca' /* hex */, '5wyqrzbvrdsumnok.onion' /* ip */],
         ];
     }
 

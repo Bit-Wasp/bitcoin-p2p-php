@@ -184,10 +184,11 @@ class Peer extends EventEmitter
     public function inboundHandshake(Stream $connection, ConnectionParams $params)
     {
         $this->setupStream($connection);
-        $deferred = new Deferred();
+        $this->connectionParams = $params;
 
+        $deferred = new Deferred();
         $this->on(Message::VERSION, function (Peer $peer, Version $version) use ($params) {
-            $split = str_split(stream_socket_get_name($this->stream->stream, true));
+            $split = explode(":", stream_socket_get_name($this->stream->stream, true));
             if (count($split) === 2) {
                 list ($ip, $port) = $split;
                 $this->peerAddress = new NetworkAddress($version->getServices(), $ip, $port);
@@ -237,6 +238,8 @@ class Peer extends EventEmitter
 
         $this->peerAddress = $remotePeer;
         $this->localVersion = $version = $params->produceVersion($this->msgs, $remotePeer);
+        $this->connectionParams = $params;
+
         $this->send($version);
 
         return $deferred->promise();

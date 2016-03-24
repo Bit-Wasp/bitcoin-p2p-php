@@ -6,9 +6,10 @@ use BitWasp\Bitcoin\Networking\Messages\Factory as MsgFactory;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
 use React\Dns\Resolver\Resolver;
 use React\EventLoop\LoopInterface;
+use React\SocketClient\ConnectorInterface;
 use React\Stream\Stream;
 
-class Connector extends \React\SocketClient\Connector
+class Connector
 {
     /**
      * @var ConnectionParams
@@ -26,19 +27,28 @@ class Connector extends \React\SocketClient\Connector
     private $eventLoop;
 
     /**
+     * @var \React\SocketClient\Connector|ConnectorInterface
+     */
+    private $socketConnector;
+
+    /**
      * Connector constructor.
      * @param MsgFactory $msgs
      * @param ConnectionParams $params
      * @param LoopInterface $loop
      * @param Resolver $resolver
+     * @param ConnectorInterface $connector
      */
-    public function __construct(MsgFactory $msgs, ConnectionParams $params, LoopInterface $loop, Resolver $resolver)
+    public function __construct(MsgFactory $msgs, ConnectionParams $params, LoopInterface $loop, Resolver $resolver, ConnectorInterface $connector = null)
     {
         $this->params = $params;
         $this->msgs = $msgs;
         $this->eventLoop = $loop;
+        if (null === $connector) {
+            $connector = new \React\SocketClient\Connector($loop, $resolver);
+        }
 
-        parent::__construct($loop, $resolver);
+        $this->socketConnector = $connector;
     }
 
     /**
@@ -47,7 +57,7 @@ class Connector extends \React\SocketClient\Connector
      */
     public function rawConnect(NetworkAddressInterface $remotePeer)
     {
-        return $this
+        return $this->socketConnector
             ->create($remotePeer->getIp(), $remotePeer->getPort())
             ->then(function (Stream $stream) {
                 $peer = new Peer($this->msgs, $this->eventLoop);

@@ -2,6 +2,7 @@
 
 namespace BitWasp\Bitcoin\Networking\Structure;
 
+use BitWasp\Bitcoin\Networking\Ip\IpInterface;
 use BitWasp\Bitcoin\Networking\Serializer\Structure\NetworkAddressSerializer;
 use BitWasp\Bitcoin\Serializable;
 use BitWasp\Buffertools\BufferInterface;
@@ -14,7 +15,7 @@ class NetworkAddress extends Serializable implements NetworkAddressInterface
     private $services;
 
     /**
-     * @var string
+     * @var IpInterface
      */
     private $ip;
 
@@ -25,10 +26,10 @@ class NetworkAddress extends Serializable implements NetworkAddressInterface
 
     /**
      * @param int $services
-     * @param string $ip
+     * @param IpInterface $ip
      * @param int $port
      */
-    public function __construct($services, $ip, $port)
+    public function __construct($services, IpInterface $ip, $port)
     {
         if (false === filter_var($ip, FILTER_VALIDATE_IP) && false === filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
             throw new \InvalidArgumentException('NetworkAddress requires a valid IP address');
@@ -48,7 +49,7 @@ class NetworkAddress extends Serializable implements NetworkAddressInterface
     }
 
     /**
-     * @return string
+     * @return IpInterface
      */
     public function getIp()
     {

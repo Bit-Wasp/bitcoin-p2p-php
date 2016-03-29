@@ -183,7 +183,6 @@ class Peer extends EventEmitter
      */
     public function inboundHandshake(Stream $connection, ConnectionParams $params)
     {
-        $this->setupStream($connection);
         $this->connectionParams = $params;
 
         $deferred = new Deferred();

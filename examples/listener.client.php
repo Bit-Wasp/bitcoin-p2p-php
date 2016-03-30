@@ -7,12 +7,12 @@ use BitWasp\Bitcoin\Networking\Peer\Peer;
 use BitWasp\Bitcoin\Networking\Messages\Addr;
 use BitWasp\Bitcoin\Networking\Peer\ConnectionParams;
 use BitWasp\Bitcoin\Networking\Peer\Connector;
-
+use BitWasp\Bitcoin\Networking\Ip\Ipv4;
 
 $loop = React\EventLoop\Factory::create();
 $factory = new \BitWasp\Bitcoin\Networking\Factory($loop);
-$host = $factory->getAddress('127.0.0.1', 8334);
-$local = $factory->getAddress('192.168.192.39', 32301);
+$host = $factory->getAddress(new Ipv4('127.0.0.1'), 8334);
+$local = $factory->getAddress(new Ipv4('192.168.192.39'), 32301);
 
 $connector = new Connector($factory->getMessages(), new ConnectionParams(), $loop, $factory->getDns());
 

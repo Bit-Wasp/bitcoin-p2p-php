@@ -4,6 +4,7 @@ namespace BitWasp\Bitcoin\Tests\Networking\Peer;
 
 use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Crypto\Random\Random;
+use BitWasp\Bitcoin\Networking\Ip\Ipv4;
 use BitWasp\Bitcoin\Networking\Messages\Factory;
 use BitWasp\Bitcoin\Networking\Messages\Version;
 use BitWasp\Bitcoin\Networking\Peer\ConnectionParams;
@@ -51,7 +52,8 @@ class PeerTest extends AbstractTestCase
 
     public function testPeer()
     {
-        $remotehost = '127.0.0.1';
+        $localhost = new Ipv4('9.9.9.9');
+        $remotehost = new Ipv4('127.0.0.1');
         $remoteport = '9999';
 
         $loop = new StreamSelectLoop();
@@ -73,7 +75,7 @@ class PeerTest extends AbstractTestCase
         );
 
         $params = new ConnectionParams();
-        $params->setLocalIp('9.9.9.9');
+        $params->setLocalIp($localhost);
         $params->setBestBlockHeight(100);
 
         /** @var Version $serverReceivedVersion */
@@ -112,11 +114,10 @@ class PeerTest extends AbstractTestCase
         $loop->run();
 
         $this->assertTrue($serverReceivedConnection);
-        $this->assertEquals('9.9.9.9', $serverReceivedVersion->getSenderAddress()->getIp());
+        $this->assertEquals($localhost->getHost(), $serverReceivedVersion->getSenderAddress()->getIp()->getHost());
         $this->assertEquals(100, $serverReceivedVersion->getStartHeight());
         $this->assertEquals('bitcoin-php', $serverReceivedVersion->getUserAgent()->getBinary());
-
-        $this->assertEquals('127.0.0.1', $serverInboundAddr->getIp());
+        
         $this->assertSame($params, $localParams);
     }
 }

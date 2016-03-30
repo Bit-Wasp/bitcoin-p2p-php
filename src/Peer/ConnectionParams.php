@@ -2,6 +2,8 @@
 
 namespace BitWasp\Bitcoin\Networking\Peer;
 
+use BitWasp\Bitcoin\Networking\Ip\IpInterface;
+use BitWasp\Bitcoin\Networking\Ip\Ipv4;
 use BitWasp\Bitcoin\Networking\Messages\Factory as MsgFactory;
 use BitWasp\Bitcoin\Networking\Messages\Version;
 use BitWasp\Bitcoin\Networking\Services;
@@ -108,10 +110,10 @@ class ConnectionParams
     }
 
     /**
-     * @param string $ip
+     * @param IpInterface $ip
      * @return $this
      */
-    public function setLocalIp($ip)
+    public function setLocalIp(IpInterface $ip)
     {
         $this->localIp = $ip;
         return $this;
@@ -185,7 +187,7 @@ class ConnectionParams
         $timestamp = is_null($this->timestamp) ? time() : $this->timestamp;
         $localAddr = new NetworkAddress(
             $localServices,
-            is_null($this->localIp) ? $this->defaultLocalIp : $this->localIp,
+            is_null($this->localIp) ? new Ipv4($this->defaultLocalIp) : $this->localIp,
             is_null($this->localPort) ? $this->defaultLocalPort : $this->localPort
         );
 

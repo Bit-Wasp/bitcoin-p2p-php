@@ -2,6 +2,7 @@
 
 namespace BitWasp\Bitcoin\Networking\Peer;
 
+use BitWasp\Bitcoin\Networking\Ip\Onion;
 use BitWasp\Bitcoin\Networking\Messages\Factory as MsgFactory;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
 use React\Dns\Resolver\Resolver;
@@ -58,7 +59,7 @@ class Connector
     public function rawConnect(NetworkAddressInterface $remotePeer)
     {
         return $this->socketConnector
-            ->create($remotePeer->getIp(), $remotePeer->getPort())
+            ->create($remotePeer->getIp()->getHost(), $remotePeer->getPort())
             ->then(function (Stream $stream) {
                 $peer = new Peer($this->msgs, $this->eventLoop);
                 $peer->setupStream($stream);

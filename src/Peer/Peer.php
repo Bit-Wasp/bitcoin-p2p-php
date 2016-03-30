@@ -188,14 +188,8 @@ class Peer extends EventEmitter
 
         $deferred = new Deferred();
         $this->on(Message::VERSION, function (Peer $peer, Version $version) use ($params) {
-            $split = explode(":", stream_socket_get_name($this->stream->stream, true));
-            if (count($split) === 2) {
-                list ($ip, $port) = $split;
-                $this->peerAddress = new NetworkAddress($version->getServices(), $ip, $port);
-            } else {
-                $this->peerAddress = $version->getSenderAddress();
-            }
 
+            $this->peerAddress = $version->getSenderAddress();
             $this->remoteVersion = $version;
             $this->localVersion = $localVersion = $params->produceVersion($this->msgs, $version->getSenderAddress());
             $this->send($localVersion);

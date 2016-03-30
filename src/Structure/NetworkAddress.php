@@ -31,10 +31,6 @@ class NetworkAddress extends Serializable implements NetworkAddressInterface
      */
     public function __construct($services, IpInterface $ip, $port)
     {
-        if (false === filter_var($ip, FILTER_VALIDATE_IP) && false === filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
-            throw new \InvalidArgumentException('NetworkAddress requires a valid IP address');
-        }
-
         $this->services = $services;
         $this->ip = $ip;
         $this->port = $port;

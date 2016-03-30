@@ -4,6 +4,7 @@ namespace BitWasp\Bitcoin\Tests\Networking\Peer;
 
 use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Crypto\Random\Random;
+use BitWasp\Bitcoin\Networking\Ip\Ipv4;
 use BitWasp\Bitcoin\Networking\Messages\Factory;
 use BitWasp\Bitcoin\Networking\Peer\ConnectionParams;
 use BitWasp\Bitcoin\Networking\Peer\Listener;
@@ -29,7 +30,7 @@ class ListenerTest extends AbstractTestCase
         $params = new ConnectionParams();
         $connector = new Connector($msgs, $params, $loop, $dns);
 
-        $serverAddr = $factory->getAddress('127.0.0.1', 31234);
+        $serverAddr = $factory->getAddress(new Ipv4('127.0.0.1'), 31234);
 
         $server = new Server($loop);
         $listener = new Listener($params, $factory->getMessages(), $server, $loop);

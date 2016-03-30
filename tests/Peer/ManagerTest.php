@@ -2,6 +2,7 @@
 
 namespace BitWasp\Bitcoin\Tests\Networking\Peer;
 
+use BitWasp\Bitcoin\Networking\Ip\Ipv4;
 use BitWasp\Bitcoin\Networking\Peer\ConnectionParams;
 use BitWasp\Bitcoin\Networking\Peer\Listener;
 use BitWasp\Bitcoin\Networking\Peer\Locator;
@@ -66,7 +67,7 @@ class ManagerTest extends AbstractTestCase
         $manager = new Manager($connector);
 
         // Create a listening server
-        $serverAddr = $factory->getAddress('127.0.0.1', 31234);
+        $serverAddr = $factory->getAddress(new Ipv4('127.0.0.1'), 31234);
         $listener = new Listener($params, $msgsFactory, new Server($loop), $loop);
         $listener->listen($serverAddr->getPort());
 

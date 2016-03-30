@@ -5,9 +5,8 @@ namespace BitWasp\Bitcoin\Networking;
 use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Crypto\Random\Random;
 use BitWasp\Bitcoin\Network\NetworkInterface;
+use BitWasp\Bitcoin\Networking\Ip\IpInterface;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
-use BitWasp\Buffertools\Buffer;
-use BitWasp\Buffertools\BufferInterface;
 use React\EventLoop\LoopInterface;
 
 class Factory
@@ -55,12 +54,12 @@ class Factory
     }
 
     /**
-     * @param string $ipAddress
+     * @param IpInterface $ipAddress
      * @param int $port
      * @param int $services
      * @return NetworkAddress
      */
-    public function getAddress($ipAddress, $port = 8333, $services = Services::NONE)
+    public function getAddress(IpInterface $ipAddress, $port = 8333, $services = Services::NONE)
     {
         return new NetworkAddress(
             $services,

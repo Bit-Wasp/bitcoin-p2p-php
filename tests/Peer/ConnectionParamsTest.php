@@ -4,6 +4,7 @@ namespace BitWasp\Bitcoin\Tests\Networking\Peer;
 
 use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Crypto\Random\Random;
+use BitWasp\Bitcoin\Networking\Ip\Ipv4;
 use BitWasp\Bitcoin\Networking\Messages\Factory as MsgFactory;
 use BitWasp\Bitcoin\Networking\Peer\ConnectionParams;
 use BitWasp\Bitcoin\Networking\Services;
@@ -14,7 +15,8 @@ class ConnectionParamsTest extends AbstractTestCase
 {
     public function testRequestTxRelay()
     {
-        $addr = new NetworkAddress(0, '0.0.0.0', 0);
+        $ip = new Ipv4('0.0.0.0');
+        $addr = new NetworkAddress(0, $ip, 0);
         $messages = new MsgFactory(Bitcoin::getNetwork(), new Random());
         $paramsTrue = new ConnectionParams();
         $paramsTrue->requestTxRelay(true);
@@ -42,7 +44,8 @@ class ConnectionParamsTest extends AbstractTestCase
 
     public function testBestHeight()
     {
-        $addr = new NetworkAddress(0, '0.0.0.0', 0);
+        $ip = new Ipv4('0.0.0.0');
+        $addr = new NetworkAddress(0, $ip, 0);
         $messages = new MsgFactory(Bitcoin::getNetwork(), new Random());
 
         $params = new ConnectionParams();
@@ -54,7 +57,8 @@ class ConnectionParamsTest extends AbstractTestCase
 
     public function testBestHeightCallback()
     {
-        $addr = new NetworkAddress(0, '0.0.0.0', 0);
+        $ip = new Ipv4('0.0.0.0');
+        $addr = new NetworkAddress(0, $ip, 0);
         $messages = new MsgFactory(Bitcoin::getNetwork(), new Random());
 
         $params = new ConnectionParams();
@@ -68,7 +72,8 @@ class ConnectionParamsTest extends AbstractTestCase
 
     public function testProtocolVersion()
     {
-        $addr = new NetworkAddress(0, '0.0.0.0', 0);
+        $ip = new Ipv4('0.0.0.0');
+        $addr = new NetworkAddress(0, $ip, 0);
         $messages = new MsgFactory(Bitcoin::getNetwork(), new Random());
 
         $params = new ConnectionParams();
@@ -80,22 +85,25 @@ class ConnectionParamsTest extends AbstractTestCase
 
     public function testLocalIp()
     {
-        $addr = new NetworkAddress(0, '0.0.0.0', 0);
+        $ip = new Ipv4('0.0.0.0');
+        $addr = new NetworkAddress(0, $ip, 0);
         $messages = new MsgFactory(Bitcoin::getNetwork(), new Random());
 
         // Test default ip = 0.0.0.0
         $params = new ConnectionParams();
         $version = $params->produceVersion($messages, $addr);
-        $this->assertEquals('0.0.0.0', $version->getSenderAddress()->getIp(), 'default ip');
+        $this->assertEquals('0.0.0.0', $version->getSenderAddress()->getIp()->getHost(), 'default ip');
 
-        $params->setLocalIp('127.0.9.42');
+        $local = new Ipv4('127.0.9.42');
+        $params->setLocalIp($local);
         $version = $params->produceVersion($messages, $addr);
-        $this->assertEquals('127.0.9.42', $version->getSenderAddress()->getIp(), 'set ip');
+        $this->assertEquals('127.0.9.42', $version->getSenderAddress()->getIp()->getHost(), 'set ip');
     }
 
     public function testLocalPort()
     {
-        $addr = new NetworkAddress(0, '0.0.0.0', 0);
+        $ip = new Ipv4('0.0.0.0');
+        $addr = new NetworkAddress(0, $ip, 0);
         $messages = new MsgFactory(Bitcoin::getNetwork(), new Random());
 
         // Test default port = 0
@@ -110,7 +118,8 @@ class ConnectionParamsTest extends AbstractTestCase
 
     public function testLocalServices()
     {
-        $addr = new NetworkAddress(0, '0.0.0.0', 0);
+        $ip = new Ipv4('0.0.0.0');
+        $addr = new NetworkAddress(0, $ip, 0);
         $messages = new MsgFactory(Bitcoin::getNetwork(), new Random());
 
         // Test default services = Services::NONE (0)
@@ -126,9 +135,12 @@ class ConnectionParamsTest extends AbstractTestCase
 
     public function testLocalNetAddr()
     {
-        $addr = new NetworkAddress(0, '0.0.0.0', 0);
+        $ip1 = new Ipv4('0.0.0.0');
+        $addr = new NetworkAddress(0, $ip1, 0);
+
+        $ip2 = new Ipv4('1.3.5.9');
         $s = Services::NETWORK | Services::BLOOM | Services::GETUTXO;
-        $me = new NetworkAddress($s, '1.3.5.9', 9123);
+        $me = new NetworkAddress($s, $ip2, 9123);
         $messages = new MsgFactory(Bitcoin::getNetwork(), new Random());
 
         $params = new ConnectionParams();
@@ -141,20 +153,22 @@ class ConnectionParamsTest extends AbstractTestCase
 
     public function testRecipientNetAddr()
     {
-        $addr = new NetworkAddress(123, '4.5.6.7', 8910);
+        $ip1 = new Ipv4('4.5.6.7');
+        $addr = new NetworkAddress(123, $ip1, 8910);
         $messages = new MsgFactory(Bitcoin::getNetwork(), new Random());
 
         $params = new ConnectionParams();
         $version = $params->produceVersion($messages, $addr);
 
         $this->assertEquals(123, $version->getRecipientAddress()->getServices());
-        $this->assertEquals('4.5.6.7', $version->getRecipientAddress()->getIp());
+        $this->assertEquals('4.5.6.7', $version->getRecipientAddress()->getIp()->getHost());
         $this->assertEquals(8910, $version->getRecipientAddress()->getPort());
     }
 
     public function testLocalTime()
     {
-        $addr = new NetworkAddress(0, '0.0.0.0', 0);
+        $ip = new Ipv4('0.0.0.0');
+        $addr = new NetworkAddress(0, $ip, 0);
         $messages = new MsgFactory(Bitcoin::getNetwork(), new Random());
 
         // Check we can set our own timestamp
@@ -171,7 +185,8 @@ class ConnectionParamsTest extends AbstractTestCase
 
     public function testUserAgent()
     {
-        $addr = new NetworkAddress(0, '0.0.0.0', 0);
+        $ip1 = new Ipv4('0.0.0.0');
+        $addr = new NetworkAddress(0, $ip1, 0);
         $messages = new MsgFactory(Bitcoin::getNetwork(), new Random());
 
         // Check default user agent

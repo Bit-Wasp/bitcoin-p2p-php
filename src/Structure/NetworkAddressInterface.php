@@ -2,6 +2,8 @@
 
 namespace BitWasp\Bitcoin\Networking\Structure;
 
+use BitWasp\Bitcoin\Networking\Ip\IpInterface;
+
 interface NetworkAddressInterface
 {
     /**
@@ -10,7 +12,7 @@ interface NetworkAddressInterface
     public function getServices();
 
     /**
-     * @return string
+     * @return IpInterface
      */
     public function getIp();
 

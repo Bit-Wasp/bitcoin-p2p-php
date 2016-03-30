@@ -2,9 +2,10 @@
 
 namespace BitWasp\Bitcoin\Tests\Networking\Structure;
 
+use BitWasp\Bitcoin\Networking\Ip\IpInterface;
+use BitWasp\Bitcoin\Networking\Ip\Ipv4;
 use BitWasp\Bitcoin\Networking\Services;
 use BitWasp\Bitcoin\Tests\Networking\AbstractTestCase;
-use BitWasp\Buffertools\Buffer;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressTimestamp;
 
@@ -17,39 +18,33 @@ class NetworkAddressTest extends AbstractTestCase
     {
         $port = 8333;
         return [
-            ["10.0.0.1", $port,  "0100000000000000"."00000000000000000000ffff0a000001208d"],
-            ["127.0.0.1", $port, "0100000000000000"."00000000000000000000ffff7f000001208d"]
+            [new Ipv4("10.0.0.1"), $port,  "0100000000000000"."00000000000000000000ffff0a000001208d"],
+            [new Ipv4("127.0.0.1"), $port, "0100000000000000"."00000000000000000000ffff7f000001208d"]
         ];
     }
 
     /**
      * @dataProvider getVectors
+     * @param IpInterface $ip
+     * @param $port
+     * @param $expected
      */
-    public function testNetworkAddress($ip, $port, $expected)
+    public function testNetworkAddress(IpInterface $ip, $port, $expected)
     {
         $services = Services::NETWORK;
         $from = new NetworkAddress($services, $ip, $port);
         $this->assertEquals($services, $from->getServices());
-        $this->assertEquals($ip, $from->getIp());
+        $this->assertEquals($ip->getHost(), $from->getIp()->getHost());
         $this->assertEquals($port, $from->getPort());
         $this->assertEquals($expected, $from->getBuffer()->getHex());
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testNetworkAddressWithoutIp()
-    {
-        $services = Buffer::hex('0000000000000001');
-        $from = new NetworkAddress($services, '12', 8833);
-    }
-
     public function testNetworkAddressTimestamp()
     {
-        $ip = '127.0.0.1';
+        $ip = new Ipv4('127.0.0.1');
         $port = 8333;
         $time = time();
-        $services = Buffer::hex('0000000000000001');
+        $services = Services::NETWORK;
         $from = new NetworkAddressTimestamp($time, $services, $ip, $port);
         $this->assertEquals($time, $from->getTimestamp());
         $this->assertEquals($services, $from->getServices());

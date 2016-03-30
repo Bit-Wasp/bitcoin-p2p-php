@@ -21,7 +21,7 @@ $locator->queryDnsSeeds()->then(
         $connector->connect($locator->popAddress())->then(
             function (Peer $peer) use (&$loop) {
                 $remoteVersion = $peer->getRemoteVersion();
-                echo "connected to " . $remoteVersion->getSenderAddress()->getIp() . "\n";
+                echo "connected to " . $remoteVersion->getSenderAddress()->getIp()->getHost() . "\n";
                 $loop->stop();
             },
             function ($error) {

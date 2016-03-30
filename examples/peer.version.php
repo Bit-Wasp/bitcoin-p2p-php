@@ -2,6 +2,7 @@
 
 require_once "../vendor/autoload.php";
 
+use BitWasp\Bitcoin\Networking\Ip\Ipv4;
 use React\Promise\Deferred;
 use BitWasp\Bitcoin\Networking\Factory;
 use BitWasp\Bitcoin\Networking\Peer\Peer;
@@ -19,8 +20,8 @@ $locator = new Locator($dns);
 $params = new ConnectionParams();
 $connector = new Connector($msgs, $params, $loop, $dns);
 
-$host = $factory->getAddress('80.57.227.14');
-$local = $factory->getAddress('192.168.192.39');
+$host = $factory->getAddress(new Ipv4('80.57.227.14'));
+$local = $factory->getAddress(new Ipv4('192.168.192.39'));
 
 $connector
     ->rawConnect($host)

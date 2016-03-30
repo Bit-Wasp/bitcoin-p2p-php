@@ -2,6 +2,7 @@
 
 namespace BitWasp\Bitcoin\Networking\Peer;
 
+use BitWasp\Bitcoin\Networking\Ip\Ipv4;
 use BitWasp\Bitcoin\Networking\Services;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
@@ -95,7 +96,7 @@ class Locator
                             foreach ($value as $ip) {
                                 $addresses[] = new NetworkAddress(
                                     Services::NETWORK,
-                                    $ip,
+                                    new Ipv4($ip),
                                     8333
                                 );
                             }

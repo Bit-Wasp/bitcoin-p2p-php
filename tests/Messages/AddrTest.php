@@ -4,10 +4,11 @@ namespace BitWasp\Bitcoin\Tests\Networking\Messages;
 
 use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Crypto\Random\Random;
+use BitWasp\Bitcoin\Networking\Ip\Ipv4;
+use BitWasp\Bitcoin\Networking\Services;
 use BitWasp\Bitcoin\Tests\Networking\AbstractTestCase;
 use BitWasp\Bitcoin\Networking\Messages\Factory;
 use BitWasp\Bitcoin\Networking\Serializer\NetworkMessageSerializer;
-use BitWasp\Buffertools\Buffer;
 use BitWasp\Bitcoin\Networking\Messages\Addr;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressTimestamp;
 
@@ -15,6 +16,7 @@ class AddrTest extends AbstractTestCase
 {
     public function testAddr()
     {
+        $ip = new Ipv4('10.0.0.1');
         $addr = new Addr();
         $this->assertEquals(0, count($addr));
         $this->assertEquals('addr', $addr->getNetworkCommand());
@@ -23,8 +25,8 @@ class AddrTest extends AbstractTestCase
         $this->assertInternalType('array', $empty);
         $this->assertEquals(0, count($empty));
 
-        $netAddr1 = new NetworkAddressTimestamp(time(), new Buffer('0000000000000001'), '10.0.0.1', '8333');
-        $netAddr2 = new NetworkAddressTimestamp(time(), new Buffer('0000000000000001'), '10.0.0.1', '8333');
+        $netAddr1 = new NetworkAddressTimestamp(time(), Services::NETWORK, $ip, '8333');
+        $netAddr2 = new NetworkAddressTimestamp(time(), Services::NETWORK, $ip, '8333');
 
         $addr->addAddress($netAddr1);
         $addr->addAddress($netAddr2);
@@ -35,9 +37,11 @@ class AddrTest extends AbstractTestCase
 
     public function testAddrWithArray()
     {
+        $ip = new Ipv4('10.0.0.1');
+
         $arr = array(
-            new NetworkAddressTimestamp(time(), new Buffer('0000000000000001'), '10.0.0.1', '8333'),
-            new NetworkAddressTimestamp(time(), new Buffer('0000000000000001'), '10.0.0.1', '8333')
+            new NetworkAddressTimestamp(time(), Services::NETWORK, $ip, '8333'),
+            new NetworkAddressTimestamp(time(), Services::NETWORK, $ip, '8333')
         );
 
         $addr = new Addr($arr);
@@ -58,9 +62,9 @@ class AddrTest extends AbstractTestCase
         $network = Bitcoin::getDefaultNetwork();
 
         $time = '9999999';
-        $ip = '192.168.0.1';
+        $ip = new Ipv4('192.168.0.1');
         $port = '8333';
-        $services = Buffer::hex('0000000000000000', 8);
+        $services = Services::NONE;
         $add = new NetworkAddressTimestamp(
             $time,
             $services,
@@ -75,7 +79,7 @@ class AddrTest extends AbstractTestCase
 
         $serialized = $addr->getNetworkMessage()->getBuffer();
         $parsed = $parser->parse($serialized)->getPayload();
-
+        
         $this->assertEquals($addr, $parsed);
     }
 }

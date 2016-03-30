@@ -4,10 +4,10 @@ namespace BitWasp\Bitcoin\Tests\Networking\Messages;
 
 use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Crypto\Random\Random;
+use BitWasp\Bitcoin\Networking\Ip\Ipv4;
 use BitWasp\Bitcoin\Networking\Messages\Factory;
 use BitWasp\Bitcoin\Networking\Serializer\NetworkMessageSerializer;
 use BitWasp\Bitcoin\Networking\Services;
-use BitWasp\Bitcoin\Networking\Structure\NetworkAddressTimestamp;
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Bitcoin\Networking\Messages\Version;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
@@ -18,11 +18,13 @@ class VersionTest extends AbstractTestCase
     public function testVersion()
     {
         $factory = new Factory(Bitcoin::getDefaultNetwork(), new Random());
+        $ipSend = new Ipv4('10.0.0.1');
+        $ipReceive = new Ipv4('10.0.0.2');
         $v = '60002';
         $services = Services::NETWORK;
-        $time = (string)time();
-        $recipient = new NetworkAddress($services, '10.0.0.1', '8332');
-        $sender = new NetworkAddress($services, '10.0.0.2', '8332');
+        $time = '123456789';
+        $recipient = new NetworkAddress($services, $ipSend, '8332');
+        $sender = new NetworkAddress($services, $ipReceive, '8332');
         $userAgent = new Buffer("/Satoshi:0.7.2/");
         $lastBlock = '212672';
 
@@ -52,11 +54,13 @@ class VersionTest extends AbstractTestCase
     public function testVersionWithTimestampedAddress()
     {
         $factory = new Factory(Bitcoin::getDefaultNetwork(), new Random());
+        $ipSend = new Ipv4('10.0.0.1');
+        $ipReceive = new Ipv4('10.0.0.2');
         $v = '60002';
         $services = Services::NETWORK;
-        $time = (string)time();
-        $recipient = new NetworkAddressTimestamp(1, $services, '10.0.0.1', '8332');
-        $sender = new NetworkAddressTimestamp(1, $services, '10.0.0.2', '8332');
+        $time = '123456789';
+        $recipient = new NetworkAddress($services, $ipSend, '8332');
+        $sender = new NetworkAddress($services, $ipReceive, '8332');
         $userAgent = new Buffer("/Satoshi:0.7.2/");
         $lastBlock = '212672';
 
@@ -82,11 +86,13 @@ class VersionTest extends AbstractTestCase
      */
     public function testVersionFails()
     {
+        $ipSend = new Ipv4('10.0.0.1');
+        $ipReceive = new Ipv4('10.0.0.2');
         $v = '60002';
         $services = Services::NETWORK;
-        $time = time();
-        $recipient = new NetworkAddress($services, '10.0.0.1', '8332');
-        $sender = new NetworkAddress($services, '10.0.0.2', '8332');
+        $time = '123456789';
+        $recipient = new NetworkAddress($services, $ipSend, '8332');
+        $sender = new NetworkAddress($services, $ipReceive, '8332');
         $userAgent = new Buffer("/Satoshi:0.7.2/");
         $lastBlock = '212672';
         $random = new Random();
@@ -106,11 +112,13 @@ class VersionTest extends AbstractTestCase
 
     public function testNetworkSerializer()
     {
+        $ipSend = new Ipv4('10.0.0.1');
+        $ipReceive = new Ipv4('10.0.0.2');
         $v = '60002';
         $services = Services::NETWORK;
-        $time = (string)time();
-        $recipient = new NetworkAddress($services, '10.0.0.1', '8332');
-        $sender = new NetworkAddress($services, '10.0.0.2', '8332');
+        $time = '123456789';
+        $recipient = new NetworkAddress($services, $ipSend, '8332');
+        $sender = new NetworkAddress($services, $ipReceive, '8332');
         $userAgent = new Buffer("/Satoshi:0.7.2/");
         $lastBlock = '212672';
         $random = new Random();

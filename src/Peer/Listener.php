@@ -58,6 +58,7 @@ class Listener extends EventEmitter
     public function handleIncomingPeer(Connection $connection)
     {
         return (new Peer($this->messageFactory, $this->loop))
+            ->setupStream($connection)
             ->inboundHandshake($connection, $this->params)
             ->then(
                 function (Peer $peer) {

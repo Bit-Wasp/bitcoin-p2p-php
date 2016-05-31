@@ -30,7 +30,7 @@ class ListenerTest extends AbstractTestCase
         $params = new ConnectionParams();
         $connector = new Connector($msgs, $params, $loop, $dns);
 
-        $serverAddr = $factory->getAddress(new Ipv4('127.0.0.1'), 31234);
+        $serverAddr = $factory->getAddress(new Ipv4('127.0.0.1'), 9999);
 
         $server = new Server($loop);
         $listener = new Listener($params, $factory->getMessages(), $server, $loop);

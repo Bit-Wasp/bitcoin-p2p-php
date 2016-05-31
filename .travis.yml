@@ -10,7 +10,7 @@ install:
     - composer update --prefer-source
 
 script:
-  - php vendor/bin/phpunit
+  - php vendor/bin/phpunit --debug
   - php vendor/bin/phpcs -n --standard=PSR1,PSR2 --report=full src/ tests
 
 after_script:

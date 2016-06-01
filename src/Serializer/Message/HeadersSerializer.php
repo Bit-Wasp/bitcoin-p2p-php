@@ -30,7 +30,7 @@ class HeadersSerializer
     public function getTemplate()
     {
         return (new TemplateFactory())
-            ->vector(function (Parser & $parser) {
+            ->vector(function (Parser $parser) {
                 $header = $this->header->fromParser($parser);
                 $parser->readBytes(1);
                 return $header;
@@ -42,7 +42,7 @@ class HeadersSerializer
      * @param Parser $parser
      * @return Headers
      */
-    public function fromParser(Parser & $parser)
+    public function fromParser(Parser $parser)
     {
         list ($headers) = $this->getTemplate()->parse($parser);
         return new Headers($headers);

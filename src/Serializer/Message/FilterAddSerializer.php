@@ -22,7 +22,7 @@ class FilterAddSerializer
      * @param Parser $parser
      * @return FilterAdd
      */
-    public function fromParser(Parser & $parser)
+    public function fromParser(Parser $parser)
     {
         list ($data) = $this->getTemplate()->parse($parser);
 

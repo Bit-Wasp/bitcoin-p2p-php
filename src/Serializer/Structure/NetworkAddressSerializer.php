@@ -39,7 +39,7 @@ class NetworkAddressSerializer
      * @param Parser $parser
      * @return NetworkAddress
      */
-    public function fromParser(Parser & $parser)
+    public function fromParser(Parser $parser)
     {
         list ($services, $ipBuffer, $port) = $this->getTemplate()->parse($parser);
         $ipSerializer = new IpSerializer();

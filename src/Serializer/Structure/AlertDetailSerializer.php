@@ -20,12 +20,12 @@ class AlertDetailSerializer
             ->uint64le()
             ->uint32le()
             ->uint32le()
-            ->vector(function (Parser & $parser) {
+            ->vector(function (Parser $parser) {
                 return $parser->readBytes(4, true)->getInt();
             })
             ->uint32le()
             ->uint32le()
-            ->vector(function (Parser & $parser) {
+            ->vector(function (Parser $parser) {
                 return $parser->readBytes(4, true)->getInt();
             })
             ->uint32le()
@@ -34,7 +34,7 @@ class AlertDetailSerializer
             ->getTemplate();
     }
 
-    public function fromParser(Parser & $parser)
+    public function fromParser(Parser $parser)
     {
         $parsed = $this->getTemplate()->parse($parser);
 

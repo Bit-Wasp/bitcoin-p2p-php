@@ -35,7 +35,7 @@ class InventorySerializer
      * @param Parser $parser
      * @return Inventory
      */
-    public function fromParser(Parser & $parser)
+    public function fromParser(Parser $parser)
     {
         list($type, $hash) = $this->getTemplate()->parse($parser);
         return new Inventory(

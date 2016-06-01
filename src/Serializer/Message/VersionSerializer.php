@@ -44,7 +44,7 @@ class VersionSerializer
      * @param Parser $parser
      * @return Version
      */
-    public function fromParser(Parser & $parser)
+    public function fromParser(Parser $parser)
     {
         list ($version, $services, $timestamp, $addrRecv, $addrFrom, $nonce, $userAgent, $startHeight, $relay) = $this->getTemplate()->parse($parser);
 

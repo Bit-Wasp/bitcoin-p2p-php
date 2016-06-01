@@ -25,7 +25,7 @@ class MerkleBlockSerializer
      * @param Parser $parser
      * @return MerkleBlock
      */
-    public function fromParser(Parser & $parser)
+    public function fromParser(Parser $parser)
     {
         return new MerkleBlock($this->filteredSerializer->fromParser($parser));
     }

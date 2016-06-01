@@ -218,7 +218,7 @@ class NetworkMessageSerializer
      * @throws \BitWasp\Buffertools\Exceptions\ParserOutOfRange
      * @throws \Exception
      */
-    public function fromParser(Parser & $parser)
+    public function fromParser(Parser $parser)
     {
         list ($netBytes, $command, $payloadSize, $checksum) = $this->getHeaderTemplate()->parse($parser);
         /** @var Buffer $netBytes */

@@ -294,7 +294,7 @@ class Factory
      * @param Parser $parser
      * @return NetworkMessage
      */
-    public function parse(Parser & $parser)
+    public function parse(Parser $parser)
     {
         return (new NetworkMessageSerializer($this->network))->fromParser($parser);
     }

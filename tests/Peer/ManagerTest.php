@@ -101,5 +101,4 @@ class ManagerTest extends AbstractTestCase
         $this->assertTrue($listenerHadInbound);
         $this->assertTrue($managerHadInboundPropagated);
     }/**/
-
 }

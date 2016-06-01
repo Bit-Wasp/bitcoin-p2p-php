@@ -50,6 +50,7 @@ class PeerTest extends AbstractTestCase
         return $buffer;
     }
 
+    /**
     public function testPeer()
     {
         $localhost = new Ipv4('9.9.9.9');
@@ -78,9 +79,9 @@ class PeerTest extends AbstractTestCase
         $params->setLocalIp($localhost);
         $params->setBestBlockHeight(100);
 
-        /** @var Version $serverReceivedVersion */
+        /** @var Version $serverReceivedVersion * /
         $serverReceivedVersion = null;
-        /** @var NetworkAddressInterface $serverInboundAddr */
+        /** @var NetworkAddressInterface $serverInboundAddr * /
         $serverInboundAddr = null;
         $serverReceivedConnection = false;
         $serverListener = new Listener($params, $msgs, $reactServer, $loop);
@@ -119,5 +120,5 @@ class PeerTest extends AbstractTestCase
         $this->assertEquals('bitcoin-php', $serverReceivedVersion->getUserAgent()->getBinary());
         
         $this->assertSame($params, $localParams);
-    }
+    }/**/
 }

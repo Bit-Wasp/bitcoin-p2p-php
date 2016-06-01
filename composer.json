@@ -22,9 +22,6 @@
     }
   },
   "require": {
-    "php": ">=5.4.0",
-    "ext-gmp": "*",
-    "ext-json": "*",
     "bitwasp/bitcoin": "~0.0.25",
     "symfony/console": "~2.6",
     "react/socket-client": "~0.5",

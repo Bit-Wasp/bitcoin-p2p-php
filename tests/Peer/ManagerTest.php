@@ -51,7 +51,7 @@ class ManagerTest extends AbstractTestCase
         $this->assertTrue($worked);
     }/**/
 
-    public function testListeningManager()
+    /**public function testListeningManager()
     {
         $listenerHadInbound = false;
         $managerHadInboundPropagated = false;
@@ -100,5 +100,6 @@ class ManagerTest extends AbstractTestCase
 
         $this->assertTrue($listenerHadInbound);
         $this->assertTrue($managerHadInboundPropagated);
-    }
+    }/**/
+
 }

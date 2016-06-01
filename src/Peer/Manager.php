@@ -99,7 +99,7 @@ class Manager extends EventEmitter
 
     /**
      * @param Locator $locator
-     * @return \React\Promise\ExtendedPromiseInterface
+     * @return \React\Promise\ExtendedPromiseInterface|\React\Promise\Promise
      */
     public function connectNextPeer(Locator $locator)
     {
@@ -134,12 +134,9 @@ class Manager extends EventEmitter
     }
 
     /**
-     * Create $n connections to clients available in the PeerLocator
-     * @param int $n
-     *
      * @param Locator $locator
-     * @param $n
-     * @return null|\React\Promise\FulfilledPromise|\React\Promise\Promise|\React\Promise\PromiseInterface|\React\Promise\RejectedPromise|static
+     * @param int $n
+     * @return \React\Promise\Promise
      */
     public function connectToPeers(Locator $locator, $n)
     {

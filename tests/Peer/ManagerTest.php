@@ -66,7 +66,7 @@ class ManagerTest extends AbstractTestCase
         $manager = new Manager($connector);
 
         // Create a listening server
-        $serverAddr = $factory->getAddress(new Ipv4('127.0.0.1'), 9999);
+        $serverAddr = $factory->getAddress(new Ipv4('127.0.0.1'), 10001);
         $listener = new Listener($params, $msgsFactory, new Server($loop), $loop);
         $listener->listen($serverAddr->getPort());
 
@@ -91,6 +91,8 @@ class ManagerTest extends AbstractTestCase
             ->then(
                 function (Peer $peer) {
                     $peer->close();
+                }, function () use ($loop) {
+                    $loop->stop();
                 }
             );
 

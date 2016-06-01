@@ -15,7 +15,7 @@ use React\Socket\Server;
 
 class ListenerTest extends AbstractTestCase
 {
-    public function testListener()
+    /**public function testListener()
     {
         $hadInbound = false;
         $hadOutbound = false;
@@ -30,7 +30,7 @@ class ListenerTest extends AbstractTestCase
         $params = new ConnectionParams();
         $connector = new Connector($msgs, $params, $loop, $dns);
 
-        $serverAddr = $factory->getAddress(new Ipv4('127.0.0.1'), 9999);
+        $serverAddr = $factory->getAddress(new Ipv4('127.0.0.1'), 10000);
 
         $server = new Server($loop);
         $listener = new Listener($params, $factory->getMessages(), $server, $loop);
@@ -48,8 +48,9 @@ class ListenerTest extends AbstractTestCase
                 function (Peer $peer) use (&$hadOutbound) {
                     $hadOutbound = true;
                     $peer->close();
-                }
-            )
+                }, function ($e) use ($loop) {
+                $loop->stop();
+            });
         ;
 
         $loop->run();
@@ -57,5 +58,5 @@ class ListenerTest extends AbstractTestCase
         $this->assertTrue($hadInbound);
         $this->assertTrue($hadOutbound);
         $this->assertInstanceOf('BitWasp\Bitcoin\Networking\Peer\Peer', $inbndPeer);
-    }
+    }/**/
 }

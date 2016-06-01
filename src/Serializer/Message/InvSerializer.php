@@ -28,7 +28,7 @@ class InvSerializer
     public function getTemplate()
     {
         return (new TemplateFactory())
-            ->vector(function (Parser & $parser) {
+            ->vector(function (Parser $parser) {
                 return $this->invVector->fromParser($parser);
             })
             ->getTemplate();
@@ -38,7 +38,7 @@ class InvSerializer
      * @param Parser $parser
      * @return array
      */
-    public function fromParser(Parser & $parser)
+    public function fromParser(Parser $parser)
     {
         list ($items) = $this->getTemplate()->parse($parser);
         return new Inv($items);

@@ -33,7 +33,7 @@ class PingSerializer
      * @param Parser $parser
      * @return array
      */
-    public function fromParser(Parser & $parser)
+    public function fromParser(Parser $parser)
     {
         list($nonce) = $this->getTemplate()->parse($parser);
         return new Ping($nonce);

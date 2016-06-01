@@ -25,7 +25,7 @@ class FilterLoadSerializer
      * @param Parser $parser
      * @return FilterLoad
      */
-    public function fromParser(Parser & $parser)
+    public function fromParser(Parser $parser)
     {
         return new FilterLoad($this->filterSerializer->fromParser($parser));
     }

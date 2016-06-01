@@ -41,7 +41,7 @@ class NetworkAddressTimestampSerializer
      * @param Parser $parser
      * @return NetworkAddressTimestamp
      */
-    public function fromParser(Parser & $parser)
+    public function fromParser(Parser $parser)
     {
         list ($timestamp, $services, $ipBuffer, $port) = $this->getTemplate()->parse($parser);
         $ipSerializer = new IpSerializer();

@@ -39,7 +39,7 @@ class AlertSerializer
      * @param Parser $parser
      * @return Alert
      */
-    public function fromParser(Parser & $parser)
+    public function fromParser(Parser $parser)
     {
         $detail = $this->detail->fromParser($parser);
 

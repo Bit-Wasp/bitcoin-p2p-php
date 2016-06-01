@@ -28,7 +28,7 @@ class GetDataSerializer
     public function getTemplate()
     {
         return (new TemplateFactory())
-            ->vector(function (Parser &$parser) {
+            ->vector(function (Parser $parser) {
                 return $this->inv->fromParser($parser);
             })
             ->getTemplate();
@@ -38,7 +38,7 @@ class GetDataSerializer
      * @param Parser $parser
      * @return GetData
      */
-    public function fromParser(Parser & $parser)
+    public function fromParser(Parser $parser)
     {
         list ($addrs) = $this->getTemplate()->parse($parser);
         return new GetData($addrs);

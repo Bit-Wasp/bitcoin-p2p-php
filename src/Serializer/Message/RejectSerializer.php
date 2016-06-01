@@ -39,7 +39,7 @@ class RejectSerializer
      * @param Parser $parser
      * @return array
      */
-    public function fromParser(Parser & $parser)
+    public function fromParser(Parser $parser)
     {
         list ($message, $code, $reason, $data) = $this->getTemplate()->parse($parser);
 

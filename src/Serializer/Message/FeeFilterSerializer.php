@@ -23,7 +23,7 @@ class FeeFilterSerializer
      * @param Parser $parser
      * @return FeeFilter
      */
-    public function fromParser(Parser & $parser)
+    public function fromParser(Parser $parser)
     {
         list ($feeRate) = $this->getTemplate()->parse($parser);
 

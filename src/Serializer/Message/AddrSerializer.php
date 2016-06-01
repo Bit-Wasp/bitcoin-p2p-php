@@ -28,7 +28,7 @@ class AddrSerializer
     public function getTemplate()
     {
         return (new TemplateFactory())
-            ->vector(function (Parser & $parser) {
+            ->vector(function (Parser $parser) {
                 return $this->netAddr->fromParser($parser);
             })
             ->getTemplate();
@@ -38,7 +38,7 @@ class AddrSerializer
      * @param Parser $parser
      * @return Addr
      */
-    public function fromParser(Parser & $parser)
+    public function fromParser(Parser $parser)
     {
         list ($addresses) = $this->getTemplate()->parse($parser);
         return new Addr($addresses);

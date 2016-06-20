@@ -19,7 +19,9 @@ class MessageTest extends AbstractTestCase
 {
     public function getMockPayload($command)
     {
-        $mock = $this->getMock('BitWasp\Bitcoin\Networking\NetworkSerializable');
+
+        $mock = $this->getMockBuilder('BitWasp\Bitcoin\Networking\NetworkSerializable')->getMock();
+        
         $mock->expects($this->any())
             ->method('getNetworkCommand')
             ->willReturn($command);
@@ -34,12 +36,12 @@ class MessageTest extends AbstractTestCase
         $payload = $this->getMockPayload($command);
         $net = Bitcoin::getDefaultNetwork();
 
-        $msg = $this->getMock('BitWasp\Bitcoin\Networking\NetworkMessage', [
-            'getCommand', 'getPayload', 'getChecksum'
-        ], [
-            $net,
-            $payload
-        ]);
+        $mock = $this->getMockBuilder('BitWasp\Bitcoin\Networking\NetworkMessage')
+            ->setConstructorArgs([$net, $payload])
+            ->setMethods(['getCommand', 'getPayload', 'getChecksum']);
+
+        $msg = $mock->getMock();
+
         $msg->expects($this->atLeastOnce())
             ->method('getCommand')
             ->willReturn($command);

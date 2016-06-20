@@ -2,7 +2,7 @@
   "name": "bitwasp/bitcoin-p2p",
   "description": "Implementation of the bitcoin protocol using ReactPHP",
   "type": "library",
-  "homepage": "https://github.com/bit-wasp/bitcoin-php",
+  "homepage": "https://github.com/bit-wasp/node-php",
   "license": "Unlicence",
   "authors": [
     {
@@ -22,8 +22,7 @@
     }
   },
   "require": {
-    "bitwasp/bitcoin": "~0.0.25",
-    "symfony/console": "~2.6",
+    "bitwasp/bitcoin": "~0.0.26",
     "react/socket-client": "~0.5",
     "react/socket": "~0.4",
     "react/dns": "~0.4",

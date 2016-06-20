@@ -48,7 +48,10 @@ class ListenerTest extends AbstractTestCase
                 function (Peer $peer) use (&$hadOutbound) {
                     $hadOutbound = true;
                     $peer->close();
-                }, function () use ($loop) { $loop->stop(); }
+                },
+                function () use ($loop) {
+                    $loop->stop();
+                }
             )
         ;
 

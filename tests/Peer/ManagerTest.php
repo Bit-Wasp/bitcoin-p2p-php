@@ -94,7 +94,10 @@ class ManagerTest extends AbstractTestCase
             ->then(
                 function (Peer $peer) {
                     $peer->close();
-                }, function () use ($loop) { $loop->stop(); }
+                },
+                function () use ($loop) {
+                    $loop->stop();
+                }
             );
 
         $loop->run();

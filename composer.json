@@ -22,7 +22,7 @@
     }
   },
   "require": {
-    "bitwasp/bitcoin": "~0.0.26",
+    "bitwasp/bitcoin": "~0.0.27",
     "react/socket-client": "~0.5",
     "react/socket": "~0.4",
     "react/dns": "~0.4",

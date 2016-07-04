@@ -2,7 +2,6 @@
 
 namespace BitWasp\Bitcoin\Networking\DnsSeeds;
 
-
 class DnsSeedList
 {
     /**

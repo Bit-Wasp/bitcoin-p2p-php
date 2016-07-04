@@ -3,7 +3,6 @@
 
 namespace BitWasp\Bitcoin\Networking\DnsSeeds;
 
-
 class MainNetDnsSeeds extends DnsSeedList
 {
     public function __construct()

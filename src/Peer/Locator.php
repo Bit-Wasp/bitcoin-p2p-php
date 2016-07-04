@@ -2,6 +2,7 @@
 
 namespace BitWasp\Bitcoin\Networking\Peer;
 
+use BitWasp\Bitcoin\Networking\DnsSeeds\DnsSeedList;
 use BitWasp\Bitcoin\Networking\Ip\Ipv4;
 use BitWasp\Bitcoin\Networking\Services;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
@@ -18,15 +19,23 @@ class Locator
     private $dns;
 
     /**
+     * @var DnsSeedList
+     */
+    private $seeds;
+
+    /**
      * @var NetworkAddressInterface[]
      */
     private $knownAddresses = [];
 
     /**
+     * Locator constructor.
+     * @param DnsSeedList $list
      * @param Resolver $dns
      */
-    public function __construct(Resolver $dns)
+    public function __construct(DnsSeedList $list, Resolver $dns)
     {
+        $this->seeds = $list;
         $this->dns = $dns;
     }
 
@@ -64,7 +73,7 @@ class Locator
         $peerList = new Deferred();
 
         // Take $numSeeds
-        $seedHosts = self::dnsSeedHosts();
+        $seedHosts = $this->seeds->getHosts();
         $seeds = array_slice($seedHosts, 0, min($numSeeds, count($seedHosts)));
 
         // Connect to $numSeeds peers

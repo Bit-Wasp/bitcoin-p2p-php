@@ -215,8 +215,16 @@ class Peer extends EventEmitter
     public function outboundHandshake(NetworkAddressInterface $remotePeer, ConnectionParams $params)
     {
         $deferred = new Deferred();
+        
+        $awaitVersion = true;
+        $this->stream->on('close', function () use (&$awaitVersion, $deferred) {
+            if ($awaitVersion) {
+                $awaitVersion = false;
+                $deferred->reject('peer disconnected');
+            }
+        });
 
-        $this->on(Message::VERSION, function (Peer $peer, Version $version) {
+        $this->on(Message::VERSION, function (Peer $peer, Version $version) use ($params) {
             $this->remoteVersion = $version;
             $this->verack();
         });

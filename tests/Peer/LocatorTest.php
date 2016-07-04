@@ -2,27 +2,20 @@
 
 namespace BitWasp\Bitcoin\Tests\Networking\Peer;
 
+use BitWasp\Bitcoin\Networking\DnsSeeds\MainNetDnsSeeds;
 use BitWasp\Bitcoin\Networking\Peer\Locator;
 use BitWasp\Bitcoin\Tests\Networking\AbstractTestCase;
 
 class LocatorTest extends AbstractTestCase
 {
-    public function testSeedHosts()
-    {
-        $hosts = Locator::dnsSeedHosts(false);
-        $hostsRandom = Locator::dnsSeedHosts();
-        $this->assertInternalType('array', $hosts);
-        $this->assertInternalType('array', $hostsRandom);
 
-        $this->assertNotEquals($hosts, $hostsRandom);
-    }
 
     public function testQuerySeeds()
     {
         $loop = new \React\EventLoop\StreamSelectLoop();
         $factory = new \BitWasp\Bitcoin\Networking\Factory($loop);
 
-        $locator = new Locator($factory->getDns());
+        $locator = new Locator(new MainNetDnsSeeds(), $factory->getDns());
         $foundHosts = null;
         $locator->queryDnsSeeds()->then(function (Locator $locator) use (&$foundHosts) {
             $foundHosts = $locator->getKnownAddresses();
@@ -42,7 +35,7 @@ class LocatorTest extends AbstractTestCase
         $loop = new \React\EventLoop\StreamSelectLoop();
         $factory = new \BitWasp\Bitcoin\Networking\Factory($loop);
 
-        $locator = new Locator($factory->getDns());
+        $locator = new Locator(new MainNetDnsSeeds(), $factory->getDns());
         $locator->popAddress();
     }
 }

@@ -55,6 +55,6 @@ $onConnect = function (Peer $peer) use ($onGetData, $hash) {
 };
 
 $locator->queryDnsSeeds()->then([$manager, 'connectNextPeer']);
-//$manager->connect(new NetworkAddress(0, new Ipv4('5.153.50.115'), 18333))->then($onConnect);
+//$manager->connect(new NetworkAddress(0, new Ipv4('ip address'), 18333))->then($onConnect);
 
 $loop->run();

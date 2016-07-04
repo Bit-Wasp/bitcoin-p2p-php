@@ -2,7 +2,6 @@
 
 namespace BitWasp\Bitcoin\Networking;
 
-
 class GetDataType
 {
     // Invs use TX / block

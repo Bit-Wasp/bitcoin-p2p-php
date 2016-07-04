@@ -2,11 +2,11 @@
 
 namespace BitWasp\Bitcoin\Networking\Peer;
 
-use BitWasp\Bitcoin\Networking\Ip\Onion;
 use BitWasp\Bitcoin\Networking\Messages\Factory as MsgFactory;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
 use React\Dns\Resolver\Resolver;
 use React\EventLoop\LoopInterface;
+use React\Promise\RejectedPromise;
 use React\SocketClient\ConnectorInterface;
 use React\Stream\Stream;
 
@@ -77,6 +77,15 @@ class Connector
             ->rawConnect($remotePeer)
             ->then(function (Peer $peer) use ($remotePeer) {
                 return $peer->outboundHandshake($remotePeer, $this->params);
+            })->then(function (Peer $peer) {
+                $reqService = $this->params->getRequiredServices();
+                if ($reqService != 0) {
+                    if ($reqService != ($peer->getRemoteVersion()->getServices() & $reqService)) {
+                        return new RejectedPromise('peer does not satisfy required services');
+                    }
+                }
+                
+                return $peer;
             });
     }
 }

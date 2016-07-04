@@ -66,6 +66,11 @@ class ConnectionParams
     private $userAgent;
 
     /**
+     * @var int
+     */
+    private $requiredServices = 0;
+
+    /**
      * @param bool $optRelay
      * @return $this
      */
@@ -162,7 +167,25 @@ class ConnectionParams
     }
 
     /**
-     * @param $string
+     * @param int $services
+     * @return $this
+     */
+    public function setRequiredServices($services)
+    {
+        $this->requiredServices = $services;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getRequiredServices()
+    {
+        return $this->requiredServices;
+    }
+
+    /**
+     * @param string $string
      * @return $this
      */
     public function setUserAgent($string)

@@ -11,4 +11,7 @@ class Protocol
     const MEMPOOL_GD_VERSION = 60002;
     const NO_BLOOM_VERSION = 70011;
     const SENDHEADERS_VERSION = 70012;
+
+    const MSG_WITNESS_FLAG = 1 << 30;
+    const MSG_TYPE_MASK = 0xffffffff >> 2;
 }

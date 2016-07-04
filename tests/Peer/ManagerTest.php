@@ -2,17 +2,18 @@
 
 namespace BitWasp\Bitcoin\Tests\Networking\Peer;
 
+use BitWasp\Bitcoin\Networking\DnsSeeds\MainNetDnsSeeds;
+use BitWasp\Bitcoin\Networking\Factory as NetworkFactory;
 use BitWasp\Bitcoin\Networking\Ip\Ipv4;
 use BitWasp\Bitcoin\Networking\Peer\ConnectionParams;
+use BitWasp\Bitcoin\Networking\Peer\Connector;
 use BitWasp\Bitcoin\Networking\Peer\Listener;
 use BitWasp\Bitcoin\Networking\Peer\Locator;
 use BitWasp\Bitcoin\Networking\Peer\Manager;
-use BitWasp\Bitcoin\Networking\Peer\Connector;
 use BitWasp\Bitcoin\Networking\Peer\Peer;
 use BitWasp\Bitcoin\Tests\Networking\AbstractTestCase;
-use React\Promise\Deferred;
 use React\EventLoop\StreamSelectLoop;
-use BitWasp\Bitcoin\Networking\Factory as NetworkFactory;
+use React\Promise\Deferred;
 use React\Socket\Server;
 
 class ManagerTest extends AbstractTestCase
@@ -22,7 +23,7 @@ class ManagerTest extends AbstractTestCase
         $loop = new StreamSelectLoop();
         $factory = new NetworkFactory($loop);
         $dns = $factory->getDns();
-        $locator = new Locator($dns);
+        $locator = new Locator(new MainNetDnsSeeds(), $dns);
         $connector = new Connector($factory->getMessages(), new ConnectionParams(), $loop, $dns);
         $manager = new Manager($connector);
 

@@ -2,6 +2,7 @@
 
 namespace BitWasp\Bitcoin\Networking\Messages;
 
+use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Block\BlockInterface;
 use BitWasp\Bitcoin\Block\FilteredBlock;
 use BitWasp\Bitcoin\Bloom\BloomFilter;
@@ -297,5 +298,13 @@ class Factory
     public function parse(Parser $parser)
     {
         return (new NetworkMessageSerializer($this->network))->fromParser($parser);
+    }
+
+    /**
+     * @return NetworkInterface
+     */
+    public function getNetwork()
+    {
+        return $this->network ?: Bitcoin::getDefaultNetwork();
     }
 }

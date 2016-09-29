@@ -124,7 +124,7 @@ class Peer extends EventEmitter
      */
     public function send(NetworkSerializable $msg)
     {
-        $net = $msg->getNetworkMessage();
+        $net = $msg->getNetworkMessage($this->msgs->getNetwork());
         $this->stream->write($net->getBinary());
         $this->emit('send', [$net]);
     }

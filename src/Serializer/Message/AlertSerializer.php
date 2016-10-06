@@ -45,7 +45,7 @@ class AlertSerializer
 
         list ($sigBuffer) = $this->getSigBuf()->parse($parser);
         $adapter = Bitcoin::getEcAdapter();
-        $serializer = EcSerializer::getSerializer($adapter, 'BitWasp\Bitcoin\Crypto\EcAdapter\Serializer\Signature\DerSignatureSerializerInterface');
+        $serializer = EcSerializer::getSerializer('BitWasp\Bitcoin\Crypto\EcAdapter\Serializer\Signature\DerSignatureSerializerInterface', true, $adapter);
         $sig = $serializer->parse($sigBuffer);
 
         return new Alert(

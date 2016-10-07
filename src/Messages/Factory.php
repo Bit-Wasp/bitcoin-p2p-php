@@ -305,6 +305,6 @@ class Factory
      */
     public function getNetwork()
     {
-        return $this->network ?: Bitcoin::getDefaultNetwork();
+        return $this->network;
     }
 }

@@ -298,4 +298,12 @@ class Factory
     {
         return (new NetworkMessageSerializer($this->network))->fromParser($parser);
     }
+
+    /**
+     * @return NetworkInterface
+     */
+    public function getNetwork()
+    {
+        return $this->network;
+    }
 }

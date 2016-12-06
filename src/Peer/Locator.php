@@ -63,6 +63,41 @@ class Locator
     }
 
     /**
+     * @param int $numSeeds
+     * @return \React\Promise\Promise|\React\Promise\PromiseInterface
+     */
+    private function getPeerList($numSeeds = 1)
+    {
+        $peerList = new Deferred();
+
+        // Take $numSeeds
+        $seedHosts = $this->seeds->getHosts();
+        shuffle($seedHosts);
+        $seeds = array_slice($seedHosts, 0, min($numSeeds, count($seedHosts)));
+
+        // Connect to $numSeeds peers
+        /** @var Peer[] $vNetAddr */
+        $vNetAddr = [];
+        $c = 0;
+        foreach ($seeds as $seed) {
+            $this->dns
+                ->resolve($seed)
+                ->then(function ($ipList) use (&$vNetAddr, $peerList, &$numSeeds, &$c) {
+                    $vNetAddr = array_merge($vNetAddr, $ipList);
+                    if ($numSeeds === ++$c) {
+                        $peerList->resolve($vNetAddr);
+                    }
+                }, function ($error) use ($peerList) {
+                    $peerList->reject($error);
+                })
+            ;
+        }
+
+        // Compile the list of lists of peers into $this->knownAddresses
+        return $peerList->promise();
+    }
+
+    /**
      * Connect to $numSeeds DNS seeds
      *
      * @param int $numSeeds
@@ -70,58 +105,37 @@ class Locator
      */
     public function queryDnsSeeds($numSeeds = 1)
     {
-        $peerList = new Deferred();
-
-        // Take $numSeeds
-        $seedHosts = $this->seeds->getHosts();
-        $seeds = array_slice($seedHosts, 0, min($numSeeds, count($seedHosts)));
-
-        // Connect to $numSeeds peers
-        /** @var Peer[] $vNetAddr */
-        $vNetAddr = [];
-        foreach ($seeds as $seed) {
-            $this->dns
-                ->resolve($seed)
-                ->then(function ($ipList) use (&$vNetAddr, $peerList, &$numSeeds) {
-                    $vNetAddr[] = $ipList;
-                    if (count($vNetAddr) == $numSeeds) {
-                        $peerList->resolve($vNetAddr);
-                    }
-                })
-            ;
-        }
-
-        // Compile the list of lists of peers into $this->knownAddresses
-        return $peerList
-            ->promise()
+        $deferred = new Deferred();
+        $this
+            ->getPeerList($numSeeds)
             ->then(
-                function (array $vPeerVAddrs) {
+                function (array $vPeerVAddrs) use ($deferred) {
                     shuffle($vPeerVAddrs);
 
                     /** @var NetworkAddressInterface[] $addresses */
                     $addresses = [];
-                    array_map(
-                        function (array $value) use (&$addresses) {
-                            foreach ($value as $ip) {
-                                $addresses[] = new NetworkAddress(
-                                    Services::NETWORK,
-                                    new Ipv4($ip),
-                                    8333
-                                );
-                            }
-                        },
-                        $vPeerVAddrs
-                    );
+                    foreach ($vPeerVAddrs as $ip) {
+                        $addresses[] = new NetworkAddress(
+                            Services::NETWORK,
+                            new Ipv4($ip),
+                            8333
+                        );
+                    }
 
                     $this->knownAddresses = array_merge(
                         $this->knownAddresses,
                         $addresses
                     );
-                    
-                    return $this;
+
+                    $deferred->resolve($this);
+                },
+                function ($error) use ($deferred) {
+                    $deferred->reject($error);
                 }
             )
         ;
+
+        return $deferred->promise();
     }
 
     /**

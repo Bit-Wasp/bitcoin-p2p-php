@@ -35,10 +35,10 @@ class ManagerTest extends AbstractTestCase
                     $peer->close();
                 }
                 $deferred->resolve(true);
-            }, function () use ($deferred) {
+            }, function ($err) use ($deferred) {
                 $deferred->resolve(false);
             });
-        }, function () use ($deferred) {
+        }, function ($err) use ($deferred) {
             $deferred->resolve(false);
         });
 
@@ -46,6 +46,8 @@ class ManagerTest extends AbstractTestCase
         $deferred->promise()
             ->then(function ($val) use (&$worked) {
                 $worked = $val;
+            }, function ($e) {
+                echo "testManager: ".$e->getMessage().PHP_EOL;
             })
             ->always(function () use ($loop) {
                 $loop->stop();

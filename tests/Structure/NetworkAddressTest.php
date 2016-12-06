@@ -50,6 +50,5 @@ class NetworkAddressTest extends AbstractTestCase
         $this->assertEquals($services, $from->getServices());
         $this->assertEquals($ip, $from->getIp());
         $this->assertEquals($port, $from->getPort());
-
     }
 }

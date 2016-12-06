@@ -78,7 +78,6 @@ class VersionTest extends AbstractTestCase
         // Test that addresses were mutated
         $this->assertInstanceOf('\Bitwasp\Bitcoin\Networking\Structure\NetworkAddress', $version->getRecipientAddress());
         $this->assertInstanceOf('\Bitwasp\Bitcoin\Networking\Structure\NetworkAddress', $version->getSenderAddress());
-
     }
 
     /**

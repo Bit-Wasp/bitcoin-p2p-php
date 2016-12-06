@@ -45,7 +45,6 @@ class GetDataTest extends AbstractTestCase
         $this->assertEquals($array[0], $get->getItem(0));
         $this->assertEquals($array[1], $get->getItem(1));
         $this->assertEquals($array, $get->getItems());
-
     }
 
     /**

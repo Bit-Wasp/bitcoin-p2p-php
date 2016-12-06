@@ -62,6 +62,5 @@ class HeadersTest extends AbstractTestCase
         $parsed = $parser->parse($serialized)->getPayload();
 
         $this->assertEquals($headers, $parsed);
-
     }
 }

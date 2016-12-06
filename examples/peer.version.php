@@ -21,8 +21,8 @@ $locator = new Locator(new MainNetDnsSeeds(), $dns);
 $params = new ConnectionParams();
 $connector = new Connector($msgs, $params, $loop, $dns);
 
-$host = $factory->getAddress(new Ipv4('80.57.227.14'));
-$local = $factory->getAddress(new Ipv4('192.168.192.39'));
+$host = $factory->getAddress(new Ipv4('127.0.0.1'));
+$local = $factory->getAddress(new Ipv4('0.0.0.0'));
 
 $connector
     ->rawConnect($host)

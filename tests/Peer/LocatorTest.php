@@ -17,8 +17,13 @@ class LocatorTest extends AbstractTestCase
 
         $locator = new Locator(new MainNetDnsSeeds(), $factory->getDns());
         $foundHosts = null;
-        $locator->queryDnsSeeds()->then(function (Locator $locator) use (&$foundHosts) {
+        $found = false;
+        $locator->queryDnsSeeds()->then(function (Locator $locator) use (&$foundHosts, &$found) {
             $foundHosts = $locator->getKnownAddresses();
+            $found = true;
+        }, function ($error) use (&$found) {
+            echo $error->getMessage().PHP_EOL;
+            $found = false;
         });
 
         $loop->run();

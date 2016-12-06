@@ -32,6 +32,5 @@ class VerAckTest extends AbstractTestCase
         $parsed = $serializer->parse($serialized)->getPayload();
 
         $this->assertEquals($verack, $parsed);
-
     }
 }

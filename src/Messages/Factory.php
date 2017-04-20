@@ -2,6 +2,7 @@
 
 namespace BitWasp\Bitcoin\Networking\Messages;
 
+use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Block\BlockInterface;
 use BitWasp\Bitcoin\Block\FilteredBlock;
 use BitWasp\Bitcoin\Bloom\BloomFilter;

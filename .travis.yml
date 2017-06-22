@@ -5,6 +5,9 @@ php:
   - hhvm
   - nightly
   - 7.0
+  - 7.1
+
+dist: trusty
 
 install:
     - composer update --prefer-source

@@ -22,10 +22,10 @@
     }
   },
   "require": {
-    "bitwasp/bitcoin": "~0.0.31.2",
-    "react/socket-client": "~0.5",
-    "react/socket": "~0.4",
-    "react/dns": "~0.4",
+    "bitwasp/bitcoin": "~0.0.33.1",
+    "react/socket-client": "~0.5.0",
+    "react/socket": "~0.4.0",
+    "react/dns": "~0.4.0",
     "clue/socks-react": "~0.4",
     "christian-riesen/base32": "~1.2"
   },

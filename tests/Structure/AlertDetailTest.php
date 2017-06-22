@@ -49,7 +49,8 @@ class AlertDetailTest extends AbstractTestCase
         ];
     }
 
-    public function getDetailCorrespondingMethods() {
+    public function getDetailCorrespondingMethods()
+    {
         return [
             'version' => 'getVersion',
             'id' => 'getId',
@@ -87,7 +88,6 @@ class AlertDetailTest extends AbstractTestCase
                 }
             }
         }
-
     }
 
 

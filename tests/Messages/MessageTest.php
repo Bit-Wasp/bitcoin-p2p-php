@@ -66,19 +66,6 @@ class MessageTest extends AbstractTestCase
 
     /**
      * @expectedException \RuntimeException
-     * @expectedExceptionMessage Invalid command
-     */
-    public function testInvalidCommand()
-    {
-        $invalid = $this->getMockMessage('invalid');
-        $serialized = $invalid->getBuffer();
-
-        $serializer = new NetworkMessageSerializer(Bitcoin::getDefaultNetwork());
-        $serializer->parse($serialized);
-    }
-
-    /**
-     * @expectedException \RuntimeException
      * @expectedExceptionMessage Invalid packet checksum
      */
     public function testInvalidChecksum()

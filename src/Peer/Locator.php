@@ -40,29 +40,6 @@ class Locator
     }
 
     /**
-     * @param bool $randomize - return a randomized list of dns seeds
-     * @return string[]
-     */
-    public static function dnsSeedHosts($randomize = true)
-    {
-        $seeds = [
-            'seed.bitcoin.sipa.be',
-            'dnsseed.bluematt.me',
-            'dnsseed.bitcoin.dashjr.org',
-            'seed.bitcoinstats.com',
-            'bitseed.xf2.org',
-            'seed.bitnodes.io',
-            "seed.bitcoin.jonasschnelli.ch"
-        ];
-
-        if ($randomize) {
-            shuffle($seeds);
-        }
-
-        return $seeds;
-    }
-
-    /**
      * @param int $numSeeds
      * @return \React\Promise\Promise|\React\Promise\PromiseInterface
      */

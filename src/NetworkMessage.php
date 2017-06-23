@@ -3,6 +3,7 @@
 namespace BitWasp\Bitcoin\Networking;
 
 use BitWasp\Bitcoin\Crypto\Hash;
+use BitWasp\Bitcoin\Networking\Structure\Header;
 use BitWasp\Bitcoin\Serializable;
 use BitWasp\Bitcoin\Network\NetworkInterface;
 use BitWasp\Bitcoin\Networking\Serializer\NetworkMessageSerializer;
@@ -21,6 +22,11 @@ class NetworkMessage extends Serializable
     private $payload;
 
     /**
+     * @var Header
+     */
+    private $header;
+
+    /**
      * @param NetworkInterface $network
      * @param NetworkSerializableInterface $message
      */
@@ -28,6 +34,14 @@ class NetworkMessage extends Serializable
     {
         $this->network = $network;
         $this->payload = $message;
+
+        $buffer = $message->getBuffer();
+
+        $this->header = new Header(
+            $message->getNetworkCommand(),
+            $buffer->getSize(),
+            Hash::sha256d($buffer)->slice(0, 4)
+        );
     }
 
     /**
@@ -51,8 +65,15 @@ class NetworkMessage extends Serializable
      */
     public function getChecksum()
     {
-        $data = $this->getPayload()->getBuffer();
-        return Hash::sha256d($data)->slice(0, 4);
+        return $this->header->getChecksum();
+    }
+
+    /**
+     * @return Header
+     */
+    public function getHeader()
+    {
+        return $this->header;
     }
 
     /**

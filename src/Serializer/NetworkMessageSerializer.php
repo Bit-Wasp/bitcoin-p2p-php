@@ -31,9 +31,11 @@ use BitWasp\Bitcoin\Networking\Serializer\Message\PongSerializer;
 use BitWasp\Bitcoin\Networking\Serializer\Message\RejectSerializer;
 use BitWasp\Bitcoin\Networking\Serializer\Message\VersionSerializer;
 use BitWasp\Bitcoin\Networking\Serializer\Structure\AlertDetailSerializer;
+use BitWasp\Bitcoin\Networking\Serializer\Structure\HeaderSerializer;
 use BitWasp\Bitcoin\Networking\Serializer\Structure\InventorySerializer;
 use BitWasp\Bitcoin\Networking\Serializer\Structure\NetworkAddressSerializer;
 use BitWasp\Bitcoin\Networking\Serializer\Structure\NetworkAddressTimestampSerializer;
+use BitWasp\Bitcoin\Networking\Structure\Header;
 use BitWasp\Bitcoin\Serializer\Bloom\BloomFilterSerializer;
 use BitWasp\Bitcoin\Serializer\Block\FilteredBlockSerializer;
 use BitWasp\Bitcoin\Serializer\Block\BlockHeaderSerializer;
@@ -41,10 +43,9 @@ use BitWasp\Bitcoin\Serializer\Block\BlockSerializer;
 use BitWasp\Bitcoin\Serializer\Block\PartialMerkleTreeSerializer;
 use BitWasp\Bitcoin\Serializer\Chain\BlockLocatorSerializer;
 use BitWasp\Bitcoin\Serializer\Transaction\TransactionSerializer;
-use BitWasp\Buffertools\Buffertools;
+use BitWasp\Bitcoin\Serializer\Types;
 use BitWasp\Buffertools\Parser;
 use BitWasp\Buffertools\Buffer;
-use BitWasp\Buffertools\TemplateFactory;
 
 class NetworkMessageSerializer
 {
@@ -175,6 +176,7 @@ class NetworkMessageSerializer
     {
         $this->math = Bitcoin::getMath();
         $this->network = $network;
+        $this->bs4le = Types::bytestringle(4);
         $this->txSerializer = new TransactionSerializer();
         $this->headerSerializer = new BlockHeaderSerializer();
         $this->blockSerializer = new BlockSerializer($this->math, $this->headerSerializer, $this->txSerializer);
@@ -197,49 +199,40 @@ class NetworkMessageSerializer
         $this->getHeadersSerializer = new GetHeadersSerializer($this->blockLocatorSerializer);
         $this->versionSerializer = new VersionSerializer(new NetworkAddressSerializer());
         $this->addrSerializer = new AddrSerializer(new NetworkAddressTimestampSerializer());
-    }
-
-    /**
-     * @return \BitWasp\Buffertools\Template
-     */
-    private function getHeaderTemplate()
-    {
-        return (new TemplateFactory())
-            ->bytestringle(4)
-            ->bytestring(12)
-            ->uint32le()
-            ->bytestring(4)
-            ->getTemplate();
+        $this->packetHeaderSerializer = new HeaderSerializer();
     }
 
     /**
      * @param Parser $parser
-     * @return NetworkMessage
-     * @throws \BitWasp\Buffertools\Exceptions\ParserOutOfRange
-     * @throws \Exception
+     * @return Header
      */
-    public function fromParser(Parser $parser)
+    public function parseHeader(Parser $parser)
     {
-        list ($netBytes, $command, $payloadSize, $checksum) = $this->getHeaderTemplate()->parse($parser);
-        /** @var Buffer $netBytes */
-        /** @var Buffer $command */
-        /** @var int|string $payloadSize */
-        /** @var Buffer $checksum */
-
-        if ($netBytes->getHex() !== $this->network->getNetMagicBytes()) {
+        $prefix = $this->bs4le->read($parser);
+        if ($prefix->getHex() !== $this->network->getNetMagicBytes()) {
             throw new \RuntimeException('Invalid magic bytes for network');
         }
 
-        $buffer = $payloadSize > 0
-            ? $parser->readBytes($payloadSize)
+        return $this->packetHeaderSerializer->fromParser($parser);
+    }
+
+    /**
+     * @param Header $header
+     * @param Parser $parser
+     * @return NetworkMessage
+     */
+    public function parsePacket(Header $header, Parser $parser)
+    {
+        $buffer = $header->getLength() > 0
+            ? $parser->readBytes($header->getLength())
             : new Buffer('', 0, $this->math);
 
         // Compare payload checksum against header value
-        if (Hash::sha256d($buffer)->slice(0, 4)->getBinary() !== $checksum->getBinary()) {
+        if (!Hash::sha256d($buffer)->slice(0, 4)->equals($header->getChecksum())) {
             throw new \RuntimeException('Invalid packet checksum');
         }
 
-        $cmd = trim($command->getBinary());
+        $cmd = trim($header->getCommand());
         switch ($cmd) {
             case Message::VERSION:
                 $payload = $this->versionSerializer->parse($buffer);
@@ -321,21 +314,30 @@ class NetworkMessageSerializer
     }
 
     /**
+     * @param Parser $parser
+     * @return NetworkMessage
+     * @throws \BitWasp\Buffertools\Exceptions\ParserOutOfRange
+     * @throws \Exception
+     */
+    public function fromParser(Parser $parser)
+    {
+        $header = $this->parseHeader($parser);
+        return $this->parsePacket($header, $parser);
+    }
+
+    /**
      * @param NetworkMessage $object
      * @return Buffer
      */
     public function serialize(NetworkMessage $object)
     {
+        $prefix = $this->bs4le->write(Buffer::hex($this->network->getNetMagicBytes(), null, $this->math));
+        $header = $this->packetHeaderSerializer->serialize($object->getHeader());
         $payload = $object->getPayload()->getBuffer();
-        $command = str_pad(unpack("H*", $object->getCommand())[1], 24, '0', STR_PAD_RIGHT);
-        $header = $this->getHeaderTemplate()->write([
-            Buffer::hex($this->network->getNetMagicBytes(), null, $this->math),
-            Buffer::hex($command, null, $this->math),
-            $payload->getSize(),
-            $object->getChecksum()
-        ]);
 
-        return Buffertools::concat($header, $payload);
+        return new Buffer(
+            "{$prefix}{$header->getBinary()}{$payload->getBinary()}"
+        );
     }
 
     /**

@@ -23,14 +23,15 @@
   },
   "require": {
     "bitwasp/bitcoin": "~0.0.33.1",
-    "react/socket-client": "~0.5.0",
-    "react/socket": "~0.4.0",
+    "react/socket-client": "v0.5.0",
+    "react/socket": "v0.4.4",
     "react/dns": "~0.4.0",
     "clue/socks-react": "~0.4",
     "christian-riesen/base32": "~1.2"
   },
   "require-dev": {
-    "bitwasp/testing-php": "~0.0",
+    "squizlabs/php_codesniffer": "^2.0.0",
+    "phpunit/phpunit": "^5.4.0",
     "symfony/yaml": "~2.6"
   }
 }

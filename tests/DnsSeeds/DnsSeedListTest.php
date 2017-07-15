@@ -32,36 +32,24 @@ class DnsSeedListTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($args, $list->getHosts());
     }
 
-    public function getSeedFixtures()
+    public function testSeedsInList()
     {
-        return [
-            [
-                new MainNetDnsSeeds(),
-                [
-                    'seed.bitcoin.jonasschnelli.ch',
-                    'dnsseed.bitcoin.dashjr.org',
-                ]
-            ],
-            [
-                new TestNetDnsSeeds(),
-                [
-                    'testnet-seed.bluematt.me',
-                    'testnet-seed.bitcoin.schildbach.de',
-                ]
-            ],
-        ];
-    }
+        $fixture1 = [new MainNetDnsSeeds(), [
+            'seed.bitcoin.jonasschnelli.ch',
+            'dnsseed.bitcoin.dashjr.org',
+        ]];
+        $fixture2 = [new TestNetDnsSeeds(), [
+            'testnet-seed.bluematt.me',
+            'testnet-seed.bitcoin.schildbach.de',
+        ]];
 
-    /**
-     * @param DnsSeedList $list
-     * @param array $known
-     * @dataProvider getSeedFixtures
-     */
-    public function testSeedsInList(DnsSeedList $list, array $known)
-    {
-        $hosts = $list->getHosts();
-        foreach ($known as $host) {
-            $this->assertTrue(in_array($host, $hosts));
+        foreach ([$fixture1, $fixture2] as $fixture) {
+            list ($list, $known) = $fixture;
+            /** @var DnsSeedList $list */
+            $hosts = $list->getHosts();
+            foreach ($known as $host) {
+                $this->assertTrue(in_array($host, $hosts));
+            }
         }
     }
 }

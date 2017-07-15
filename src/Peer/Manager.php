@@ -177,8 +177,10 @@ class Manager extends EventEmitter
 
         $errorBack = function ($error) use ($locator, $retries) {
             $allowContinue = false;
-            if ($error instanceof \RuntimeException && $error->getMessage() === "Connection refused") {
-                $allowContinue = true;
+            if ($error instanceof \RuntimeException) {
+                if ($error->getMessage() === "Connection refused") {
+                    $allowContinue = true;
+                }
             }
 
             if ($error instanceof TimeoutException) {

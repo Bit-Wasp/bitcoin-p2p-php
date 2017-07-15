@@ -18,6 +18,9 @@ class ManagerTest extends AbstractTestCase
     {
         $loop = new StreamSelectLoop();
         $factory = new NetworkFactory($loop);
+
+        $factory->getSettings()->setMaxConnectRetries(10);
+
         $locator = $factory->getLocator();
         $params = new ConnectionParams();
         $connector = $factory->getConnector($params);
@@ -32,11 +35,11 @@ class ManagerTest extends AbstractTestCase
                 }
                 $deferred->resolve(true);
             }, function ($err) use ($deferred) {
-                echo "1: ".$err->getMessage().PHP_EOL;
+                echo "Error during peer connection: ".$err->getMessage().PHP_EOL;
                 $deferred->resolve(false);
             });
         }, function ($err) use ($deferred) {
-            echo "2: ".$err->getMessage().PHP_EOL;
+            echo "Error during DNS resolution: ".$err->getMessage().PHP_EOL;
             $deferred->resolve(false);
         });
 
@@ -44,8 +47,6 @@ class ManagerTest extends AbstractTestCase
         $deferred->promise()
             ->then(function ($val) use (&$worked) {
                 $worked = $val;
-            }, function ($e) {
-                echo "testManager: ".$e->getMessage().PHP_EOL;
             })
             ->always(function () use ($loop) {
                 $loop->stop();

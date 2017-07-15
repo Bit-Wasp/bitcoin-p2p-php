@@ -43,11 +43,12 @@ class NetworkMessageSerializerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(new VerAck(), $message->getPayload());
     }
 
+
     /**
      * @expectedException \RuntimeException
      * @expectedExceptionMessage Unsupported message type
      */
-    public function testUnsupportedCommand()
+    public function testUnsupportedCommandShort()
     {
         $network = NetworkFactory::bitcoin();
         $serializer = new NetworkMessageSerializer($network);
@@ -58,5 +59,49 @@ class NetworkMessageSerializerTest extends \PHPUnit_Framework_TestCase
         $serialized = 'f9beb4d9626164636f6d6d616e640000000000005df6e0e2';
         $data = Buffer::hex($serialized);
         $serializer->parse($data);
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessage Unsupported message type
+     */
+    public function testUnsupportedCommandCheckingHeader()
+    {
+        $network = NetworkFactory::bitcoin();
+        $serializer = new NetworkMessageSerializer($network);
+
+        //$header = new Header("badcommand", 0, Hash::sha256d(new Buffer())->slice(0, 4));
+        //$serialized = Buffer::hex($network->getNetMagicBytes())->flip()->getHex() . $serializer->packetHeaderSerializer->serialize($header)->getHex();
+
+        $serialized = 'f9beb4d9626164636f6d6d616e640000000000005df6e0e2';
+        $parser = new Parser(Buffer::hex($serialized));
+        $header = $serializer->parseHeader($parser);
+
+        // check we parsed the full thing, veracks don't have a payload
+        $this->assertEquals($parser->getSize(), $parser->getPosition());
+        $this->assertEquals('badcommand', $header->getCommand());
+
+        $serializer->parsePacket($header, $parser);
+    }
+
+
+    /**
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessage Invalid packet checksum
+     */
+    public function testInvalidChecksum()
+    {
+        $network = NetworkFactory::bitcoin();
+        $serializer = new NetworkMessageSerializer($network);
+
+        $serialized = 'f9beb4d9626164636f6d6d616e6400000000000042424242';
+        $parser = new Parser(Buffer::hex($serialized));
+        $header = $serializer->parseHeader($parser);
+
+        // check we parsed the full thing, veracks don't have a payload
+        $this->assertEquals($parser->getSize(), $parser->getPosition());
+        $this->assertEquals('badcommand', $header->getCommand());
+
+        $serializer->parsePacket($header, $parser);
     }
 }

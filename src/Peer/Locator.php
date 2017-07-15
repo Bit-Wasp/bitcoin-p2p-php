@@ -50,18 +50,9 @@ class Locator
         $this->defaultPort = $defaultNetPort;
     }
 
-    /**
-     * @param int $numSeeds
-     * @return \React\Promise\Promise|\React\Promise\PromiseInterface
-     */
-    private function getPeerList($numSeeds = 1)
+    public function querySeeds(array $seeds)
     {
         $peerList = new Deferred();
-
-        // Take $numSeeds
-        $seedHosts = $this->seeds->getHosts();
-        shuffle($seedHosts);
-        $seeds = array_slice($seedHosts, 0, min($numSeeds, count($seedHosts)));
 
         // Connect to $numSeeds peers
         /** @var Peer[] $vNetAddr */
@@ -71,10 +62,7 @@ class Locator
             $this->dns
                 ->resolve($seed)
                 ->then(function ($ipList) use (&$vNetAddr, $peerList, &$numSeeds, &$c) {
-                    $vNetAddr = array_merge($vNetAddr, $ipList);
-                    if ($numSeeds === ++$c) {
-                        $peerList->resolve($vNetAddr);
-                    }
+                    $peerList->resolve($ipList);
                 }, function ($error) use ($peerList) {
                     $peerList->reject($error);
                 })
@@ -83,6 +71,20 @@ class Locator
 
         // Compile the list of lists of peers into $this->knownAddresses
         return $peerList->promise();
+    }
+
+    /**
+     * @param int $numSeeds
+     * @return \React\Promise\Promise|\React\Promise\PromiseInterface
+     */
+    private function getPeerList($numSeeds = 1)
+    {
+        // Take $numSeeds
+        $seedHosts = $this->seeds->getHosts();
+        shuffle($seedHosts);
+        $seeds = array_slice($seedHosts, 0, min($numSeeds, count($seedHosts)));
+
+        return $this->querySeeds($seeds);
     }
 
     /**

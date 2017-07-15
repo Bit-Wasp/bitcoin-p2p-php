@@ -116,8 +116,7 @@ class Manager extends EventEmitter
                     $deferred->resolve($locator->popAddress());
                 },
                 function ($error) use ($deferred) {
-                    var_dump($error);
-                    return new RejectedPromise();
+                    return new RejectedPromise($error);
                 }
             );
         }
@@ -129,7 +128,8 @@ class Manager extends EventEmitter
      * @param Locator $locator
      * @return \React\Promise\Promise|\React\Promise\PromiseInterface
      */
-    public function attemptNextPeer(Locator $locator) {
+    public function attemptNextPeer(Locator $locator)
+    {
         $attempt = new Deferred();
 
         $this

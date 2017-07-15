@@ -304,13 +304,10 @@ class NetworkMessageSerializer
                 $payload = $this->alertSerializer->parse($buffer);
                 break;
             default:
-                throw new \RuntimeException('Invalid command');
+                throw new \RuntimeException('Unsupported message type');
         }
 
-        return new NetworkMessage(
-            $this->network,
-            $payload
-        );
+        return new NetworkMessage($this->network, $payload);
     }
 
     /**

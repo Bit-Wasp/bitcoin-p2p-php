@@ -171,7 +171,7 @@ class Manager extends EventEmitter
             $retries = $this->settings->getMaxConnectRetries();
         }
 
-        if (!(is_integer($retries) && $retries > 0)) {
+        if (!(is_integer($retries) && $retries >= 0)) {
             throw new \InvalidArgumentException("Invalid retry count, must be an integer greater than zero");
         }
 
@@ -190,7 +190,7 @@ class Manager extends EventEmitter
             }
 
             if (0 >= $retries) {
-                throw new \RuntimeException("Connection to peers failed: too many retries");
+                throw new \RuntimeException("Connection to peers failed: too many attempts");
             }
 
             return $this->connectNextPeer($locator, $retries - 1);

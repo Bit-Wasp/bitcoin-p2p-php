@@ -6,7 +6,6 @@ use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Networking\Ip\Ipv4;
 use BitWasp\Bitcoin\Networking\Messages\Version;
 use BitWasp\Bitcoin\Networking\Peer\ConnectionParams;
-use BitWasp\Bitcoin\Networking\Peer\Listener;
 use BitWasp\Bitcoin\Networking\Peer\Peer;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
 use BitWasp\Bitcoin\Tests\Networking\AbstractTestCase;

@@ -2,6 +2,7 @@
 
 namespace BitWasp\Bitcoin\Networking\Peer;
 
+use BitWasp\Bitcoin\Networking\Settings\NetworkSettings;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
 use Evenement\EventEmitter;
 use React\Promise\Deferred;
@@ -36,12 +37,19 @@ class Manager extends EventEmitter
     private $nInPeers = 0;
 
     /**
+     * @var NetworkSettings
+     */
+    private $settings;
+
+    /**
      * Manager constructor.
      * @param Connector $connector
+     * @param NetworkSettings $settings
      */
-    public function __construct(Connector $connector)
+    public function __construct(Connector $connector, NetworkSettings $settings)
     {
         $this->connector = $connector;
+        $this->settings = $settings;
     }
 
     /**
@@ -157,8 +165,16 @@ class Manager extends EventEmitter
      * @param int $retries
      * @return \React\Promise\PromiseInterface
      */
-    public function connectNextPeer(Locator $locator, $retries = 5)
+    public function connectNextPeer(Locator $locator, $retries = null)
     {
+        if ($retries === null) {
+            $retries = $this->settings->getMaxConnectRetries();
+        }
+
+        if (!(is_integer($retries) && $retries > 0)) {
+            throw new \InvalidArgumentException("Invalid retry count, must be an integer greater than zero");
+        }
+
         $errorBack = function ($error) use ($locator, $retries) {
             $allowContinue = false;
             if ($error instanceof \RuntimeException && $error->getMessage() === "Connection refused") {

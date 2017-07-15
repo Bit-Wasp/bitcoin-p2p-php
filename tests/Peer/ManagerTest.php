@@ -2,19 +2,15 @@
 
 namespace BitWasp\Bitcoin\Tests\Networking\Peer;
 
-use BitWasp\Bitcoin\Networking\DnsSeeds\MainNetDnsSeeds;
 use BitWasp\Bitcoin\Networking\Factory as NetworkFactory;
 use BitWasp\Bitcoin\Networking\Ip\Ipv4;
 use BitWasp\Bitcoin\Networking\Peer\ConnectionParams;
-use BitWasp\Bitcoin\Networking\Peer\Connector;
 use BitWasp\Bitcoin\Networking\Peer\Listener;
 use BitWasp\Bitcoin\Networking\Peer\Locator;
-use BitWasp\Bitcoin\Networking\Peer\Manager;
 use BitWasp\Bitcoin\Networking\Peer\Peer;
 use BitWasp\Bitcoin\Tests\Networking\AbstractTestCase;
 use React\EventLoop\StreamSelectLoop;
 use React\Promise\Deferred;
-use React\Socket\Server;
 
 class ManagerTest extends AbstractTestCase
 {
@@ -22,10 +18,10 @@ class ManagerTest extends AbstractTestCase
     {
         $loop = new StreamSelectLoop();
         $factory = new NetworkFactory($loop);
-        $dns = $factory->getDns();
-        $locator = new Locator(new MainNetDnsSeeds(), $dns);
-        $connector = new Connector($factory->getMessages(), new ConnectionParams(), $loop, $dns);
-        $manager = new Manager($connector);
+        $locator = $factory->getLocator();
+        $params = new ConnectionParams();
+        $connector = $factory->getConnector($params);
+        $manager = $factory->getManager($connector);
 
         $deferred = new Deferred();
         $locator->queryDnsSeeds(1)->then(function (Locator $locator) use ($manager, $deferred) {
@@ -36,9 +32,11 @@ class ManagerTest extends AbstractTestCase
                 }
                 $deferred->resolve(true);
             }, function ($err) use ($deferred) {
+                echo "1: ".$err->getMessage().PHP_EOL;
                 $deferred->resolve(false);
             });
         }, function ($err) use ($deferred) {
+            echo "2: ".$err->getMessage().PHP_EOL;
             $deferred->resolve(false);
         });
 
@@ -65,15 +63,13 @@ class ManagerTest extends AbstractTestCase
         $loop = new StreamSelectLoop();
         $factory = new NetworkFactory($loop);
 
-        $dns = $factory->getDns();
-        $msgsFactory = $factory->getMessages();
         $params = new ConnectionParams();
-        $connector = new Connector($msgsFactory, $params, $loop, $dns);
-        $manager = new Manager($connector);
+        $connector = $factory->getConnector($params);
+        $manager = $factory->getManager($connector);
 
         // Create a listening server
         $serverAddr = $factory->getAddress(new Ipv4('127.0.0.1'), 31234);
-        $listener = new Listener($params, $msgsFactory, $serverAddr, $loop);
+        $listener = $factory->getListener($params, $serverAddr);
 
         // Hangup on successful + mark listener received our peer
         $listener->on('connection', function () use (&$listenerHadInbound, $listener) {

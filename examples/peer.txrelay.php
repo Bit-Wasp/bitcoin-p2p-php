@@ -1,28 +1,23 @@
 <?php
 
-require "../vendor/autoload.php";
+require_once __DIR__ . "/../vendor/autoload.php";
 
-
-use BitWasp\Bitcoin\Networking\DnsSeeds\MainNetDnsSeeds;
 use BitWasp\Bitcoin\Networking\Messages\Inv;
 use BitWasp\Bitcoin\Networking\Messages\Tx;
 use BitWasp\Bitcoin\Networking\Peer\ConnectionParams;
-use BitWasp\Bitcoin\Networking\Peer\Connector;
-use BitWasp\Bitcoin\Networking\Peer\Locator;
-use BitWasp\Bitcoin\Networking\Peer\Manager;
 use BitWasp\Bitcoin\Networking\Peer\Peer;
 
 $loop = React\EventLoop\Factory::create();
 $factory = new \BitWasp\Bitcoin\Networking\Factory($loop);
-$dns = $factory->getDns();
-$msgs = $factory->getMessages();
 
-$locator = new Locator(new MainNetDnsSeeds(), $dns);
+$factory->getSettings()->setConnectionTimeout(3);
+
 $params = new ConnectionParams();
 $params->requestTxRelay();
 
-$connector = new Connector($msgs, $params, $loop, $dns);
-$manager = new Manager($connector);
+$locator = $factory->getLocator();
+$connector = $factory->getConnector($params);
+$manager = $factory->getManager($connector);
 
 $manager
     ->connectNextPeer($locator)
@@ -45,6 +40,7 @@ $manager
 
         $peer->on('tx', function (Peer $peer, Tx $tx) {
             echo "Got tx: {$tx->getTransaction()->getTxId()->getHex()}\n";
+            $peer->close();
         });
     });
 

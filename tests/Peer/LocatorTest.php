@@ -14,10 +14,9 @@ class LocatorTest extends AbstractTestCase
         $loop = new \React\EventLoop\StreamSelectLoop();
         $factory = new \BitWasp\Bitcoin\Networking\Factory($loop);
 
-        $seeds = new DnsSeedList([]);
         $success = null;
 
-        (new Locator($seeds, $factory->getDns()))
+        $factory->getLocator()
             ->querySeeds(['invalid.bitcoin.seed'])
             ->then(
                 function () use (&$success) {
@@ -39,7 +38,7 @@ class LocatorTest extends AbstractTestCase
         $loop = new \React\EventLoop\StreamSelectLoop();
         $factory = new \BitWasp\Bitcoin\Networking\Factory($loop);
 
-        $locator = new Locator(new MainNetDnsSeeds(), $factory->getDns());
+        $locator = $factory->getLocator();
         $foundHosts = null;
         $found = false;
         $locator->queryDnsSeeds()->then(function (Locator $locator) use (&$foundHosts, &$found) {
@@ -63,8 +62,7 @@ class LocatorTest extends AbstractTestCase
     {
         $loop = new \React\EventLoop\StreamSelectLoop();
         $factory = new \BitWasp\Bitcoin\Networking\Factory($loop);
-
-        $locator = new Locator(new MainNetDnsSeeds(), $factory->getDns());
+        $locator = $factory->getLocator();
         $locator->popAddress();
     }
 }

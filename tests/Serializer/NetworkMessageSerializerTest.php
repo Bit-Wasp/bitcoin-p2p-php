@@ -43,7 +43,6 @@ class NetworkMessageSerializerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(new VerAck(), $message->getPayload());
     }
 
-
     /**
      * @expectedException \RuntimeException
      * @expectedExceptionMessage Unsupported message type
@@ -83,7 +82,6 @@ class NetworkMessageSerializerTest extends \PHPUnit_Framework_TestCase
 
         $serializer->parsePacket($header, $parser);
     }
-
 
     /**
      * @expectedException \RuntimeException

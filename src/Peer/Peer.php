@@ -135,45 +135,6 @@ class Peer extends EventEmitter
     }
 
     /**
-     * Handler for incoming data. Buffers possibly fragmented packets since they arrive sequentially.
-     * Before finishing the version exchange, this will only emit Version and VerAck messages.
-     */
-    private function onData()
-    {
-        $data = new Buffer($this->buffer);
-        $parser = new Parser($data);
-
-        $pos = $parser->getPosition();
-        $sz = $parser->getSize();
-
-        try {
-            while ($pos < $sz) {
-                if (null === $this->incomingMsgHeader) {
-                    if ($sz - $pos < 24) {
-                        break;
-                    }
-
-                    $this->incomingMsgHeader = $this->msgs->getSerializer()->parseHeader($parser);
-                } else {
-                    if ($sz - $pos < $this->incomingMsgHeader->getLength()) {
-                        break;
-                    }
-
-                    $message = $this->msgs->getSerializer()->parsePacket($this->incomingMsgHeader, $parser);
-                    $this->incomingMsgHeader = null;
-                    $this->emit('msg', [$this, $message]);
-                }
-
-                $pos = $parser->getPosition();
-            }
-        } catch (\Exception $e) {
-            
-        }
-
-        $this->buffer = $parser->getBuffer()->slice($pos)->getBinary();
-    }
-
-    /**
      * @param Stream $stream
      * @return $this
      */
@@ -182,15 +143,42 @@ class Peer extends EventEmitter
         $this->stream = $stream;
         $this->stream->on('data', function ($data) {
             $this->buffer .= $data;
-            $this->emit('data');
+
+            $data = new Buffer($this->buffer);
+            $parser = new Parser($data);
+
+            $pos = $parser->getPosition();
+            $sz = $parser->getSize();
+
+            try {
+                while ($pos < $sz) {
+                    if (null === $this->incomingMsgHeader) {
+                        if ($sz - $pos < 24) {
+                            break;
+                        }
+
+                        $this->incomingMsgHeader = $this->msgs->getSerializer()->parseHeader($parser);
+                        $pos = $parser->getPosition();
+                    }
+
+                    if ($sz - $pos < $this->incomingMsgHeader->getLength()) {
+                        break;
+                    }
+
+                    $message = $this->msgs->getSerializer()->parsePacket($this->incomingMsgHeader, $parser);
+                    $this->incomingMsgHeader = null;
+                    $this->emit('msg', [$this, $message]);
+                    $pos = $parser->getPosition();
+                }
+            } catch (\Exception $e) {
+                echo $e->getMessage();
+            }
+
+            $this->buffer = $parser->getBuffer()->slice($pos)->getBinary();
         });
 
-        $this->stream->on('close', function () {
+        $this->stream->once('close', function () {
             $this->close();
-        });
-
-        $this->on('data', function () {
-            $this->onData();
         });
 
         $this->on('msg', function (Peer $peer, NetworkMessage $msg) {
@@ -211,7 +199,6 @@ class Peer extends EventEmitter
 
         $deferred = new Deferred();
         $this->on(Message::VERSION, function (Peer $peer, Version $version) use ($params) {
-
             $this->peerAddress = $version->getSenderAddress();
             $this->remoteVersion = $version;
             $this->localVersion = $localVersion = $params->produceVersion($this->msgs, $version->getSenderAddress());
@@ -227,7 +214,6 @@ class Peer extends EventEmitter
             }
         });
 
-
         return $deferred->promise();
     }
 
@@ -241,7 +227,7 @@ class Peer extends EventEmitter
         $deferred = new Deferred();
         
         $awaitVersion = true;
-        $this->stream->on('close', function () use (&$awaitVersion, $deferred) {
+        $this->stream->once('close', function () use (&$awaitVersion, $deferred) {
             if ($awaitVersion) {
                 $awaitVersion = false;
                 $deferred->reject(new \Exception('peer disconnected'));

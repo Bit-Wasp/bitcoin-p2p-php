@@ -20,8 +20,7 @@ class ListenerTest extends AbstractTestCase
         $hadInbound = false;
         $hadOutbound = false;
         $inbndPeer = null;
-
-        $loop = new \React\EventLoop\StreamSelectLoop();
+        $loop = \React\EventLoop\Factory::create();
         $factory = new \BitWasp\Bitcoin\Networking\Factory($loop);
 
         $dns = $factory->getDns();
@@ -45,7 +44,7 @@ class ListenerTest extends AbstractTestCase
         $connector
             ->connect($serverAddr)
             ->then(
-                function (Peer $peer) use (&$hadOutbound) {
+                function (Peer $peer) use (&$hadOutbound, $loop) {
                     $hadOutbound = true;
                     $peer->close();
                 },

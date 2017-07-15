@@ -1,8 +1,6 @@
 <?php
 require_once "../vendor/autoload.php";
 use BitWasp\Bitcoin\Bitcoin;
-use BitWasp\Bitcoin\Networking\Ip\Ipv4;
-use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
 use BitWasp\Bitcoin\Networking\Message;
 use BitWasp\Bitcoin\Networking\Messages\GetData;
 use BitWasp\Bitcoin\Networking\Peer\ConnectionParams;
@@ -22,7 +20,7 @@ $dnsseeds = new \BitWasp\Bitcoin\Networking\DnsSeeds\TestNetDnsSeeds();
 // Check for witnesses. If they are found, we increase the counter, eventually checking whether it equals zero.
 $isWitness = (array_reduce($transaction->getWitnesses()->all(), function ($counter, \BitWasp\Bitcoin\Script\ScriptWitnessInterface $wit) {
         return $wit->isNull() ? $counter : $counter + 1;
-    }, 0) !== 0);
+}, 0) !== 0);
 
 $hash = $isWitness ? $transaction->getTxId() : $transaction->getWitnessTxId();
 

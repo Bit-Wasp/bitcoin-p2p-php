@@ -59,7 +59,6 @@ class PeerTest extends AbstractTestCase
         $loop = new StreamSelectLoop();
         $dnsResolverFactory = new \React\Dns\Resolver\Factory();
         $dns = $dnsResolverFactory->createCached('8.8.8.8', $loop);
-        $reactServer = new Server($loop);
 
         $network = Bitcoin::getDefaultNetwork();
 
@@ -83,14 +82,13 @@ class PeerTest extends AbstractTestCase
         /** @var NetworkAddressInterface $serverInboundAddr */
         $serverInboundAddr = null;
         $serverReceivedConnection = false;
-        $serverListener = new Listener($params, $msgs, $reactServer, $loop);
+        $serverListener = new Listener($params, $msgs, $server, $loop);
         $serverListener->on('connection', function (Peer $peer) use (&$serverReceivedConnection, &$serverReceivedVersion, &$serverInboundAddr) {
             $peer->close();
             $serverReceivedConnection = true;
             $serverInboundAddr = $peer->getRemoteAddress();
             $serverReceivedVersion = $peer->getRemoteVersion();
         });
-        $serverListener->listen($server->getPort());
 
         $connector = new Connector(
             $msgs,

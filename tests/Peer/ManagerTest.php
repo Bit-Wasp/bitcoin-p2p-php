@@ -73,8 +73,7 @@ class ManagerTest extends AbstractTestCase
 
         // Create a listening server
         $serverAddr = $factory->getAddress(new Ipv4('127.0.0.1'), 31234);
-        $listener = new Listener($params, $msgsFactory, new Server($loop), $loop);
-        $listener->listen($serverAddr->getPort());
+        $listener = new Listener($params, $msgsFactory, $serverAddr, $loop);
 
         // Hangup on successful + mark listener received our peer
         $listener->on('connection', function () use (&$listenerHadInbound, $listener) {

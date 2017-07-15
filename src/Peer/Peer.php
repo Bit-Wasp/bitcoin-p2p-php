@@ -24,6 +24,7 @@ use BitWasp\Buffertools\Parser;
 use Evenement\EventEmitter;
 use React\EventLoop\LoopInterface;
 use React\Promise\Deferred;
+use React\Socket\ConnectionInterface;
 use React\Stream\Stream;
 
 class Peer extends EventEmitter
@@ -139,7 +140,7 @@ class Peer extends EventEmitter
      * @param Stream $stream
      * @return $this
      */
-    public function setupStream(Stream $stream)
+    public function setupStream(ConnectionInterface $stream)
     {
         $this->stream = $stream;
         $this->stream->on('data', function ($data) {
@@ -172,7 +173,7 @@ class Peer extends EventEmitter
                     $pos = $parser->getPosition();
                 }
             } catch (\Exception $e) {
-                echo $e->getMessage();
+
             }
 
             $this->buffer = $parser->getBuffer()->slice($pos)->getBinary();
@@ -190,11 +191,11 @@ class Peer extends EventEmitter
     }
 
     /**
-     * @param Stream $connection
+     * @param ConnectionInterface $connection
      * @param ConnectionParams $params
      * @return \React\Promise\Promise|\React\Promise\PromiseInterface
      */
-    public function inboundHandshake(Stream $connection, ConnectionParams $params)
+    public function inboundHandshake(ConnectionInterface $connection, ConnectionParams $params)
     {
         $this->connectionParams = $params;
 

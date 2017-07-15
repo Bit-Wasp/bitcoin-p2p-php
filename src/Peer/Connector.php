@@ -7,8 +7,8 @@ use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
 use React\Dns\Resolver\Resolver;
 use React\EventLoop\LoopInterface;
 use React\Promise\RejectedPromise;
-use React\SocketClient\ConnectorInterface;
-use React\Stream\Stream;
+use React\Socket\ConnectionInterface;
+use React\Socket\ConnectorInterface;
 
 class Connector
 {
@@ -28,7 +28,7 @@ class Connector
     private $eventLoop;
 
     /**
-     * @var \React\SocketClient\Connector|ConnectorInterface
+     * @var \React\Socket\Connector|ConnectorInterface
      */
     private $socketConnector;
 
@@ -46,7 +46,10 @@ class Connector
         $this->msgs = $msgs;
         $this->eventLoop = $loop;
         if (null === $connector) {
-            $connector = new \React\SocketClient\Connector($loop, $resolver);
+            $connector = new \React\Socket\Connector($loop, [
+                'dns' => $resolver,
+                'timeout' => 3,
+            ]);
         }
 
         $this->socketConnector = $connector;
@@ -59,8 +62,8 @@ class Connector
     public function rawConnect(NetworkAddressInterface $remotePeer)
     {
         return $this->socketConnector
-            ->create($remotePeer->getIp()->getHost(), $remotePeer->getPort())
-            ->then(function (Stream $stream) {
+            ->connect("tcp://{$remotePeer->getIp()->getHost()}:{$remotePeer->getPort()}")
+            ->then(function (ConnectionInterface $stream) {
                 $peer = new Peer($this->msgs, $this->eventLoop);
                 $peer->setupStream($stream);
                 return $peer;
@@ -81,7 +84,7 @@ class Connector
                 $reqService = $this->params->getRequiredServices();
                 if ($reqService != 0) {
                     if ($reqService != ($peer->getRemoteVersion()->getServices() & $reqService)) {
-                        return new RejectedPromise('peer does not satisfy required services');
+                        return new RejectedPromise(new \RuntimeException('peer does not satisfy required services'));
                     }
                 }
                 

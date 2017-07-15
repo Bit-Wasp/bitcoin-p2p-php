@@ -2,7 +2,6 @@
 
 namespace BitWasp\Bitcoin\Tests\Networking\Dns;
 
-
 use BitWasp\Bitcoin\Networking\Dns\Factory;
 use BitWasp\Bitcoin\Networking\Dns\Resolver;
 use React\Dns\RecordNotFoundException;
@@ -54,5 +53,4 @@ class ResolverTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($resolved, "test should have marked \$resolved as true");
     }
-
 }

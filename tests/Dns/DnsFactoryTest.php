@@ -2,7 +2,6 @@
 
 namespace BitWasp\Bitcoin\Tests\Networking\Dns;
 
-
 use BitWasp\Bitcoin\Networking\Dns\Factory;
 use BitWasp\Bitcoin\Networking\Dns\Resolver;
 

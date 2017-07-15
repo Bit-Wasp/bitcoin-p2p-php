@@ -3,9 +3,11 @@
 require "../vendor/autoload.php";
 
 use BitWasp\Bitcoin\Networking\DnsSeeds\MainNetDnsSeeds;
+use BitWasp\Bitcoin\Networking\Messages\Addr;
 use BitWasp\Bitcoin\Networking\Peer\ConnectionParams;
 use BitWasp\Bitcoin\Networking\Peer\Connector;
 use BitWasp\Bitcoin\Networking\Peer\Locator;
+use BitWasp\Bitcoin\Networking\Peer\Manager;
 use BitWasp\Bitcoin\Networking\Peer\Peer;
 
 $loop = React\EventLoop\Factory::create();
@@ -16,20 +18,19 @@ $msgs = $factory->getMessages();
 $locator = new Locator(new MainNetDnsSeeds(), $dns);
 $params = new ConnectionParams();
 $connector = new Connector($msgs, $params, $loop, $dns);
+$manager = new Manager($connector);
+$manager->connectNextPeer($locator)->then(function (Peer $peer) {
+    $peer->on('addr', function (Peer $peer, Addr $addr) {
+        echo "Nodes: " . count($addr->getAddresses()) . PHP_EOL;
+        foreach ($addr->getAddresses() as $addr) {
+            echo $addr->getIp()->getHost().PHP_EOL;
+        }
+        $peer->close();
+    });
 
-$locator->queryDnsSeeds()->then(
-    function (Locator $locator) use (&$loop, $connector) {
-        $connector->connect($locator->popAddress())->then(
-            function (Peer $peer) use (&$loop) {
-                $remoteVersion = $peer->getRemoteVersion();
-                echo "connected to " . $remoteVersion->getSenderAddress()->getIp()->getHost() . "\n";
-                $loop->stop();
-            },
-            function ($error) {
-                throw $error;
-            }
-        );
-    }
-);
+    $peer->getaddr();
+}, function (\Exception $error) {
+    echo $error->getMessage();
+});
 
 $loop->run();

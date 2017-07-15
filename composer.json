@@ -22,7 +22,7 @@
     }
   },
   "require": {
-    "bitwasp/bitcoin": "~0.0.33.1",
+    "bitwasp/bitcoin": "~0.0.33.2",
     "react/socket": "v0.8.0",
     "react/dns": "~0.4.0",
     "clue/socks-react": "~0.4",

@@ -5,6 +5,7 @@ require "../vendor/autoload.php";
 
 use BitWasp\Bitcoin\Networking\DnsSeeds\MainNetDnsSeeds;
 use BitWasp\Bitcoin\Networking\Messages\Inv;
+use BitWasp\Bitcoin\Networking\Messages\Tx;
 use BitWasp\Bitcoin\Networking\Peer\ConnectionParams;
 use BitWasp\Bitcoin\Networking\Peer\Connector;
 use BitWasp\Bitcoin\Networking\Peer\Locator;
@@ -28,16 +29,22 @@ $manager
     ->then(function (Peer $peer) {
         $peer->on('inv', function (Peer $peer, Inv $inv) {
             $blocks = 0;
-            $txs = 0;
+            $txs = [];
             foreach ($inv->getItems() as $inventory) {
                 if ($inventory->isBlock()) {
                     $blocks++;
                 } elseif ($inventory->isTx()) {
-                    $txs++;
+                    echo $inventory->getHash()->getHex().PHP_EOL;
+                    $txs[] = $inventory;
                 }
             }
 
-            echo " Inv packet: ".$blocks." blocks and ". $txs . " txs\n";
+            $peer->getdata($txs);
+            echo " Inv packet: ".$blocks." blocks and ". count($txs) . " txs\n";
+        });
+
+        $peer->on('tx', function (Peer $peer, Tx $tx) {
+            echo "Got tx: {$tx->getTransaction()->getTxId()->getHex()}\n";
         });
     });
 

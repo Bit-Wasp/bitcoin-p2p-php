@@ -12,6 +12,7 @@ use BitWasp\Bitcoin\Networking\Messages\Ping;
 use BitWasp\Bitcoin\Networking\NetworkMessage;
 use BitWasp\Bitcoin\Networking\NetworkSerializable;
 use BitWasp\Bitcoin\Networking\Structure\AlertDetail;
+use BitWasp\Bitcoin\Networking\Structure\Header;
 use BitWasp\Bitcoin\Networking\Structure\Inventory;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressTimestamp;
@@ -71,6 +72,11 @@ class Peer extends EventEmitter
      * @var bool
      */
     private $exchangedVersion = false;
+
+    /**
+     * @var Header
+     */
+    private $incomingMsgHeader;
 
     /**
      * @param \BitWasp\Bitcoin\Networking\Messages\Factory $msgs
@@ -134,18 +140,37 @@ class Peer extends EventEmitter
      */
     private function onData()
     {
-        $tmp = $this->buffer;
-        $parser = new Parser(new Buffer($tmp));
+        $data = new Buffer($this->buffer);
+        $parser = new Parser($data);
+
+        $pos = $parser->getPosition();
+        $sz = $parser->getSize();
 
         try {
-            while ($message = $this->msgs->parse($parser)) {
-                $tmp = $parser->getBuffer()->slice($parser->getPosition())->getBinary();
-                $this->emit('msg', [$this, $message]);
+            while ($pos < $sz) {
+                if (null === $this->incomingMsgHeader) {
+                    if ($sz - $pos < 24) {
+                        break;
+                    }
+
+                    $this->incomingMsgHeader = $this->msgs->getSerializer()->parseHeader($parser);
+                } else {
+                    if ($sz - $pos < $this->incomingMsgHeader->getLength()) {
+                        break;
+                    }
+
+                    $message = $this->msgs->getSerializer()->parsePacket($this->incomingMsgHeader, $parser);
+                    $this->incomingMsgHeader = null;
+                    $this->emit('msg', [$this, $message]);
+                }
+
+                $pos = $parser->getPosition();
             }
         } catch (\Exception $e) {
-            $this->buffer = $tmp;
-            // Do nothing - it was probably a fragmented message
+            
         }
+
+        $this->buffer = $parser->getBuffer()->slice($pos)->getBinary();
     }
 
     /**

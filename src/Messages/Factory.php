@@ -40,6 +40,7 @@ class Factory
     {
         $this->network = $network;
         $this->random = $random;
+        $this->serializer = new NetworkMessageSerializer($this->network);
     }
 
     /**
@@ -296,7 +297,14 @@ class Factory
      */
     public function parse(Parser $parser)
     {
-        return (new NetworkMessageSerializer($this->network))->fromParser($parser);
+        return $this->serializer->fromParser($parser);
+    }
+
+    /**
+     * @return NetworkMessageSerializer
+     */
+    public function getSerializer() {
+        return $this->serializer;
     }
 
     /**

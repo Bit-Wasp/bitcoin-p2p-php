@@ -4,6 +4,7 @@ namespace BitWasp\Bitcoin\Networking\Peer;
 
 use BitWasp\Bitcoin\Networking\DnsSeeds\DnsSeedList;
 use BitWasp\Bitcoin\Networking\Ip\Ipv4;
+use BitWasp\Bitcoin\Networking\Settings\NetworkSettings;
 use BitWasp\Bitcoin\Networking\Services;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
@@ -30,26 +31,24 @@ class Locator
 
     /**
      * Locator constructor.
-     * @param DnsSeedList $list
      * @param Resolver $dns
+     * @param NetworkSettings $settings
      */
-    public function __construct(DnsSeedList $list, Resolver $dns, $defaultNetPort = 8333)
+    public function __construct(Resolver $dns, NetworkSettings $settings)
     {
-        $this->seeds = $list;
+        $this->seeds = $settings->getDnsSeedList();
         $this->dns = $dns;
-        $this->defaultPort = $defaultNetPort;
+        $this->settings = $settings;
     }
 
     /**
-     * Sets the default port for network addresses returned by this instance.
+     * Takes an arbitrary list of dns seed hostnames, and attempts
+     * to return a list from each. Request fails if any hosts are
+     * offline or cause an error.
      *
-     * @param int $defaultNetPort
+     * @param array $seeds
+     * @return \React\Promise\Promise|\React\Promise\PromiseInterface
      */
-    public function setDefaultPort($defaultNetPort)
-    {
-        $this->defaultPort = $defaultNetPort;
-    }
-
     public function querySeeds(array $seeds)
     {
         $peerList = new Deferred();
@@ -74,6 +73,9 @@ class Locator
     }
 
     /**
+     * Given a number of DNS seeds to query, select a random few and
+     * return their peers.
+     *
      * @param int $numSeeds
      * @return \React\Promise\Promise|\React\Promise\PromiseInterface
      */
@@ -88,7 +90,8 @@ class Locator
     }
 
     /**
-     * Connect to $numSeeds DNS seeds
+     * Query $numSeeds DNS seeds, returning the NetworkAddress[] result.
+     * Is rejected if any of the seeds fail.
      *
      * @param int $numSeeds
      * @return \React\Promise\Promise|\React\Promise\PromiseInterface
@@ -108,7 +111,7 @@ class Locator
                         $addresses[] = new NetworkAddress(
                             Services::NETWORK,
                             new Ipv4($ip),
-                            $this->defaultPort
+                            $this->settings->getDefaultP2PPort()
                         );
                     }
 

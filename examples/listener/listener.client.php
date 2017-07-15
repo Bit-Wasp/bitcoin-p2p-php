@@ -1,12 +1,11 @@
 <?php
 
-require_once "../vendor/autoload.php";
+require_once __DIR__ . "/../../vendor/autoload.php";
 
 
 use BitWasp\Bitcoin\Networking\Peer\Peer;
 use BitWasp\Bitcoin\Networking\Messages\Addr;
 use BitWasp\Bitcoin\Networking\Peer\ConnectionParams;
-use BitWasp\Bitcoin\Networking\Peer\Connector;
 use BitWasp\Bitcoin\Networking\Ip\Ipv4;
 
 // Override, or make it work with listener.php example
@@ -19,12 +18,12 @@ $factory = new \BitWasp\Bitcoin\Networking\Factory($loop);
 $host = $factory->getAddress(new Ipv4('127.0.0.1'), $serverPort);
 $local = $factory->getAddress(new Ipv4('192.168.192.39'), 32301);
 
-$connector = new Connector($factory->getMessages(), new ConnectionParams(), $loop, $factory->getDns());
+$params = new ConnectionParams();
+$connector = $factory->getConnector($params);
 
 $connector
     ->connect($host)
     ->then(function (Peer $peer) use ($loop) {
-        echo "connected\n";
         $peer->getaddr();
         $peer->on('addr', function (Peer $peer, Addr $addr) {
             echo "Nodes: \n";
@@ -33,6 +32,8 @@ $connector
             }
             $peer->close();
         });
+    }, function ($err) {
+        echo $err;
     });
 
 $loop->run();

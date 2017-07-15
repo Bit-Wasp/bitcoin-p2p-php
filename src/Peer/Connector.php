@@ -4,11 +4,9 @@ namespace BitWasp\Bitcoin\Networking\Peer;
 
 use BitWasp\Bitcoin\Networking\Messages\Factory as MsgFactory;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
-use React\Dns\Resolver\Resolver;
 use React\EventLoop\LoopInterface;
 use React\Promise\RejectedPromise;
 use React\Socket\ConnectionInterface;
-use React\Socket\ConnectorInterface;
 
 class Connector
 {
@@ -28,7 +26,7 @@ class Connector
     private $eventLoop;
 
     /**
-     * @var \React\Socket\Connector|ConnectorInterface
+     * @var \React\Socket\Connector
      */
     private $socketConnector;
 
@@ -37,22 +35,14 @@ class Connector
      * @param MsgFactory $msgs
      * @param ConnectionParams $params
      * @param LoopInterface $loop
-     * @param Resolver $resolver
-     * @param ConnectorInterface $connector
+     * @param array $settings
      */
-    public function __construct(MsgFactory $msgs, ConnectionParams $params, LoopInterface $loop, Resolver $resolver, ConnectorInterface $connector = null)
+    public function __construct(MsgFactory $msgs, ConnectionParams $params, LoopInterface $loop, array $settings)
     {
         $this->params = $params;
         $this->msgs = $msgs;
         $this->eventLoop = $loop;
-        if (null === $connector) {
-            $connector = new \React\Socket\Connector($loop, [
-                'dns' => $resolver,
-                'timeout' => 3,
-            ]);
-        }
-
-        $this->socketConnector = $connector;
+        $this->socketConnector = new \React\Socket\Connector($loop, $settings);
     }
 
     /**

@@ -220,7 +220,7 @@ class Peer extends EventEmitter
         $this->stream->on('close', function () use (&$awaitVersion, $deferred) {
             if ($awaitVersion) {
                 $awaitVersion = false;
-                $deferred->reject('peer disconnected');
+                $deferred->reject(new \Exception('peer disconnected'));
             }
         });
 

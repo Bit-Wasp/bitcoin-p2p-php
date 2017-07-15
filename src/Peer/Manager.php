@@ -5,6 +5,8 @@ namespace BitWasp\Bitcoin\Networking\Peer;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
 use Evenement\EventEmitter;
 use React\Promise\Deferred;
+use React\Promise\RejectedPromise;
+use React\Promise\Timer\TimeoutException;
 
 class Manager extends EventEmitter
 {
@@ -99,9 +101,9 @@ class Manager extends EventEmitter
 
     /**
      * @param Locator $locator
-     * @return \React\Promise\ExtendedPromiseInterface|\React\Promise\Promise
+     * @return \React\Promise\Promise|\React\Promise\PromiseInterface
      */
-    public function connectNextPeer(Locator $locator)
+    public function getAnotherPeer(Locator $locator)
     {
         $deferred = new Deferred();
 
@@ -112,25 +114,75 @@ class Manager extends EventEmitter
             $locator->queryDnsSeeds()->then(
                 function () use ($deferred, $locator) {
                     $deferred->resolve($locator->popAddress());
+                },
+                function ($error) use ($deferred) {
+                    var_dump($error);
+                    return new RejectedPromise();
                 }
             );
         }
 
-        return $deferred
-            ->promise()
-            ->then(
-                function (NetworkAddressInterface $address) {
-                    return $this->connect($address)->then(
-                        function (Peer $peer) {
-                            $this->registerOutboundPeer($peer);
-                            return $peer;
-                        }
-                    );
-                }
-            )
-            ->otherwise(function () use ($locator) {
-                return $this->connectNextPeer($locator);
+        return $deferred->promise();
+    }
+
+    /**
+     * @param Locator $locator
+     * @return \React\Promise\Promise|\React\Promise\PromiseInterface
+     */
+    public function attemptNextPeer(Locator $locator) {
+        $attempt = new Deferred();
+
+        $this
+            ->getAnotherPeer($locator)
+            ->then(function (NetworkAddressInterface $address) use ($attempt, $locator) {
+                return $this->connect($address)->then(
+                    function (Peer $peer) use ($attempt) {
+                        $this->registerOutboundPeer($peer);
+                        $attempt->resolve($peer);
+                        return $peer;
+                    },
+                    function (\Exception $error) use ($attempt) {
+                        $attempt->reject($error);
+                    }
+                );
+            }, function ($error) use ($attempt) {
+                $attempt->reject($error);
             });
+
+        return $attempt->promise();
+    }
+
+    /**
+     * @param Locator $locator
+     * @param int $retries
+     * @return \React\Promise\PromiseInterface
+     */
+    public function connectNextPeer(Locator $locator, $retries = 5)
+    {
+        $errorBack = function ($error) use ($locator, $retries) {
+            $allowContinue = false;
+            if ($error instanceof \RuntimeException && $error->getMessage() === "Connection refused") {
+                $allowContinue = true;
+            }
+
+            if ($error instanceof TimeoutException) {
+                $allowContinue = true;
+            }
+
+            if (!$allowContinue) {
+                throw $error;
+            }
+
+            if (0 >= $retries) {
+                throw new \RuntimeException("Connection to peers failed: too many retries");
+            }
+
+            return $this->connectNextPeer($locator, $retries - 1);
+        };
+
+        return $this
+            ->attemptNextPeer($locator)
+            ->then(null, $errorBack);
     }
 
     /**

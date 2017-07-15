@@ -11,7 +11,6 @@ use BitWasp\Bitcoin\Networking\Peer\Listener;
 use BitWasp\Bitcoin\Networking\Peer\Connector;
 use BitWasp\Bitcoin\Networking\Peer\Peer;
 use BitWasp\Bitcoin\Tests\Networking\AbstractTestCase;
-use React\Socket\Server;
 
 class ListenerTest extends AbstractTestCase
 {
@@ -29,17 +28,16 @@ class ListenerTest extends AbstractTestCase
         $params = new ConnectionParams();
         $connector = new Connector($msgs, $params, $loop, $dns);
 
-        $serverAddr = $factory->getAddress(new Ipv4('127.0.0.1'), 31234);
+        $serverIP = '127.0.0.1';
+        $serverPort = '31234';
+        $serverAddr = $factory->getAddress(new Ipv4($serverIP), $serverPort);
 
-        $server = new Server($loop);
-        $listener = new Listener($params, $factory->getMessages(), $server, $loop);
+        $listener = new Listener($params, $factory->getMessages(), $serverAddr, $loop);
         $listener->on('connection', function (Peer $peer) use (&$hadInbound, $listener, &$inbndPeer) {
             $hadInbound = true;
             $inbndPeer = $peer;
             $listener->close();
         });
-
-        $listener->listen($serverAddr->getPort());
 
         $connector
             ->connect($serverAddr)

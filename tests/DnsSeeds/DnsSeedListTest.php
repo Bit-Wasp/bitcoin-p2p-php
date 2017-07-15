@@ -2,7 +2,6 @@
 
 namespace BitWasp\Bitcoin\Tests\Networking\DnsSeeds;
 
-
 use BitWasp\Bitcoin\Networking\DnsSeeds\DnsSeedList;
 use BitWasp\Bitcoin\Networking\DnsSeeds\MainNetDnsSeeds;
 use BitWasp\Bitcoin\Networking\DnsSeeds\TestNetDnsSeeds;

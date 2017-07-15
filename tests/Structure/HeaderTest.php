@@ -2,7 +2,6 @@
 
 namespace BitWasp\Bitcoin\Tests\Networking\Structure;
 
-
 use BitWasp\Bitcoin\Networking\Structure\Header;
 use BitWasp\Buffertools\Buffer;
 

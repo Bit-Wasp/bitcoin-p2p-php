@@ -33,10 +33,21 @@ class Locator
      * @param DnsSeedList $list
      * @param Resolver $dns
      */
-    public function __construct(DnsSeedList $list, Resolver $dns)
+    public function __construct(DnsSeedList $list, Resolver $dns, $defaultNetPort = 8333)
     {
         $this->seeds = $list;
         $this->dns = $dns;
+        $this->defaultPort = $defaultNetPort;
+    }
+
+    /**
+     * Sets the default port for network addresses returned by this instance.
+     *
+     * @param int $defaultNetPort
+     */
+    public function setDefaultPort($defaultNetPort)
+    {
+        $this->defaultPort = $defaultNetPort;
     }
 
     /**
@@ -95,7 +106,7 @@ class Locator
                         $addresses[] = new NetworkAddress(
                             Services::NETWORK,
                             new Ipv4($ip),
-                            8333
+                            $this->defaultPort
                         );
                     }
 

@@ -173,7 +173,6 @@ class Peer extends EventEmitter
                     $pos = $parser->getPosition();
                 }
             } catch (\Exception $e) {
-
             }
 
             $this->buffer = $parser->getBuffer()->slice($pos)->getBinary();

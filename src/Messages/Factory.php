@@ -303,7 +303,8 @@ class Factory
     /**
      * @return NetworkMessageSerializer
      */
-    public function getSerializer() {
+    public function getSerializer()
+    {
         return $this->serializer;
     }
 

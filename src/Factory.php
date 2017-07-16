@@ -122,12 +122,12 @@ class Factory
      * @param int $services
      * @return NetworkAddress
      */
-    public function getAddress(IpInterface $ipAddress, $port = 8333, $services = Services::NONE)
+    public function getAddress(IpInterface $ipAddress, $port = null, $services = Services::NONE)
     {
-        return new NetworkAddress(
-            $services,
-            $ipAddress,
-            $port
-        );
+        if (null === $port) {
+            $port = $this->settings->getDefaultP2PPort();
+        }
+
+        return new NetworkAddress($services, $ipAddress, $port);
     }
 }

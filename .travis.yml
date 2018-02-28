@@ -6,6 +6,7 @@ php:
   - nightly
   - 7.0
   - 7.1
+  - 7.2
 
 dist: trusty
 

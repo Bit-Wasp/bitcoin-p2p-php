@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BitWasp\Bitcoin\Networking\Serializer\Message;
 
 use BitWasp\Bitcoin\Networking\Messages\GetBlocks;
 use BitWasp\Bitcoin\Serializer\Chain\BlockLocatorSerializer;
+use BitWasp\Buffertools\BufferInterface;
 use BitWasp\Buffertools\Buffertools;
 use BitWasp\Buffertools\Parser;
 use BitWasp\Buffertools\TemplateFactory;
@@ -37,14 +40,11 @@ class GetBlocksSerializer
      * @param Parser $parser
      * @return GetBlocks
      */
-    public function fromParser(Parser $parser)
+    public function fromParser(Parser $parser): GetBlocks
     {
-        list ($version) = $this->getVersionTemplate()->parse($parser);
-        $locator = $this->locator->fromParser($parser);
-
         return new GetBlocks(
-            $version,
-            $locator
+            (int) $this->getVersionTemplate()->parse($parser),
+            $this->locator->fromParser($parser)
         );
     }
 
@@ -52,16 +52,16 @@ class GetBlocksSerializer
      * @param $data
      * @return GetBlocks
      */
-    public function parse($data)
+    public function parse($data): GetBlocks
     {
         return $this->fromParser(new Parser($data));
     }
 
     /**
      * @param GetBlocks $msg
-     * @return \BitWasp\Buffertools\Buffer
+     * @return \BitWasp\Buffertools\BufferInterface
      */
-    public function serialize(GetBlocks $msg)
+    public function serialize(GetBlocks $msg): BufferInterface
     {
         return Buffertools::concat(
             $this->getVersionTemplate()->write([$msg->getVersion()]),

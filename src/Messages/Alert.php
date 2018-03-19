@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BitWasp\Bitcoin\Networking\Messages;
 
 use BitWasp\Bitcoin\Networking\Message;
@@ -8,6 +10,7 @@ use BitWasp\Bitcoin\Networking\Structure\AlertDetail;
 use BitWasp\Bitcoin\Networking\Serializer\Message\AlertSerializer;
 use BitWasp\Bitcoin\Networking\Serializer\Structure\AlertDetailSerializer;
 use BitWasp\Bitcoin\Crypto\EcAdapter\Signature\SignatureInterface;
+use BitWasp\Buffertools\BufferInterface;
 
 class Alert extends NetworkSerializable
 {
@@ -34,7 +37,7 @@ class Alert extends NetworkSerializable
     /**
      * @return string
      */
-    public function getNetworkCommand()
+    public function getNetworkCommand(): string
     {
         return Message::ALERT;
     }
@@ -42,7 +45,7 @@ class Alert extends NetworkSerializable
     /**
      * @return AlertDetail
      */
-    public function getDetail()
+    public function getDetail(): AlertDetail
     {
         return $this->alert;
     }
@@ -50,16 +53,16 @@ class Alert extends NetworkSerializable
     /**
      * @return SignatureInterface
      */
-    public function getSignature()
+    public function getSignature(): SignatureInterface
     {
         return $this->signature;
     }
 
     /**
      * @see \BitWasp\Bitcoin\SerializableInterface::getBuffer()
-     * @return \BitWasp\Buffertools\Buffer
+     * @return BufferInterface
      */
-    public function getBuffer()
+    public function getBuffer(): BufferInterface
     {
         return (new AlertSerializer(new AlertDetailSerializer()))->serialize($this);
     }

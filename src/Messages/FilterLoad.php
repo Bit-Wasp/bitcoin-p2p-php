@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BitWasp\Bitcoin\Networking\Messages;
 
 use BitWasp\Bitcoin\Bloom\BloomFilter;
@@ -7,7 +9,7 @@ use BitWasp\Bitcoin\Networking\Message;
 use BitWasp\Bitcoin\Networking\NetworkSerializable;
 use BitWasp\Bitcoin\Serializer\Bloom\BloomFilterSerializer;
 use BitWasp\Bitcoin\Networking\Serializer\Message\FilterLoadSerializer;
-use BitWasp\Buffertools\Buffer;
+use BitWasp\Buffertools\BufferInterface;
 
 class FilterLoad extends NetworkSerializable
 {
@@ -27,7 +29,7 @@ class FilterLoad extends NetworkSerializable
     /**
      * @return string
      */
-    public function getNetworkCommand()
+    public function getNetworkCommand(): string
     {
         return Message::FILTERLOAD;
     }
@@ -35,14 +37,14 @@ class FilterLoad extends NetworkSerializable
     /**
      * @return BloomFilter
      */
-    public function getFilter()
+    public function getFilter(): BloomFilter
     {
         return $this->filter;
     }
     /**
-     * @return Buffer
+     * @return BufferInterface
      */
-    public function getBuffer()
+    public function getBuffer(): BufferInterface
     {
         return (new FilterLoadSerializer(new BloomFilterSerializer()))->serialize($this);
     }

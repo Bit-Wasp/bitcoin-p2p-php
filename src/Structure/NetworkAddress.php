@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BitWasp\Bitcoin\Networking\Structure;
 
 use BitWasp\Bitcoin\Networking\Ip\IpInterface;
@@ -29,7 +31,7 @@ class NetworkAddress extends Serializable implements NetworkAddressInterface
      * @param IpInterface $ip
      * @param int $port
      */
-    public function __construct($services, IpInterface $ip, $port)
+    public function __construct(int $services, IpInterface $ip, int $port)
     {
         $this->services = $services;
         $this->ip = $ip;
@@ -39,7 +41,7 @@ class NetworkAddress extends Serializable implements NetworkAddressInterface
     /**
      * @return int
      */
-    public function getServices()
+    public function getServices(): int
     {
         return $this->services;
     }
@@ -47,15 +49,15 @@ class NetworkAddress extends Serializable implements NetworkAddressInterface
     /**
      * @return IpInterface
      */
-    public function getIp()
+    public function getIp(): IpInterface
     {
         return $this->ip;
     }
 
     /**
-     * @return int|string
+     * @return int
      */
-    public function getPort()
+    public function getPort(): int
     {
         return $this->port;
     }
@@ -63,7 +65,7 @@ class NetworkAddress extends Serializable implements NetworkAddressInterface
     /**
      * @return BufferInterface
      */
-    public function getBuffer()
+    public function getBuffer(): BufferInterface
     {
         return (new NetworkAddressSerializer())->serialize($this);
     }

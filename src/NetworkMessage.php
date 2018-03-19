@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BitWasp\Bitcoin\Networking;
 
 use BitWasp\Bitcoin\Crypto\Hash;
@@ -47,7 +49,7 @@ class NetworkMessage extends Serializable
     /**
      * @return NetworkSerializableInterface
      */
-    public function getPayload()
+    public function getPayload(): NetworkSerializableInterface
     {
         return $this->payload;
     }
@@ -55,7 +57,7 @@ class NetworkMessage extends Serializable
     /**
      * @return string
      */
-    public function getCommand()
+    public function getCommand(): string
     {
         return $this->payload->getNetworkCommand();
     }
@@ -63,7 +65,7 @@ class NetworkMessage extends Serializable
     /**
      * @return BufferInterface
      */
-    public function getChecksum()
+    public function getChecksum(): BufferInterface
     {
         return $this->header->getChecksum();
     }
@@ -71,7 +73,7 @@ class NetworkMessage extends Serializable
     /**
      * @return Header
      */
-    public function getHeader()
+    public function getHeader(): Header
     {
         return $this->header;
     }
@@ -79,7 +81,7 @@ class NetworkMessage extends Serializable
     /**
      * @return BufferInterface
      */
-    public function getBuffer()
+    public function getBuffer(): BufferInterface
     {
         return (new NetworkMessageSerializer($this->network))->serialize($this);
     }

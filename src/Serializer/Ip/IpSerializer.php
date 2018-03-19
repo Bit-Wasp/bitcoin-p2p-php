@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BitWasp\Bitcoin\Networking\Serializer\Ip;
 
 use Base32\Base32;
@@ -27,7 +29,7 @@ class IpSerializer
             $ip = new Onion($addr);
         } elseif (Ipv4::MAGIC === substr($binary, 0, strlen(Ipv4::MAGIC))) {
             $end = $buffer->slice(strlen(Ipv4::MAGIC), 4);
-            $ip = new Ipv4(long2ip($end->getInt()));
+            $ip = new Ipv4(inet_ntop($end->getBinary()));
         } else {
             $addr = [];
             foreach (str_split($binary, 2) as $segment) {

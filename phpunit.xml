@@ -2,7 +2,7 @@
 <phpunit bootstrap="vendor/autoload.php" colors="true">
     <testsuites>
         <testsuite name="All tests">
-            <directory>tests/</directory>
+            <directory>tests/unit/</directory>
         </testsuite>
     </testsuites>
 
@@ -11,9 +11,4 @@
             <directory>src</directory>
         </whitelist>
     </filter>
-
-    <logging>
-        <log type="coverage-html" target="build/docs/code-coverage"/>
-        <log type="coverage-clover" target="build/docs/clover.xml"/>
-    </logging>
 </phpunit>

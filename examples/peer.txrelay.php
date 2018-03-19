@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 require_once __DIR__ . "/../vendor/autoload.php";
 
 use BitWasp\Bitcoin\Networking\Messages\Inv;
@@ -21,7 +23,12 @@ $manager = $factory->getManager($connector);
 
 $manager
     ->connectNextPeer($locator)
-    ->then(function (Peer $peer) {
+    ->then(function (Peer $peer) use ($loop) {
+        $loop->addTimer(5, function () use ($peer) {
+            echo "halt after 10 seconds\n";
+            $peer->close();
+        });
+
         $peer->on('inv', function (Peer $peer, Inv $inv) {
             $blocks = 0;
             $txs = [];

@@ -1,10 +1,14 @@
 <?php
+
+declare(strict_types=1);
+
 require_once __DIR__ . "/../vendor/autoload.php";
 
 use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Networking\Message;
 use BitWasp\Bitcoin\Networking\Messages\GetData;
 use BitWasp\Bitcoin\Networking\Peer\ConnectionParams;
+use BitWasp\Bitcoin\Networking\Peer\Locator;
 use BitWasp\Bitcoin\Networking\Peer\Peer;
 use BitWasp\Bitcoin\Networking\Services;
 use BitWasp\Bitcoin\Networking\Settings\Testnet3Settings;
@@ -17,7 +21,7 @@ $transaction = TransactionFactory::fromHex('01000000000101f15a2db447e8316e9f2007
 
 // Check for witnesses. If they are found, we increase the counter, eventually checking whether it equals zero.
 $isWitness = (array_reduce($transaction->getWitnesses(), function ($counter, \BitWasp\Bitcoin\Script\ScriptWitnessInterface $wit) {
-        return $wit->isNull() ? $counter : $counter + 1;
+    return $wit->isNull() ? $counter : $counter + 1;
 }, 0) !== 0);
 
 $hash = $isWitness ? $transaction->getTxId() : $transaction->getWitnessTxId();
@@ -35,23 +39,42 @@ $params->setRequiredServices(Services::NETWORK | Services::WITNESS);
 $connector = $factory->getConnector($params);
 $manager = $factory->getManager($connector);
 
-$onGetData = function (Peer $peer, GetData $data) use ($hash, $transaction, $loop) {
+$nodeRequestedTx = false;
+
+$onGetData = function (Peer $peer, GetData $data) use ($hash, $transaction, $loop, &$nodeRequestedTx) {
     foreach ($data->getItems() as $inv) {
         if ($inv->getHash()->equals($hash)) {
             echo "Peer requested tx\n";
             $peer->tx($transaction);
+            $nodeRequestedTx = true;
             //$loop->stop();
         }
     }
 };
 
 $onConnect = function (Peer $peer) use ($onGetData, $hash, $loop) {
+    echo "connected to node\n";
+    $loop->addTimer(5, function () use ($peer) {
+        echo "timeout - close connection\n";
+        $peer->close();
+    });
+
     $peer->on(Message::GETDATA, $onGetData);
     $peer->inv([Inventory::tx($hash)]);
 };
 
 $manager->on('connection', $onConnect);
 
-$locator->queryDnsSeeds()->then([$manager, 'connectNextPeer']);
+$locator->queryDnsSeeds()->then(function (Locator $locator) use ($manager, $onConnect) {
+    return $manager
+        ->connectNextPeer($locator)
+        ->then($onConnect);
+});
 
 $loop->run();
+
+if ($nodeRequestedTx) {
+    echo "Node requested tx from us!\n";
+} else {
+    echo "Node ignored tx!\n";
+}

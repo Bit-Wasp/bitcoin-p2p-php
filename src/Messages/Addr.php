@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BitWasp\Bitcoin\Networking\Messages;
 
 use BitWasp\Bitcoin\Networking\Message;
@@ -7,6 +9,7 @@ use BitWasp\Bitcoin\Networking\Serializer\Message\AddrSerializer;
 use BitWasp\Bitcoin\Networking\Serializer\Structure\NetworkAddressTimestampSerializer;
 use BitWasp\Bitcoin\Networking\NetworkSerializable;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressTimestamp;
+use BitWasp\Buffertools\BufferInterface;
 
 class Addr extends NetworkSerializable implements \Countable
 {
@@ -28,7 +31,7 @@ class Addr extends NetworkSerializable implements \Countable
     /**
      * @return string
      */
-    public function getNetworkCommand()
+    public function getNetworkCommand(): string
     {
         return Message::ADDR;
     }
@@ -36,7 +39,7 @@ class Addr extends NetworkSerializable implements \Countable
     /**
      * @return int
      */
-    public function count()
+    public function count(): int
     {
         return count($this->addresses);
     }
@@ -44,7 +47,7 @@ class Addr extends NetworkSerializable implements \Countable
     /**
      * @return NetworkAddressTimestamp[]
      */
-    public function getAddresses()
+    public function getAddresses(): array
     {
         return $this->addresses;
     }
@@ -54,7 +57,7 @@ class Addr extends NetworkSerializable implements \Countable
      * @return NetworkAddressTimestamp
      * @throws \InvalidArgumentException
      */
-    public function getAddress($index)
+    public function getAddress(int $index): NetworkAddressTimestamp
     {
         if (false === isset($this->addresses[$index])) {
             throw new \InvalidArgumentException('No address exists at this index');
@@ -76,7 +79,7 @@ class Addr extends NetworkSerializable implements \Countable
     /**
      * @see \BitWasp\Bitcoin\SerializableInterface::getBuffer()
      */
-    public function getBuffer()
+    public function getBuffer(): BufferInterface
     {
         return (new AddrSerializer(new NetworkAddressTimestampSerializer()))->serialize($this);
     }

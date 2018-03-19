@@ -1,22 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BitWasp\Bitcoin\Networking\Messages;
 
 use BitWasp\Bitcoin\Networking\Message;
 use BitWasp\Bitcoin\Networking\NetworkSerializable;
 use BitWasp\Bitcoin\Networking\Serializer\Message\PongSerializer;
+use BitWasp\Buffertools\BufferInterface;
 
 class Pong extends NetworkSerializable
 {
     /**
-     * @var integer|string
+     * @var int
      */
     private $nonce;
 
     /**
-     * @param int|string $nonce
+     * @param int $nonce
      */
-    public function __construct($nonce)
+    public function __construct(int $nonce)
     {
         $this->nonce = $nonce;
     }
@@ -24,7 +27,7 @@ class Pong extends NetworkSerializable
     /**
      * @return string
      */
-    public function getNetworkCommand()
+    public function getNetworkCommand(): string
     {
         return Message::PONG;
     }
@@ -32,15 +35,15 @@ class Pong extends NetworkSerializable
     /**
      * @return int
      */
-    public function getNonce()
+    public function getNonce(): int
     {
         return $this->nonce;
     }
 
     /**
-     * @return \BitWasp\Buffertools\Buffer
+     * @return BufferInterface
      */
-    public function getBuffer()
+    public function getBuffer(): BufferInterface
     {
         return (new PongSerializer())->serialize($this);
     }

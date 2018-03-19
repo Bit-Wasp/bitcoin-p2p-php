@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BitWasp\Bitcoin\Networking\Structure;
 
 use BitWasp\Bitcoin\Networking\Serializer\Structure\AlertDetailSerializer;
@@ -86,14 +88,14 @@ class AlertDetail extends Serializable
      * @param SerializableInterface[] $setSubVer
      */
     public function __construct(
-        $version,
-        $relayUntil,
-        $expiration,
-        $id,
-        $cancel,
-        $minVer,
-        $maxVer,
-        $priority,
+        int $version,
+        int $relayUntil,
+        int $expiration,
+        int $id,
+        int $cancel,
+        int $minVer,
+        int $maxVer,
+        int $priority,
         BufferInterface $comment,
         BufferInterface $statusBar,
         array $setCancel = [],
@@ -116,7 +118,7 @@ class AlertDetail extends Serializable
     /**
      * @return int
      */
-    public function getVersion()
+    public function getVersion(): int
     {
         return $this->version;
     }
@@ -124,7 +126,7 @@ class AlertDetail extends Serializable
     /**
      * @return int
      */
-    public function getRelayUntil()
+    public function getRelayUntil(): int
     {
         return $this->relayUntil;
     }
@@ -132,7 +134,7 @@ class AlertDetail extends Serializable
     /**
      * @return int
      */
-    public function getExpiration()
+    public function getExpiration(): int
     {
         return $this->expiration;
     }
@@ -140,7 +142,7 @@ class AlertDetail extends Serializable
     /**
      * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -148,7 +150,7 @@ class AlertDetail extends Serializable
     /**
      * @return int
      */
-    public function getCancel()
+    public function getCancel(): int
     {
         return $this->cancel;
     }
@@ -156,7 +158,7 @@ class AlertDetail extends Serializable
     /**
      * @return int
      */
-    public function getMinVer()
+    public function getMinVer(): int
     {
         return $this->minVer;
     }
@@ -164,7 +166,7 @@ class AlertDetail extends Serializable
     /**
      * @return int
      */
-    public function getMaxVer()
+    public function getMaxVer(): int
     {
         return $this->maxVer;
     }
@@ -172,7 +174,7 @@ class AlertDetail extends Serializable
     /**
      * @return int
      */
-    public function getPriority()
+    public function getPriority(): int
     {
         return $this->priority;
     }
@@ -180,7 +182,7 @@ class AlertDetail extends Serializable
     /**
      * @return BufferInterface
      */
-    public function getComment()
+    public function getComment(): BufferInterface
     {
         return $this->comment;
     }
@@ -188,7 +190,7 @@ class AlertDetail extends Serializable
     /**
      * @return BufferInterface
      */
-    public function getStatusBar()
+    public function getStatusBar(): BufferInterface
     {
         return $this->statusBar;
     }
@@ -196,7 +198,7 @@ class AlertDetail extends Serializable
     /**
      * @return integer[]
      */
-    public function getSetCancel()
+    public function getSetCancel(): array
     {
         return $this->setCancel;
     }
@@ -204,7 +206,7 @@ class AlertDetail extends Serializable
     /**
      * @return integer[]
      */
-    public function getSetSubVer()
+    public function getSetSubVer(): array
     {
         return $this->setSubVer;
     }
@@ -212,7 +214,7 @@ class AlertDetail extends Serializable
      * @see \BitWasp\Bitcoin\SerializableInterface::getBuffer()
      * @return BufferInterface
      */
-    public function getBuffer()
+    public function getBuffer(): BufferInterface
     {
         return (new AlertDetailSerializer())->serialize($this);
     }

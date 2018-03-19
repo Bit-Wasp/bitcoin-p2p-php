@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BitWasp\Bitcoin\Networking\Serializer\Structure;
 
 use BitWasp\Bitcoin\Networking\Serializer\Ip\IpSerializer;
@@ -27,7 +29,7 @@ class NetworkAddressTimestampSerializer
      * @param NetworkAddressTimestamp $addr
      * @return BufferInterface
      */
-    public function serialize(NetworkAddressTimestamp $addr)
+    public function serialize(NetworkAddressTimestamp $addr): BufferInterface
     {
         return $this->getTemplate()->write([
             $addr->getTimestamp(),
@@ -41,15 +43,15 @@ class NetworkAddressTimestampSerializer
      * @param Parser $parser
      * @return NetworkAddressTimestamp
      */
-    public function fromParser(Parser $parser)
+    public function fromParser(Parser $parser): NetworkAddressTimestamp
     {
         list ($timestamp, $services, $ipBuffer, $port) = $this->getTemplate()->parse($parser);
         $ipSerializer = new IpSerializer();
         return new NetworkAddressTimestamp(
-            $timestamp,
-            $services,
+            (int) $timestamp,
+            (int) $services,
             $ipSerializer->parse($ipBuffer),
-            $port
+            (int) $port
         );
     }
 }

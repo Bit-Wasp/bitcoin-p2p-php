@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BitWasp\Bitcoin\Networking\Messages;
 
 use BitWasp\Bitcoin\Chain\BlockLocator;
@@ -22,7 +24,7 @@ abstract class AbstractBlockLocator extends NetworkSerializable
      * @param BlockLocator $locator
      */
     public function __construct(
-        $version,
+        int $version,
         BlockLocator $locator
     ) {
         $this->version = $version;
@@ -32,7 +34,7 @@ abstract class AbstractBlockLocator extends NetworkSerializable
     /**
      * @return int
      */
-    public function getVersion()
+    public function getVersion(): int
     {
         return $this->version;
     }
@@ -40,7 +42,7 @@ abstract class AbstractBlockLocator extends NetworkSerializable
     /**
      * @return BlockLocator
      */
-    public function getLocator()
+    public function getLocator(): BlockLocator
     {
         return $this->locator;
     }

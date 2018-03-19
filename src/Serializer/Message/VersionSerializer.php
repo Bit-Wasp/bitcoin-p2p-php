@@ -49,14 +49,14 @@ class VersionSerializer
         list ($version, $services, $timestamp, $addrRecv, $addrFrom, $nonce, $userAgent, $startHeight, $relay) = $this->getTemplate()->parse($parser);
 
         return new Version(
-            $version,
-            $services,
-            $timestamp,
+            (int) $version,
+            (int) $services,
+            (int) $timestamp,
             $this->netAddr->parse($addrRecv),
             $this->netAddr->parse($addrFrom),
-            $nonce,
+            (int) $nonce,
             $userAgent,
-            $startHeight,
+            (int) $startHeight,
             (bool)$relay
         );
     }

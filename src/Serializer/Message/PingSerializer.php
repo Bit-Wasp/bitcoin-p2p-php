@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BitWasp\Bitcoin\Networking\Serializer\Message;
 
 use BitWasp\Bitcoin\Networking\Messages\Ping;
@@ -31,12 +33,12 @@ class PingSerializer
 
     /**
      * @param Parser $parser
-     * @return array
+     * @return Ping
      */
     public function fromParser(Parser $parser)
     {
         list($nonce) = $this->getTemplate()->parse($parser);
-        return new Ping($nonce);
+        return new Ping((int) $nonce);
     }
 
     /**

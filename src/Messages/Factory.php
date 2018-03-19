@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BitWasp\Bitcoin\Networking\Messages;
 
 use BitWasp\Bitcoin\Block\BlockInterface;
@@ -33,6 +35,11 @@ class Factory
     private $random;
 
     /**
+     * @var NetworkMessageSerializer
+     */
+    private $serializer;
+
+    /**
      * @param NetworkInterface $network
      * @param Random $random
      */
@@ -55,7 +62,7 @@ class Factory
      * @return Version
      */
     public function version(
-        $version,
+        int $version,
         $services,
         $timestamp,
         NetworkAddressInterface $addrRecv,
@@ -63,14 +70,14 @@ class Factory
         BufferInterface $userAgent,
         $startHeight,
         $relay
-    ) {
+    ): Version {
         return new Version(
             $version,
             $services,
             $timestamp,
             $addrRecv,
             $addrFrom,
-            $this->random->bytes(8)->getInt(),
+            (int) $this->random->bytes(8)->getInt(),
             $userAgent,
             $startHeight,
             $relay
@@ -80,7 +87,7 @@ class Factory
     /**
      * @return VerAck
      */
-    public function verack()
+    public function verack(): VerAck
     {
         return new VerAck();
     }
@@ -88,7 +95,7 @@ class Factory
     /**
      * @return SendHeaders
      */
-    public function sendheaders()
+    public function sendheaders(): SendHeaders
     {
         return new SendHeaders();
     }
@@ -97,7 +104,7 @@ class Factory
      * @param NetworkAddressTimestamp[] $addrs
      * @return Addr
      */
-    public function addr(array $addrs)
+    public function addr(array $addrs): Addr
     {
         return new Addr($addrs);
     }
@@ -106,7 +113,7 @@ class Factory
      * @param Inventory[] $vectors
      * @return Inv
      */
-    public function inv(array $vectors)
+    public function inv(array $vectors): Inv
     {
         return new Inv($vectors);
     }
@@ -115,7 +122,7 @@ class Factory
      * @param Inventory[] $vectors
      * @return GetData
      */
-    public function getdata(array $vectors)
+    public function getdata(array $vectors): GetData
     {
         return new GetData($vectors);
     }
@@ -124,7 +131,7 @@ class Factory
      * @param Inventory[] $vectors
      * @return NotFound
      */
-    public function notfound(array $vectors)
+    public function notfound(array $vectors): NotFound
     {
         return new NotFound($vectors);
     }
@@ -134,17 +141,17 @@ class Factory
      * @param BlockLocator $blockLocator
      * @return GetBlocks
      */
-    public function getblocks($version, BlockLocator $blockLocator)
+    public function getblocks(int $version, BlockLocator $blockLocator): GetBlocks
     {
         return new GetBlocks($version, $blockLocator);
     }
 
     /**
-     * @param $version
+     * @param int $version
      * @param BlockLocator $blockLocator
      * @return GetHeaders
      */
-    public function getheaders($version, BlockLocator $blockLocator)
+    public function getheaders(int $version, BlockLocator $blockLocator): GetHeaders
     {
         return new GetHeaders($version, $blockLocator);
     }
@@ -153,7 +160,7 @@ class Factory
      * @param TransactionInterface $tx
      * @return Tx
      */
-    public function tx(TransactionInterface $tx)
+    public function tx(TransactionInterface $tx): Tx
     {
         return new Tx($tx);
     }
@@ -162,7 +169,7 @@ class Factory
      * @param BlockInterface $block
      * @return Block
      */
-    public function block(BlockInterface $block)
+    public function block(BlockInterface $block): Block
     {
         return new Block($block);
     }
@@ -171,7 +178,7 @@ class Factory
      * @param \BitWasp\Bitcoin\Block\BlockHeaderInterface[] $headers
      * @return Headers
      */
-    public function headers(array $headers)
+    public function headers(array $headers): Headers
     {
         return new Headers($headers);
     }
@@ -179,7 +186,7 @@ class Factory
     /**
      * @return GetAddr
      */
-    public function getaddr()
+    public function getaddr(): GetAddr
     {
         return new GetAddr();
     }
@@ -187,7 +194,7 @@ class Factory
     /**
      * @return MemPool
      */
-    public function mempool()
+    public function mempool(): MemPool
     {
         return new MemPool();
     }
@@ -196,7 +203,7 @@ class Factory
      * @param int $feeRate
      * @return FeeFilter
      */
-    public function feefilter($feeRate)
+    public function feefilter($feeRate): FeeFilter
     {
         return new FeeFilter($feeRate);
     }
@@ -205,7 +212,7 @@ class Factory
      * @param BufferInterface $data
      * @return FilterAdd
      */
-    public function filteradd(BufferInterface $data)
+    public function filteradd(BufferInterface $data): FilterAdd
     {
         return new FilterAdd($data);
     }
@@ -214,7 +221,7 @@ class Factory
      * @param BloomFilter $filter
      * @return FilterLoad
      */
-    public function filterload(BloomFilter $filter)
+    public function filterload(BloomFilter $filter): FilterLoad
     {
         return new FilterLoad($filter);
     }
@@ -222,7 +229,7 @@ class Factory
     /**
      * @return FilterClear
      */
-    public function filterclear()
+    public function filterclear(): FilterClear
     {
         return new FilterClear();
     }
@@ -231,7 +238,7 @@ class Factory
      * @param FilteredBlock $filtered
      * @return MerkleBlock
      */
-    public function merkleblock(FilteredBlock $filtered)
+    public function merkleblock(FilteredBlock $filtered): MerkleBlock
     {
         return new MerkleBlock($filtered);
     }
@@ -239,16 +246,16 @@ class Factory
      * @return Ping
      * @throws \BitWasp\Bitcoin\Exceptions\RandomBytesFailure
      */
-    public function ping()
+    public function ping(): Ping
     {
-        return new Ping($this->random->bytes(8)->getInt());
+        return Ping::generate($this->random);
     }
 
     /**
      * @param Ping $ping
      * @return Pong
      */
-    public function pong(Ping $ping)
+    public function pong(Ping $ping): Pong
     {
         return new Pong($ping->getNonce());
     }
@@ -265,7 +272,7 @@ class Factory
         $code,
         BufferInterface $reason,
         BufferInterface $data = null
-    ) {
+    ): Reject {
         if (null === $data) {
             $data = new Buffer();
         }
@@ -283,7 +290,7 @@ class Factory
      * @param SignatureInterface $sig
      * @return Alert
      */
-    public function alert(AlertDetail $detail, SignatureInterface $sig)
+    public function alert(AlertDetail $detail, SignatureInterface $sig): Alert
     {
         return new Alert(
             $detail,
@@ -295,7 +302,7 @@ class Factory
      * @param Parser $parser
      * @return NetworkMessage
      */
-    public function parse(Parser $parser)
+    public function parse(Parser $parser): NetworkMessage
     {
         return $this->serializer->fromParser($parser);
     }
@@ -303,7 +310,7 @@ class Factory
     /**
      * @return NetworkMessageSerializer
      */
-    public function getSerializer()
+    public function getSerializer(): NetworkMessageSerializer
     {
         return $this->serializer;
     }
@@ -311,7 +318,7 @@ class Factory
     /**
      * @return NetworkInterface
      */
-    public function getNetwork()
+    public function getNetwork(): NetworkInterface
     {
         return $this->network;
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BitWasp\Bitcoin\Networking\Peer;
 
 use BitWasp\Bitcoin\Networking\Ip\IpInterface;
@@ -14,11 +16,11 @@ use BitWasp\Buffertools\Buffer;
 class ConnectionParams
 {
     protected $defaultUserAgent = 'bitcoin-php';
-    protected $defaultProtocolVersion = '70000';
+    protected $defaultProtocolVersion = 70000;
     protected $defaultTxRelay = false;
-    protected $defaultBlockHeight = '0';
+    protected $defaultBlockHeight = 0;
     protected $defaultLocalIp = '0.0.0.0';
-    protected $defaultLocalPort = '0';
+    protected $defaultLocalPort = 0;
 
     /**
      * @var int
@@ -74,12 +76,8 @@ class ConnectionParams
      * @param bool $optRelay
      * @return $this
      */
-    public function requestTxRelay($optRelay = true)
+    public function requestTxRelay(bool $optRelay = true)
     {
-        if (!is_bool($optRelay)) {
-            throw new \InvalidArgumentException('Invalid txrelay setting, must be a boolean');
-        }
-
         $this->txRelay = $optRelay;
         return $this;
     }
@@ -88,7 +86,7 @@ class ConnectionParams
      * @param int $blockHeight
      * @return $this
      */
-    public function setBestBlockHeight($blockHeight)
+    public function setBestBlockHeight(int $blockHeight)
     {
         $this->bestBlockHeight = $blockHeight;
         return $this;
@@ -108,7 +106,7 @@ class ConnectionParams
      * @param int $version
      * @return $this
      */
-    public function setProtocolVersion($version)
+    public function setProtocolVersion(int $version)
     {
         $this->protocolVersion = $version;
         return $this;
@@ -128,7 +126,7 @@ class ConnectionParams
      * @param int $port
      * @return $this
      */
-    public function setLocalPort($port)
+    public function setLocalPort(int $port)
     {
         $this->localPort = $port;
         return $this;
@@ -138,7 +136,7 @@ class ConnectionParams
      * @param int $services
      * @return $this
      */
-    public function setLocalServices($services)
+    public function setLocalServices(int $services)
     {
         $this->localServices = $services;
         return $this;
@@ -160,7 +158,7 @@ class ConnectionParams
      * @param int $timestamp
      * @return $this
      */
-    public function setTimestamp($timestamp)
+    public function setTimestamp(int $timestamp)
     {
         $this->timestamp = $timestamp;
         return $this;
@@ -170,7 +168,7 @@ class ConnectionParams
      * @param int $services
      * @return $this
      */
-    public function setRequiredServices($services)
+    public function setRequiredServices(int $services)
     {
         $this->requiredServices = $services;
         return $this;
@@ -179,7 +177,7 @@ class ConnectionParams
     /**
      * @return int
      */
-    public function getRequiredServices()
+    public function getRequiredServices(): int
     {
         return $this->requiredServices;
     }
@@ -188,12 +186,8 @@ class ConnectionParams
      * @param string $string
      * @return $this
      */
-    public function setUserAgent($string)
+    public function setUserAgent(string $string)
     {
-        if (!is_string($string)) {
-            throw new \InvalidArgumentException('User agent must be a string');
-        }
-
         $this->userAgent = new Buffer($string);
         return $this;
     }
@@ -203,7 +197,7 @@ class ConnectionParams
      * @param NetworkAddressInterface $remoteAddress
      * @return Version
      */
-    public function produceVersion(MsgFactory $messageFactory, NetworkAddressInterface $remoteAddress)
+    public function produceVersion(MsgFactory $messageFactory, NetworkAddressInterface $remoteAddress): Version
     {
         $protocolVersion = is_null($this->protocolVersion) ? $this->defaultProtocolVersion : $this->protocolVersion;
         $localServices = is_null($this->localServices) ? Services::NONE : $this->localServices;

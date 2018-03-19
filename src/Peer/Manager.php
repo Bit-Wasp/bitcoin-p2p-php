@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BitWasp\Bitcoin\Networking\Peer;
 
 use BitWasp\Bitcoin\Networking\Settings\NetworkSettings;
@@ -58,7 +60,7 @@ class Manager extends EventEmitter
      * @param Peer $peer
      * @return Peer
      */
-    public function registerOutboundPeer(Peer $peer)
+    public function registerOutboundPeer(Peer $peer): Peer
     {
         $next = $this->nOutPeers++;
         $peer->on('close', function ($peer) use ($next) {
@@ -165,7 +167,7 @@ class Manager extends EventEmitter
      * @param int $retries
      * @return \React\Promise\PromiseInterface
      */
-    public function connectNextPeer(Locator $locator, $retries = null)
+    public function connectNextPeer(Locator $locator, int $retries = null)
     {
         if ($retries === null) {
             $retries = $this->settings->getMaxConnectRetries();
@@ -208,7 +210,7 @@ class Manager extends EventEmitter
      * @param int $n
      * @return \React\Promise\Promise
      */
-    public function connectToPeers(Locator $locator, $n)
+    public function connectToPeers(Locator $locator, int $n)
     {
         $peers = [];
         for ($i = 0; $i < $n; $i++) {

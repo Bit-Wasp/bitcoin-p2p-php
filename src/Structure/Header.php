@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BitWasp\Bitcoin\Networking\Structure;
 
 use BitWasp\Buffertools\BufferInterface;
@@ -27,7 +29,7 @@ class Header
      * @param int $length
      * @param BufferInterface $checksum
      */
-    public function __construct($command, $length, BufferInterface $checksum)
+    public function __construct(string $command, int $length, BufferInterface $checksum)
     {
         if ($checksum->getSize() != 4) {
             throw new \InvalidArgumentException("Checksum has invalid length");
@@ -41,7 +43,7 @@ class Header
     /**
      * @return string
      */
-    public function getCommand()
+    public function getCommand(): string
     {
         return $this->command;
     }
@@ -49,7 +51,7 @@ class Header
     /**
      * @return BufferInterface
      */
-    public function getChecksum()
+    public function getChecksum(): BufferInterface
     {
         return $this->checksum;
     }
@@ -57,7 +59,7 @@ class Header
     /**
      * @return int
      */
-    public function getLength()
+    public function getLength(): int
     {
         return $this->length;
     }

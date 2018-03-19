@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BitWasp\Bitcoin\Networking\Ip;
 
 use BitWasp\Buffertools\Buffer;
@@ -17,7 +19,7 @@ class Ipv6 implements IpInterface
      * Ipv4 constructor.
      * @param string $ip
      */
-    public function __construct($ip)
+    public function __construct(string $ip)
     {
         if (!filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
             throw new \InvalidArgumentException('IPv6: a valid IPv6 address is required');
@@ -29,7 +31,7 @@ class Ipv6 implements IpInterface
     /**
      * @return string
      */
-    public function getHost()
+    public function getHost(): string
     {
         return $this->ip;
     }
@@ -37,7 +39,7 @@ class Ipv6 implements IpInterface
     /**
      * @return BufferInterface
      */
-    public function getBuffer()
+    public function getBuffer(): BufferInterface
     {
         return new Buffer(inet_pton($this->ip));
     }

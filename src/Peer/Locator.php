@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BitWasp\Bitcoin\Networking\Peer;
 
 use BitWasp\Bitcoin\Networking\DnsSeeds\DnsSeedList;
@@ -28,6 +30,11 @@ class Locator
      * @var NetworkAddressInterface[]
      */
     private $knownAddresses = [];
+
+    /**
+     * @var NetworkSettings
+     */
+    private $settings;
 
     /**
      * Locator constructor.
@@ -79,7 +86,7 @@ class Locator
      * @param int $numSeeds
      * @return \React\Promise\Promise|\React\Promise\PromiseInterface
      */
-    private function getPeerList($numSeeds = 1)
+    private function getPeerList(int $numSeeds = 1)
     {
         // Take $numSeeds
         $seedHosts = $this->seeds->getHosts();
@@ -96,7 +103,7 @@ class Locator
      * @param int $numSeeds
      * @return \React\Promise\Promise|\React\Promise\PromiseInterface
      */
-    public function queryDnsSeeds($numSeeds = 1)
+    public function queryDnsSeeds(int $numSeeds = 1)
     {
         $deferred = new Deferred();
         $this
@@ -134,7 +141,7 @@ class Locator
     /**
      * @return NetworkAddressInterface[]
      */
-    public function getKnownAddresses()
+    public function getKnownAddresses(): array
     {
         return $this->knownAddresses;
     }
@@ -145,7 +152,7 @@ class Locator
      * @return NetworkAddressInterface
      * @throws \Exception
      */
-    public function popAddress()
+    public function popAddress(): NetworkAddressInterface
     {
         if (count($this->knownAddresses) < 1) {
             throw new \Exception('No peers');

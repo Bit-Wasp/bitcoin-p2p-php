@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BitWasp\Bitcoin\Networking\Peer;
 
 use BitWasp\Bitcoin\Block\BlockInterface;
@@ -25,7 +27,6 @@ use Evenement\EventEmitter;
 use React\EventLoop\LoopInterface;
 use React\Promise\Deferred;
 use React\Socket\ConnectionInterface;
-use React\Stream\Stream;
 
 class Peer extends EventEmitter
 {
@@ -45,7 +46,7 @@ class Peer extends EventEmitter
     private $msgs;
 
     /**
-     * @var Stream
+     * @var ConnectionInterface
      */
     private $stream;
 
@@ -137,7 +138,7 @@ class Peer extends EventEmitter
     }
 
     /**
-     * @param Stream $stream
+     * @param ConnectionInterface $stream
      * @return $this
      */
     public function setupStream(ConnectionInterface $stream)

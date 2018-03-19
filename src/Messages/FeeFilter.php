@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BitWasp\Bitcoin\Networking\Messages;
 
 use BitWasp\Bitcoin\Networking\Message;
 use BitWasp\Bitcoin\Networking\NetworkSerializable;
 use BitWasp\Bitcoin\Networking\Serializer\Message\FeeFilterSerializer;
+use BitWasp\Buffertools\BufferInterface;
 
 class FeeFilter extends NetworkSerializable
 {
@@ -33,7 +36,7 @@ class FeeFilter extends NetworkSerializable
     /**
      * @return string
      */
-    public function getNetworkCommand()
+    public function getNetworkCommand(): string
     {
         return Message::FEEFILTER;
     }
@@ -41,7 +44,7 @@ class FeeFilter extends NetworkSerializable
     /**
      * @return \BitWasp\Buffertools\BufferInterface
      */
-    public function getBuffer()
+    public function getBuffer(): BufferInterface
     {
         return (new FeeFilterSerializer())->serialize($this);
     }

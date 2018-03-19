@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BitWasp\Bitcoin\Networking\Structure;
 
 use BitWasp\Bitcoin\Networking\Serializer\Structure\InventorySerializer;
-use BitWasp\Buffertools\Buffer;
 use BitWasp\Bitcoin\Serializable;
 use BitWasp\Buffertools\BufferInterface;
 
@@ -28,13 +29,13 @@ class Inventory extends Serializable
      * @param int $type
      * @param BufferInterface $hash
      */
-    public function __construct($type, BufferInterface $hash)
+    public function __construct(int $type, BufferInterface $hash)
     {
-        if (false === $this->checkType($type)) {
+        if (!$this->checkType($type)) {
             throw new \InvalidArgumentException('Invalid type in InventoryVector');
         }
 
-        if (false === (32 === $hash->getSize())) {
+        if (32 !== $hash->getSize()) {
             throw new \InvalidArgumentException('Hash size must be 32 bytes');
         }
 
@@ -46,7 +47,7 @@ class Inventory extends Serializable
      * @param BufferInterface $hash
      * @return Inventory
      */
-    public static function tx(BufferInterface $hash)
+    public static function tx(BufferInterface $hash): Inventory
     {
         return new self(self::MSG_TX, $hash);
     }
@@ -55,7 +56,7 @@ class Inventory extends Serializable
      * @param BufferInterface $hash
      * @return Inventory
      */
-    public static function block(BufferInterface $hash)
+    public static function block(BufferInterface $hash): Inventory
     {
         return new self(self::MSG_BLOCK, $hash);
     }
@@ -64,7 +65,7 @@ class Inventory extends Serializable
      * @param BufferInterface $hash
      * @return Inventory
      */
-    public static function filteredBlock(BufferInterface $hash)
+    public static function filteredBlock(BufferInterface $hash): Inventory
     {
         return new self(self::MSG_FILTERED_BLOCK, $hash);
     }
@@ -72,7 +73,7 @@ class Inventory extends Serializable
     /**
      * @return int
      */
-    public function getType()
+    public function getType(): int
     {
         return $this->type;
     }
@@ -80,48 +81,48 @@ class Inventory extends Serializable
     /**
      * @return bool
      */
-    public function isError()
+    public function isError(): bool
     {
-        return $this->type == self::ERROR;
+        return $this->type === self::ERROR;
     }
 
     /**
      * @return bool
      */
-    public function isTx()
+    public function isTx(): bool
     {
-        return $this->type == self::MSG_TX;
+        return $this->type === self::MSG_TX;
     }
 
     /**
      * @return bool
      */
-    public function isBlock()
+    public function isBlock(): bool
     {
-        return $this->type == self::MSG_BLOCK;
+        return $this->type === self::MSG_BLOCK;
     }
 
     /**
      * @return bool
      */
-    public function isFilteredBlock()
+    public function isFilteredBlock(): bool
     {
-        return $this->type == self::MSG_FILTERED_BLOCK;
+        return $this->type === self::MSG_FILTERED_BLOCK;
     }
 
     /**
      * @return BufferInterface
      */
-    public function getHash()
+    public function getHash(): BufferInterface
     {
         return $this->hash;
     }
 
     /**
-     * @param  int $type
+     * @param int $type
      * @return bool
      */
-    private function checkType($type)
+    private function checkType(int $type): bool
     {
         return in_array($type, [self::ERROR, self::MSG_TX, self::MSG_BLOCK, self::MSG_FILTERED_BLOCK]);
     }
@@ -129,7 +130,7 @@ class Inventory extends Serializable
     /**
      * @return BufferInterface
      */
-    public function getBuffer()
+    public function getBuffer(): BufferInterface
     {
         return (new InventorySerializer())->serialize($this);
     }

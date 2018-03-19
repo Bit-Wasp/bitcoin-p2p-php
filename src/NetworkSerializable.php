@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BitWasp\Bitcoin\Networking;
 
 use BitWasp\Bitcoin\Bitcoin;
@@ -12,7 +14,7 @@ abstract class NetworkSerializable extends Serializable implements NetworkSerial
      * @param NetworkInterface $network
      * @return NetworkMessage
      */
-    public function getNetworkMessage(NetworkInterface $network = null)
+    public function getNetworkMessage(NetworkInterface $network = null): NetworkMessage
     {
         return new NetworkMessage(
             $network ?: Bitcoin::getNetwork(),

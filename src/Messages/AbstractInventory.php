@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BitWasp\Bitcoin\Networking\Messages;
 
 use BitWasp\Bitcoin\Networking\NetworkSerializable;
@@ -33,7 +35,7 @@ abstract class AbstractInventory extends NetworkSerializable implements \Countab
     /**
      * @return int
      */
-    public function count()
+    public function count(): int
     {
         return count($this->items);
     }
@@ -41,7 +43,7 @@ abstract class AbstractInventory extends NetworkSerializable implements \Countab
     /**
      * @return Inventory[]
      */
-    public function getItems()
+    public function getItems(): array
     {
         return $this->items;
     }
@@ -50,7 +52,7 @@ abstract class AbstractInventory extends NetworkSerializable implements \Countab
      * @param int $index
      * @return Inventory
      */
-    public function getItem($index)
+    public function getItem(int $index): Inventory
     {
         if (false === isset($this->items[$index])) {
             throw new \InvalidArgumentException('No item found at that index');

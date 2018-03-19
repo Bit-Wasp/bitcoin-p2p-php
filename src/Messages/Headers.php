@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BitWasp\Bitcoin\Networking\Messages;
 
 use BitWasp\Bitcoin\Block\BlockHeaderInterface;
@@ -7,6 +9,7 @@ use BitWasp\Bitcoin\Networking\Message;
 use BitWasp\Bitcoin\Networking\NetworkSerializable;
 use BitWasp\Bitcoin\Serializer\Block\BlockHeaderSerializer;
 use BitWasp\Bitcoin\Networking\Serializer\Message\HeadersSerializer;
+use BitWasp\Buffertools\BufferInterface;
 
 class Headers extends NetworkSerializable implements \Countable
 {
@@ -27,7 +30,6 @@ class Headers extends NetworkSerializable implements \Countable
 
     /**
      * @param BlockHeaderInterface $header
-     * @return $this
      */
     private function addHeader(BlockHeaderInterface $header)
     {
@@ -37,7 +39,7 @@ class Headers extends NetworkSerializable implements \Countable
     /**
      * @return string
      */
-    public function getNetworkCommand()
+    public function getNetworkCommand(): string
     {
         return Message::HEADERS;
     }
@@ -45,7 +47,7 @@ class Headers extends NetworkSerializable implements \Countable
     /**
      * @return \BitWasp\Bitcoin\Block\BlockHeaderInterface[]
      */
-    public function getHeaders()
+    public function getHeaders(): array
     {
         return $this->headers;
     }
@@ -53,7 +55,7 @@ class Headers extends NetworkSerializable implements \Countable
     /**
      * @return int
      */
-    public function count()
+    public function count(): int
     {
         return count($this->headers);
     }
@@ -62,7 +64,7 @@ class Headers extends NetworkSerializable implements \Countable
      * @param integer $index
      * @return BlockHeaderInterface
      */
-    public function getHeader($index)
+    public function getHeader(int $index): BlockHeaderInterface
     {
         if (false === isset($this->headers[$index])) {
             throw new \InvalidArgumentException('No header exists at this index');
@@ -75,7 +77,7 @@ class Headers extends NetworkSerializable implements \Countable
      * {@inheritdoc}
      * @see \BitWasp\Bitcoin\SerializableInterface::getBuffer()
      */
-    public function getBuffer()
+    public function getBuffer(): BufferInterface
     {
         return (new HeadersSerializer(new BlockHeaderSerializer()))->serialize($this);
     }

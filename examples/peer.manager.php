@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 require_once __DIR__ . "/../vendor/autoload.php";
 
 use BitWasp\Bitcoin\Networking\Peer\ConnectionParams;
 use BitWasp\Bitcoin\Networking\Peer\Locator;
-use BitWasp\Bitcoin\Networking\Peer\Manager;
 
 $loop = React\EventLoop\Factory::create();
 $factory = new \BitWasp\Bitcoin\Networking\Factory($loop);

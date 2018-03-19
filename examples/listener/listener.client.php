@@ -1,7 +1,8 @@
 <?php
 
-require_once __DIR__ . "/../../vendor/autoload.php";
+declare(strict_types=1);
 
+require_once __DIR__ . "/../../vendor/autoload.php";
 
 use BitWasp\Bitcoin\Networking\Peer\Peer;
 use BitWasp\Bitcoin\Networking\Messages\Addr;

@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BitWasp\Bitcoin\Networking\Serializer\Structure;
 
 use BitWasp\Bitcoin\Networking\Structure\AlertDetail;
+use BitWasp\Buffertools\BufferInterface;
 use BitWasp\Buffertools\Parser;
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Buffertools\TemplateFactory;
@@ -36,42 +39,20 @@ class AlertDetailSerializer
 
     public function fromParser(Parser $parser)
     {
-        $parsed = $this->getTemplate()->parse($parser);
-
-        /** @var int|string $version */
-        $version = $parsed[0];
-        /** @var int|string $relayUntil */
-        $relayUntil = $parsed[1];
-        /** @var int|string $expiration */
-        $expiration = $parsed[2];
-        /** @var int|string $id */
-        $id = $parsed[3];
-        /** @var int|string $cancel */
-        $cancel = $parsed[4];
-        /** @var Buffer[] $setCancels */
-        $setCancels = $parsed[5];
-        /** @var int|string $minVer */
-        $minVer = $parsed[6];
-        /** @var int|string $maxVer */
-        $maxVer = $parsed[7];
-        /** @var Buffer[] $setSubVers */
-        $setSubVers = $parsed[8];
-        /** @var int|string $priority */
-        $priority = $parsed[9];
-        /** @var Buffer $comment */
-        $comment = $parsed[10];
-        /** @var Buffer $statusBar */
-        $statusBar = $parsed[11];
+        list ($version, $relayUntil, $expiration,
+            $id, $cancel, $setCancels, $minVer,
+            $maxVer, $setSubVers, $priority,
+            $comment, $statusBar) = $this->getTemplate()->parse($parser);
 
         return new AlertDetail(
-            $version,
-            $relayUntil,
-            $expiration,
-            $id,
-            $cancel,
-            $minVer,
-            $maxVer,
-            $priority,
+            (int) $version,
+            (int) $relayUntil,
+            (int) $expiration,
+            (int) $id,
+            (int) $cancel,
+            (int) $minVer,
+            (int) $maxVer,
+            (int) $priority,
             $comment,
             $statusBar,
             $setCancels,
@@ -83,27 +64,25 @@ class AlertDetailSerializer
      * @param $data
      * @return AlertDetail
      */
-    public function parse($data)
+    public function parse($data): AlertDetail
     {
         return $this->fromParser(new Parser($data));
     }
 
     /**
      * @param AlertDetail $detail
-     * @return \BitWasp\Buffertools\Buffer
+     * @return BufferInterface
      */
-    public function serialize(AlertDetail $detail)
+    public function serialize(AlertDetail $detail): BufferInterface
     {
         $setCancels = [];
         foreach ($detail->getSetCancel() as $toCancel) {
-            $t = new Parser();
-            $setCancels[] = $t->writeBytes(4, Buffer::int($toCancel), true)->getBuffer();
+            $setCancels[] = new Buffer(pack('V', $toCancel));
         }
 
         $setSubVers = [];
         foreach ($detail->getSetSubVer() as $subVer) {
-            $t = new Parser();
-            $setSubVers[] = $t->writeBytes(4, Buffer::int($subVer), true)->getBuffer();
+            $setSubVers[] = new Buffer(pack('V', $subVer));
         }
 
         return $this->getTemplate()->write([

@@ -3,7 +3,6 @@
 /.scrutinizer.yml export-ignore
 /.travis.yml export-ignore
 /phpunit.xml export-ignore
-/build.xml export-ignore
-/examples export-ignore
 /README.md export-ignore
-/phpunit.xml export-ignore
+/tool export-ignore
+/examples export-ignore

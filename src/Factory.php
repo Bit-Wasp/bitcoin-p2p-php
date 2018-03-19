@@ -1,23 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BitWasp\Bitcoin\Networking;
 
 use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Crypto\Random\Random;
 use BitWasp\Bitcoin\Network\NetworkInterface;
 use BitWasp\Bitcoin\Networking\Ip\IpInterface;
-use BitWasp\Bitcoin\Networking\Peer\ConnectionParams;
-use BitWasp\Bitcoin\Networking\Peer\Connector;
-use BitWasp\Bitcoin\Networking\Peer\Listener;
-use BitWasp\Bitcoin\Networking\Peer\Locator;
-use BitWasp\Bitcoin\Networking\Peer\Manager;
+use BitWasp\Bitcoin\Networking\Settings\NetworkSettings;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
 use React\EventLoop\LoopInterface;
 
 class Factory
 {
-
     /**
      * @var NetworkInterface
      */
@@ -28,6 +25,14 @@ class Factory
      */
     private $loop;
 
+    /**
+     * @var NetworkSettings
+     */
+    private $settings;
+
+    /**
+     * @var Messages\Factory
+     */
     private $messages = null;
 
     /**
@@ -44,7 +49,7 @@ class Factory
     /**
      * @return Dns\Resolver
      */
-    public function getDns()
+    public function getDns(): Dns\Resolver
     {
         return (new Dns\Factory())->create($this->settings->getDnsServer(), $this->loop);
     }
@@ -53,7 +58,7 @@ class Factory
      * @param Random|null $random
      * @return Messages\Factory
      */
-    public function getMessages(Random $random = null)
+    public function getMessages(Random $random = null): Messages\Factory
     {
         if (null === $this->messages) {
             $this->messages = new Messages\Factory(
@@ -75,7 +80,7 @@ class Factory
     /**
      * @return Settings\NetworkSettings
      */
-    public function getSettings()
+    public function getSettings(): Settings\NetworkSettings
     {
         return $this->settings;
     }
@@ -84,36 +89,36 @@ class Factory
      * @param Peer\ConnectionParams $params
      * @return Peer\Connector
      */
-    public function getConnector(Peer\ConnectionParams $params)
+    public function getConnector(Peer\ConnectionParams $params): Peer\Connector
     {
-        return new Connector($this->getMessages(), $params, $this->loop, $this->settings->getSocketParams());
+        return new Peer\Connector($this->getMessages(), $params, $this->loop, $this->settings->getSocketParams());
     }
 
     /**
      * @param Peer\Connector $connector
      * @return Peer\Manager
      */
-    public function getManager(Peer\Connector $connector)
+    public function getManager(Peer\Connector $connector): Peer\Manager
     {
-        return new Manager($connector, $this->settings);
+        return new Peer\Manager($connector, $this->settings);
     }
 
     /**
      * @return Peer\Locator
      */
-    public function getLocator()
+    public function getLocator(): Peer\Locator
     {
-        return new Locator($this->getDns(), $this->settings);
+        return new Peer\Locator($this->getDns(), $this->settings);
     }
 
     /**
-     * @param ConnectionParams $params
+     * @param Peer\ConnectionParams $params
      * @param NetworkAddressInterface $serverAddress
-     * @return Listener
+     * @return Peer\Listener
      */
-    public function getListener(Peer\ConnectionParams $params, NetworkAddressInterface $serverAddress)
+    public function getListener(Peer\ConnectionParams $params, NetworkAddressInterface $serverAddress): Peer\Listener
     {
-        return new Listener($params, $this->getMessages(), $serverAddress, $this->loop);
+        return new Peer\Listener($params, $this->getMessages(), $serverAddress, $this->loop);
     }
 
     /**

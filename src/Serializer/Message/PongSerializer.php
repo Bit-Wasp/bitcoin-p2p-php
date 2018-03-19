@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BitWasp\Bitcoin\Networking\Serializer\Message;
 
 use BitWasp\Bitcoin\Networking\Messages\Pong;
@@ -36,7 +38,7 @@ class PongSerializer
     public function fromParser(Parser $parser)
     {
         list($nonce) = $this->getTemplate()->parse($parser);
-        return new Pong($nonce);
+        return new Pong((int) $nonce);
     }
 
     /**

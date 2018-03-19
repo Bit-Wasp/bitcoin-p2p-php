@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BitWasp\Bitcoin\Networking\Serializer\Structure;
 
 use BitWasp\Bitcoin\Networking\Structure\Header;
@@ -36,7 +38,7 @@ class HeaderSerializer
      * @param Header $header
      * @return Buffer
      */
-    public function serialize(Header $header)
+    public function serialize(Header $header): BufferInterface
     {
         $command = new Buffer(str_pad($header->getCommand(), 12, "\x00", STR_PAD_RIGHT));
 
@@ -51,7 +53,7 @@ class HeaderSerializer
      * @param string|BufferInterface $data
      * @return Header
      */
-    public function parse($data)
+    public function parse($data): Header
     {
         return $this->fromParser(new Parser($data));
     }
@@ -60,11 +62,11 @@ class HeaderSerializer
      * @param Parser $parser
      * @return Header
      */
-    public function fromParser(Parser $parser)
+    public function fromParser(Parser $parser): Header
     {
         return new Header(
             trim($this->bytestring12->read($parser)->getBinary()),
-            $this->uint32->read($parser),
+            (int) $this->uint32->read($parser),
             $this->bytestring4->read($parser)
         );
     }

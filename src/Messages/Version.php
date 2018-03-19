@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BitWasp\Bitcoin\Networking\Messages;
 
 use BitWasp\Bitcoin\Networking\Message;
@@ -7,7 +9,6 @@ use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressTimestamp;
 use BitWasp\Bitcoin\Networking\Serializer\Message\VersionSerializer;
 use BitWasp\Bitcoin\Networking\Serializer\Structure\NetworkAddressSerializer;
-use BitWasp\Buffertools\Buffer;
 use BitWasp\Bitcoin\Crypto\Random\Random;
 use BitWasp\Bitcoin\Networking\NetworkSerializable;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
@@ -16,7 +17,7 @@ use BitWasp\Buffertools\BufferInterface;
 class Version extends NetworkSerializable
 {
     /**
-     * @var int|string
+     * @var int
      */
     private $version;
 
@@ -26,17 +27,17 @@ class Version extends NetworkSerializable
     private $services;
 
     /**
-     * @var int|string
+     * @var int
      */
     private $timestamp;
 
     /**
-     * @var NetworkAddressInterface
+     * @var NetworkAddress
      */
     private $addrRecv;
 
     /**
-     * @var NetworkAddressInterface
+     * @var NetworkAddress
      */
     private $addrFrom;
 
@@ -61,6 +62,7 @@ class Version extends NetworkSerializable
     private $nonce;
 
     /**
+     * Version constructor.
      * @param int $version
      * @param int $services
      * @param int $timestamp
@@ -70,17 +72,18 @@ class Version extends NetworkSerializable
      * @param BufferInterface $userAgent
      * @param int $startHeight
      * @param bool $relay
+     * @throws \BitWasp\Bitcoin\Exceptions\RandomBytesFailure
      */
     public function __construct(
-        $version,
-        $services,
-        $timestamp,
+        int $version,
+        int $services,
+        int $timestamp,
         NetworkAddressInterface $addrRecv,
         NetworkAddressInterface $addrFrom,
-        $nonce,
+        int $nonce,
         BufferInterface $userAgent,
-        $startHeight,
-        $relay
+        int $startHeight,
+        bool $relay
     ) {
 
         if ($addrRecv instanceof NetworkAddressTimestamp) {
@@ -100,9 +103,6 @@ class Version extends NetworkSerializable
         $this->addrFrom = $addrFrom;
         $this->userAgent = $userAgent;
         $this->startHeight = $startHeight;
-        if (! is_bool($relay)) {
-            throw new \InvalidArgumentException('Relay must be a boolean');
-        }
         $this->relay = $relay;
     }
 
@@ -110,23 +110,23 @@ class Version extends NetworkSerializable
      * {@inheritdoc}
      * @see \BitWasp\Bitcoin\Network\NetworkSerializableInterface::getNetworkCommand()
      */
-    public function getNetworkCommand()
+    public function getNetworkCommand(): string
     {
         return Message::VERSION;
     }
 
     /**
-     * @return Buffer|int|string
+     * @return int
      */
-    public function getNonce()
+    public function getNonce(): int
     {
         return $this->nonce;
     }
 
     /**
-     * @return int|string
+     * @return int
      */
-    public function getVersion()
+    public function getVersion(): int
     {
         return $this->version;
     }
@@ -134,15 +134,15 @@ class Version extends NetworkSerializable
     /**
      * @return int
      */
-    public function getServices()
+    public function getServices(): int
     {
         return $this->services;
     }
 
     /**
-     * @return int|string
+     * @return int
      */
-    public function getTimestamp()
+    public function getTimestamp(): int
     {
         return $this->timestamp;
     }
@@ -150,7 +150,7 @@ class Version extends NetworkSerializable
     /**
      * @return NetworkAddress
      */
-    public function getRecipientAddress()
+    public function getRecipientAddress(): NetworkAddress
     {
         return $this->addrRecv;
     }
@@ -158,7 +158,7 @@ class Version extends NetworkSerializable
     /**
      * @return NetworkAddress
      */
-    public function getSenderAddress()
+    public function getSenderAddress(): NetworkAddress
     {
         return $this->addrFrom;
     }
@@ -166,15 +166,15 @@ class Version extends NetworkSerializable
     /**
      * @return BufferInterface
      */
-    public function getUserAgent()
+    public function getUserAgent(): BufferInterface
     {
         return $this->userAgent;
     }
 
     /**
-     * @return int|string
+     * @return int
      */
-    public function getStartHeight()
+    public function getStartHeight(): int
     {
         return $this->startHeight;
     }
@@ -182,7 +182,7 @@ class Version extends NetworkSerializable
     /**
      * @return bool
      */
-    public function getRelay()
+    public function getRelay(): bool
     {
         return $this->relay;
     }
@@ -190,7 +190,7 @@ class Version extends NetworkSerializable
     /**
      * @return BufferInterface
      */
-    public function getBuffer()
+    public function getBuffer(): BufferInterface
     {
         return (new VersionSerializer(new NetworkAddressSerializer()))->serialize($this);
     }

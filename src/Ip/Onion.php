@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BitWasp\Bitcoin\Networking\Ip;
 
 use Base32\Base32;
@@ -24,7 +26,7 @@ class Onion implements IpInterface
      * Onion constructor.
      * @param string $onionHost
      */
-    public function __construct($onionHost)
+    public function __construct(string $onionHost)
     {
         $array = explode(".", $onionHost);
         if (count($array) !== 2) {
@@ -48,7 +50,7 @@ class Onion implements IpInterface
     /**
      * @return string
      */
-    public function getHost()
+    public function getHost(): string
     {
         return $this->host;
     }

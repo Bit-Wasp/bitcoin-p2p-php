@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BitWasp\Bitcoin\Networking\Structure;
 
 use BitWasp\Bitcoin\Networking\Ip\IpInterface;
@@ -19,16 +21,16 @@ class NetworkAddressTimestamp extends NetworkAddress
      * @param IpInterface $ip
      * @param int|string $port
      */
-    public function __construct($time, $services, IpInterface $ip, $port)
+    public function __construct(int $time, int $services, IpInterface $ip, int $port)
     {
         $this->time = $time;
         parent::__construct($services, $ip, $port);
     }
 
     /**
-     * @return int|string
+     * @return int
      */
-    public function getTimestamp()
+    public function getTimestamp(): int
     {
         return $this->time;
     }
@@ -36,7 +38,7 @@ class NetworkAddressTimestamp extends NetworkAddress
     /**
      * @return NetworkAddress
      */
-    public function withoutTimestamp()
+    public function withoutTimestamp(): NetworkAddress
     {
         return new NetworkAddress(
             $this->getServices(),
@@ -48,7 +50,7 @@ class NetworkAddressTimestamp extends NetworkAddress
     /**
      * @return BufferInterface
      */
-    public function getBuffer()
+    public function getBuffer(): BufferInterface
     {
         return (new NetworkAddressTimestampSerializer())->serialize($this);
     }

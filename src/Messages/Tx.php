@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BitWasp\Bitcoin\Networking\Messages;
 
 use BitWasp\Bitcoin\Networking\Message;
 use BitWasp\Bitcoin\Networking\NetworkSerializable;
 use BitWasp\Bitcoin\Transaction\TransactionInterface;
+use BitWasp\Buffertools\BufferInterface;
 
 class Tx extends NetworkSerializable
 {
@@ -25,7 +28,7 @@ class Tx extends NetworkSerializable
      * {@inheritdoc}
      * @see \BitWasp\Bitcoin\Network\NetworkSerializableInterface::getNetworkCommand()
      */
-    public function getNetworkCommand()
+    public function getNetworkCommand(): string
     {
         return Message::TX;
     }
@@ -33,7 +36,7 @@ class Tx extends NetworkSerializable
     /**
      * @return TransactionInterface
      */
-    public function getTransaction()
+    public function getTransaction(): TransactionInterface
     {
         return $this->transaction;
     }
@@ -42,7 +45,7 @@ class Tx extends NetworkSerializable
      * {@inheritdoc}
      * @see \BitWasp\Bitcoin\SerializableInterface::getBuffer()
      */
-    public function getBuffer()
+    public function getBuffer(): BufferInterface
     {
         return $this->transaction->getBuffer();
     }

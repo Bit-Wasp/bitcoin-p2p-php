@@ -1,17 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BitWasp\Bitcoin\Networking\Messages;
 
 use BitWasp\Bitcoin\Networking\Message;
 use BitWasp\Bitcoin\Networking\Serializer\Message\GetHeadersSerializer;
 use BitWasp\Bitcoin\Serializer\Chain\BlockLocatorSerializer;
+use BitWasp\Buffertools\BufferInterface;
 
 class GetHeaders extends AbstractBlockLocator
 {
     /**
      * @return string
      */
-    public function getNetworkCommand()
+    public function getNetworkCommand(): string
     {
         return Message::GETHEADERS;
     }
@@ -19,7 +22,7 @@ class GetHeaders extends AbstractBlockLocator
     /**
      * @return \BitWasp\Buffertools\Buffer
      */
-    public function getBuffer()
+    public function getBuffer(): BufferInterface
     {
         return (new GetHeadersSerializer(new BlockLocatorSerializer()))->serialize($this);
     }

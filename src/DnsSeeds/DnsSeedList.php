@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BitWasp\Bitcoin\Networking\DnsSeeds;
 
 class DnsSeedList
@@ -22,7 +24,7 @@ class DnsSeedList
      * @param string $host
      * @return $this
      */
-    public function addHost($host)
+    public function addHost(string $host)
     {
         $this->seeds[] = $host;
         return $this;
@@ -31,7 +33,7 @@ class DnsSeedList
     /**
      * @return array
      */
-    public function getHosts()
+    public function getHosts(): array
     {
         return $this->seeds;
     }

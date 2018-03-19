@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BitWasp\Bitcoin\Networking\Serializer\Message;
 
 use BitWasp\Bitcoin\Networking\Messages\GetHeaders;
@@ -39,12 +41,9 @@ class GetHeadersSerializer
      */
     public function fromParser(Parser $parser)
     {
-        list ($version) = $this->getVersionTemplate()->parse($parser);
-        $locator = $this->locator->fromParser($parser);
-
         return new GetHeaders(
-            $version,
-            $locator
+            (int) $this->getVersionTemplate()->parse($parser)[0],
+            $this->locator->fromParser($parser)
         );
     }
 

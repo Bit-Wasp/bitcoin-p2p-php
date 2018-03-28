@@ -6,63 +6,51 @@ namespace BitWasp\Bitcoin\Networking\Serializer\Message;
 
 use BitWasp\Bitcoin\Networking\Messages\GetData;
 use BitWasp\Bitcoin\Networking\Serializer\Structure\InventorySerializer;
+use BitWasp\Bitcoin\Serializer\Types;
+use BitWasp\Buffertools\Buffer;
+use BitWasp\Buffertools\BufferInterface;
 use BitWasp\Buffertools\Parser;
-use BitWasp\Buffertools\TemplateFactory;
 
 class GetDataSerializer
 {
     /**
-     * @var InventorySerializer
+     * @var \BitWasp\Buffertools\Types\Vector
      */
-    private $inv;
+    private $vectorInt;
 
     /**
      * @param InventorySerializer $inv
      */
     public function __construct(InventorySerializer $inv)
     {
-        $this->inv = $inv;
-    }
-
-    /**
-     * @return \BitWasp\Buffertools\Template
-     */
-    public function getTemplate()
-    {
-        return (new TemplateFactory())
-            ->vector(function (Parser $parser) {
-                return $this->inv->fromParser($parser);
-            })
-            ->getTemplate();
+        $this->vectorInt = Types::vector([$inv, 'fromParser']);
     }
 
     /**
      * @param Parser $parser
      * @return GetData
      */
-    public function fromParser(Parser $parser)
+    public function fromParser(Parser $parser): GetData
     {
-        list ($addrs) = $this->getTemplate()->parse($parser);
+        $addrs = $this->vectorInt->read($parser);
         return new GetData($addrs);
     }
 
     /**
-     * @param $data
+     * @param BufferInterface $data
      * @return GetData
      */
-    public function parse($data)
+    public function parse(BufferInterface $data): GetData
     {
         return $this->fromParser(new Parser($data));
     }
 
     /**
      * @param GetData $getData
-     * @return \BitWasp\Buffertools\Buffer
+     * @return BufferInterface
      */
-    public function serialize(GetData $getData)
+    public function serialize(GetData $getData): BufferInterface
     {
-        return $this->getTemplate()->write([
-            $getData->getItems()
-        ]);
+        return new Buffer($this->vectorInt->write($getData->getItems()));
     }
 }

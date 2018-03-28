@@ -6,35 +6,25 @@ namespace BitWasp\Bitcoin\Networking\Serializer\Message;
 
 use BitWasp\Bitcoin\Networking\Messages\Inv;
 use BitWasp\Bitcoin\Networking\Serializer\Structure\InventorySerializer;
+use BitWasp\Bitcoin\Serializer\Types;
+use BitWasp\Buffertools\Buffer;
 use BitWasp\Buffertools\BufferInterface;
 use BitWasp\Buffertools\Parser;
-use BitWasp\Buffertools\TemplateFactory;
+use BitWasp\Buffertools\Types\Vector;
 
 class InvSerializer
 {
     /**
-     * @var InventorySerializer
+     * @var Vector
      */
-    private $invVector;
+    private $vectorInventory;
 
     /**
      * @param InventorySerializer $invVector
      */
     public function __construct(InventorySerializer $invVector)
     {
-        $this->invVector = $invVector;
-    }
-
-    /**
-     * @return \BitWasp\Buffertools\Template
-     */
-    public function getTemplate()
-    {
-        return (new TemplateFactory())
-            ->vector(function (Parser $parser) {
-                return $this->invVector->fromParser($parser);
-            })
-            ->getTemplate();
+        $this->vectorInventory = Types::vector([$invVector, 'fromParser']);
     }
 
     /**
@@ -43,7 +33,7 @@ class InvSerializer
      */
     public function fromParser(Parser $parser): Inv
     {
-        list ($items) = $this->getTemplate()->parse($parser);
+        $items = $this->vectorInventory->read($parser);
         return new Inv($items);
     }
 
@@ -62,8 +52,6 @@ class InvSerializer
      */
     public function serialize(Inv $inv): BufferInterface
     {
-        return $this->getTemplate()->write([
-            $inv->getItems()
-        ]);
+        return new Buffer($this->vectorInventory->write($inv->getItems()));
     }
 }

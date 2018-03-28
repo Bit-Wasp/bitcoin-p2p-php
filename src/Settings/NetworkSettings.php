@@ -6,152 +6,72 @@ namespace BitWasp\Bitcoin\Networking\Settings;
 
 use BitWasp\Bitcoin\Networking\DnsSeeds\DnsSeedList;
 
-abstract class NetworkSettings
+abstract class NetworkSettings implements NetworkSettingsInterface, MutableNetworkSettingsInterface
 {
     /**
      * @var int
      */
-    private $defaultP2PPort = 8333;
+    protected $defaultP2PPort = 8333;
 
     /**
      * @var int
      */
-    private $connectionTimeout = 10;
+    protected $connectionTimeout = 10;
 
     /**
      * @var string
      */
-    private $dnsServer = '8.8.8.8';
+    protected $dnsServer = '8.8.8.8';
 
     /**
      * @var DnsSeedList
      */
-    private $dnsSeeds = null;
+    protected $dnsSeeds = null;
 
     /**
      * @var int
      */
-    private $maxRetries = 5;
-
-    public function __construct()
-    {
-        $this->setup();
-        $this->validateSettings();
-    }
-
-    /**
-     * Setup of network goes here:
-     */
-    abstract protected function setup();
-
-    /**
-     *
-     */
-    protected function validateSettings()
-    {
-        if (!$this->dnsSeeds instanceof DnsSeedList) {
-            throw new \RuntimeException("Invalid DNS Seeds");
-        }
-
-        if (!(is_integer($this->maxRetries) && $this->maxRetries >= 0)) {
-            throw new \RuntimeException("Max retries must be a positive integer");
-        }
-
-        if (!(is_integer($this->connectionTimeout) && $this->connectionTimeout >= 0)) {
-            throw new \RuntimeException("Connection timeout must be a positive integer");
-        }
-
-        if (!(is_integer($this->defaultP2PPort) && $this->defaultP2PPort >= 0)) {
-            throw new \RuntimeException("Default P2P must be a positive integer");
-        }
-    }
+    protected $maxRetries = 5;
 
     /**
      * @return DnsSeedList
      */
-    public function getDnsSeedList()
+    public function getDnsSeedList(): DnsSeedList
     {
+        if (null === $this->dnsServer) {
+            throw new \RuntimeException("Missing dns seeds");
+        }
         return $this->dnsSeeds;
-    }
-
-    /**
-     * @param DnsSeedList $list
-     * @return $this
-     */
-    public function setDnsSeeds(DnsSeedList $list)
-    {
-        $this->dnsSeeds = $list;
-        return $this;
     }
 
     /**
      * @return string
      */
-    public function getDnsServer()
+    public function getDnsServer(): string
     {
         return $this->dnsServer;
     }
 
     /**
-     * @param string $server
-     * @return $this
-     */
-    public function setDnsServer($server)
-    {
-        $this->dnsServer = $server;
-        return $this;
-    }
-
-    /**
      * @return int
      */
-    public function getDefaultP2PPort()
+    public function getDefaultP2PPort(): int
     {
         return $this->defaultP2PPort;
     }
 
     /**
-     * @param int $port
-     * @return $this
-     */
-    public function setDefaultP2PPort($port)
-    {
-        $this->defaultP2PPort = $port;
-        return $this;
-    }
-
-    /**
      * @return int
      */
-    public function getConnectionTimeout()
+    public function getConnectionTimeout(): int
     {
         return $this->connectionTimeout;
     }
 
     /**
-     * @param int $timeout
-     * @return $this
-     */
-    public function setConnectionTimeout($timeout)
-    {
-        $this->connectionTimeout = $timeout;
-        return $this;
-    }
-
-    /**
-     * @param int $maxRetries
-     * @return $this
-     */
-    public function setMaxConnectRetries($maxRetries)
-    {
-        $this->maxRetries = $maxRetries;
-        return $this;
-    }
-
-    /**
      * @return int
      */
-    public function getMaxConnectRetries()
+    public function getMaxConnectRetries(): int
     {
         return $this->maxRetries;
     }
@@ -159,10 +79,65 @@ abstract class NetworkSettings
     /**
      * @return array
      */
-    public function getSocketParams()
+    public function getSocketParams(): array
     {
         return [
             'timeout' => $this->getConnectionTimeout(),
         ];
+    }
+
+    /**
+     * @param string $server
+     * @return $this
+     */
+    public function withDnsServer($server): NetworkSettings
+    {
+        $clone = clone $this;
+        $clone->dnsServer = $server;
+        return $this;
+    }
+
+    /**
+     * @param DnsSeedList $list
+     * @return $this
+     */
+    public function withDnsSeeds(DnsSeedList $list): NetworkSettings
+    {
+        $clone = clone $this;
+        $clone->dnsSeeds = $list;
+        return $this;
+    }
+
+    /**
+     * @param int $p2pPort
+     * @return $this
+     */
+    public function withDefaultP2PPort(int $p2pPort): NetworkSettings
+    {
+        $clone = clone $this;
+        $clone->defaultP2PPort = $p2pPort;
+        return $this;
+    }
+
+    /**
+     * @param int $timeout
+     * @return $this
+     */
+    public function withConnectionTimeout(int $timeout): NetworkSettings
+    {
+        $clone = clone $this;
+        $clone->connectionTimeout = $timeout;
+        return $this;
+    }
+
+    /**
+     * @param int $maxRetries
+     * @return $this
+     */
+    public function withMaxConnectRetries(int $maxRetries): NetworkSettings
+    {
+        $clone = clone $this;
+        $clone->maxRetries = $maxRetries;
+        return $this;
     }
 }

@@ -47,7 +47,7 @@ class Version extends NetworkSerializable
     private $userAgent;
 
     /**
-     * @var int|string
+     * @var int
      */
     private $startHeight;
 
@@ -57,7 +57,7 @@ class Version extends NetworkSerializable
     private $relay;
 
     /**
-     * @var integer|string
+     * @var int
      */
     private $nonce;
 
@@ -66,8 +66,8 @@ class Version extends NetworkSerializable
      * @param int $version
      * @param int $services
      * @param int $timestamp
-     * @param NetworkAddressInterface $addrRecv
-     * @param NetworkAddressInterface $addrFrom
+     * @param NetworkAddress $addrRecv
+     * @param NetworkAddress $addrFrom
      * @param int $nonce
      * @param BufferInterface $userAgent
      * @param int $startHeight
@@ -78,8 +78,8 @@ class Version extends NetworkSerializable
         int $version,
         int $services,
         int $timestamp,
-        NetworkAddressInterface $addrRecv,
-        NetworkAddressInterface $addrFrom,
+        NetworkAddress $addrRecv,
+        NetworkAddress $addrFrom,
         int $nonce,
         BufferInterface $userAgent,
         int $startHeight,
@@ -94,7 +94,7 @@ class Version extends NetworkSerializable
         }
 
         $random = new Random();
-        $this->nonce = $random->bytes(8)->getInt();
+        $this->nonce = (int) $random->bytes(8)->getInt();
         $this->version = $version;
         $this->services = $services;
         $this->timestamp = $timestamp;

@@ -10,6 +10,7 @@ use BitWasp\Bitcoin\Networking\Messages\Alert;
 use BitWasp\Bitcoin\Networking\Serializer\Structure\AlertDetailSerializer;
 use BitWasp\Bitcoin\Serializer\Types;
 use BitWasp\Buffertools\Buffer;
+use BitWasp\Buffertools\BufferInterface;
 use BitWasp\Buffertools\Parser;
 
 class AlertSerializer
@@ -37,7 +38,7 @@ class AlertSerializer
      * @param Parser $parser
      * @return Alert
      */
-    public function fromParser(Parser $parser)
+    public function fromParser(Parser $parser): Alert
     {
         $detailBuffer = $this->varstring->read($parser);
         $detail = $this->detail->fromParser(new Parser($detailBuffer));
@@ -47,26 +48,23 @@ class AlertSerializer
         $serializer = EcSerializer::getSerializer('BitWasp\Bitcoin\Crypto\EcAdapter\Serializer\Signature\DerSignatureSerializerInterface', true, $adapter);
         $sig = $serializer->parse($sigBuffer);
 
-        return new Alert(
-            $detail,
-            $sig
-        );
+        return new Alert($detail, $sig);
     }
 
     /**
-     * @param $data
+     * @param BufferInterface $data
      * @return Alert
      */
-    public function parse($data)
+    public function parse(BufferInterface $data): Alert
     {
         return $this->fromParser(new Parser($data));
     }
 
     /**
      * @param Alert $alert
-     * @return \BitWasp\Buffertools\Buffer
+     * @return BufferInterface
      */
-    public function serialize(Alert $alert)
+    public function serialize(Alert $alert): BufferInterface
     {
         return new Buffer("{$this->varstring->write($alert->getDetail()->getBuffer())}{$this->varstring->write($alert->getSignature()->getBuffer())}");
     }

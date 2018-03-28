@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace BitWasp\Bitcoin\Networking\Peer;
 
 use BitWasp\Bitcoin\Networking\Settings\NetworkSettings;
+use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
 use Evenement\EventEmitter;
 use React\Promise\Deferred;
@@ -100,7 +101,7 @@ class Manager extends EventEmitter
     }
 
     /**
-     * @param NetworkAddressInterface $address
+     * @param NetworkAddress $address
      * @return \React\Promise\PromiseInterface
      * @throws \Exception
      */
@@ -144,7 +145,7 @@ class Manager extends EventEmitter
 
         $this
             ->getAnotherPeer($locator)
-            ->then(function (NetworkAddressInterface $address) use ($attempt) {
+            ->then(function (NetworkAddress $address) use ($attempt) {
                 return $this->connect($address)->then(
                     function (Peer $peer) use ($attempt) {
                         $this->registerOutboundPeer($peer);

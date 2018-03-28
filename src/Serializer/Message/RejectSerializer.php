@@ -5,59 +5,63 @@ declare(strict_types=1);
 namespace BitWasp\Bitcoin\Networking\Serializer\Message;
 
 use BitWasp\Bitcoin\Networking\Messages\Reject;
+use BitWasp\Bitcoin\Serializer\Types;
+use BitWasp\Buffertools\Buffer;
+use BitWasp\Buffertools\BufferInterface;
 use BitWasp\Buffertools\Parser;
-use BitWasp\Buffertools\TemplateFactory;
 
 class RejectSerializer
 {
     /**
-     * @return \BitWasp\Buffertools\Template
+     * @var \BitWasp\Buffertools\Types\VarString
      */
-    public function getTemplate()
+    private $varString;
+
+    /**
+     * @var \BitWasp\Buffertools\Types\Uint8
+     */
+    private $uint8;
+
+    public function __construct()
     {
-        return (new TemplateFactory())
-            ->varstring()
-            ->uint8()
-            ->varstring()
-            ->varstring()
-            ->getTemplate();
+        $this->varString = Types::varstring();
+        $this->uint8 = Types::uint8();
     }
 
     /**
      * @param Reject $reject
-     * @return \BitWasp\Buffertools\Buffer
+     * @return BufferInterface
      */
-    public function serialize(Reject $reject)
+    public function serialize(Reject $reject): BufferInterface
     {
-        return $this->getTemplate()->write([
-            $reject->getMessage(),
-            $reject->getCode(),
-            $reject->getReason(),
-            $reject->getData()
-        ]);
+        return new Buffer(sprintf(
+            "%s%s%s%s",
+            $this->varString->write($reject->getMessage()),
+            $this->uint8->write($reject->getCode()),
+            $this->varString->write($reject->getReason()),
+            $this->varString->write($reject->getData())
+        ));
     }
 
     /**
      * @param Parser $parser
-     * @return array
+     * @return Reject
      */
-    public function fromParser(Parser $parser)
+    public function fromParser(Parser $parser): Reject
     {
-        list ($message, $code, $reason, $data) = $this->getTemplate()->parse($parser);
-
         return new Reject(
-            $message,
-            $code,
-            $reason,
-            $data
+            $this->varString->read($parser),
+            (int) $this->uint8->read($parser),
+            $this->varString->read($parser),
+            $this->varString->read($parser)
         );
     }
 
     /**
-     * @param $data
-     * @return array
+     * @param BufferInterface $data
+     * @return Reject
      */
-    public function parse($data)
+    public function parse(BufferInterface $data): Reject
     {
         return $this->fromParser(new Parser($data));
     }

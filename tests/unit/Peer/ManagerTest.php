@@ -19,8 +19,8 @@ class ManagerTest extends TestCase
     {
         $loop = new StreamSelectLoop();
         $factory = new NetworkFactory($loop);
-
-        $factory->getSettings()->setMaxConnectRetries(10);
+        $settings = $factory->getSettings();
+        $factory->setSettings($settings);
 
         $locator = $factory->getLocator();
         $params = new ConnectionParams();

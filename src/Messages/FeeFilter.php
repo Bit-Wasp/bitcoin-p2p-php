@@ -12,6 +12,7 @@ use BitWasp\Buffertools\BufferInterface;
 class FeeFilter extends NetworkSerializable
 {
     /**
+     * Fee rate per 1000 bytes
      * @var int
      */
     protected $feeRate;
@@ -20,7 +21,7 @@ class FeeFilter extends NetworkSerializable
      * FeeFilter constructor.
      * @param int $feeRate
      */
-    public function __construct($feeRate)
+    public function __construct(int $feeRate)
     {
         $this->feeRate = $feeRate;
     }
@@ -28,7 +29,7 @@ class FeeFilter extends NetworkSerializable
     /**
      * @return int
      */
-    public function getFeeRate()
+    public function getFeeRate(): int
     {
         return $this->feeRate;
     }

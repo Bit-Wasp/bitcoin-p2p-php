@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace BitWasp\Bitcoin\Networking\Peer;
 
 use BitWasp\Bitcoin\Networking\Messages\Factory as MsgFactory;
+use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
 use React\EventLoop\LoopInterface;
 use React\Promise\RejectedPromise;
@@ -63,10 +64,10 @@ class Connector
     }
 
     /**
-     * @param NetworkAddressInterface $remotePeer
+     * @param NetworkAddress $remotePeer
      * @return \React\Promise\PromiseInterface
      */
-    public function connect(NetworkAddressInterface $remotePeer)
+    public function connect(NetworkAddress $remotePeer)
     {
         return $this
             ->rawConnect($remotePeer)

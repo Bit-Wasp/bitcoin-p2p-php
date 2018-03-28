@@ -4,74 +4,68 @@ declare(strict_types=1);
 
 namespace BitWasp\Bitcoin\Networking\Serializer\Message;
 
+use BitWasp\Bitcoin\Block\BlockHeaderInterface;
 use BitWasp\Bitcoin\Networking\Messages\Headers;
 use BitWasp\Bitcoin\Serializer\Block\BlockHeaderSerializer;
+use BitWasp\Bitcoin\Serializer\Types;
 use BitWasp\Buffertools\Buffer;
+use BitWasp\Buffertools\BufferInterface;
 use BitWasp\Buffertools\Parser;
-use BitWasp\Buffertools\TemplateFactory;
 
 class HeadersSerializer
 {
     /**
+     * @var \BitWasp\Buffertools\Types\Vector
+     */
+    private $vectorHeader;
+
+    /**
      * @var BlockHeaderSerializer
      */
-    private $header;
+    private $headerSerializer;
 
     /**
      * @param BlockHeaderSerializer $header
      */
     public function __construct(BlockHeaderSerializer $header)
     {
-        $this->header = $header;
-    }
-
-    /**
-     * @return \BitWasp\Buffertools\Template
-     */
-    public function getTemplate()
-    {
-        return (new TemplateFactory())
-            ->vector(function (Parser $parser) {
-                $header = $this->header->fromParser($parser);
-                $parser->readBytes(1);
-                return $header;
-            })
-            ->getTemplate();
+        $this->headerSerializer = $header;
+        $this->vectorHeader = Types::vector(function (Parser $parser): BlockHeaderInterface {
+            $header = $this->headerSerializer->fromParser($parser);
+            $parser->readBytes(1);
+            return $header;
+        });
     }
 
     /**
      * @param Parser $parser
      * @return Headers
      */
-    public function fromParser(Parser $parser)
+    public function fromParser(Parser $parser): Headers
     {
-        list ($headers) = $this->getTemplate()->parse($parser);
-        return new Headers($headers);
+        return new Headers($this->vectorHeader->read($parser));
     }
 
     /**
-     * @param \BitWasp\Buffertools\Buffer|string $data
+     * @param BufferInterface $data
      * @return Headers
      */
-    public function parse($data)
+    public function parse(BufferInterface $data): Headers
     {
         return $this->fromParser(new Parser($data));
     }
 
     /**
      * @param Headers $msg
-     * @return \BitWasp\Buffertools\Buffer
+     * @return BufferInterface
      */
-    public function serialize(Headers $msg)
+    public function serialize(Headers $msg): BufferInterface
     {
         $headers = [];
-        $null = new Buffer("\x00");
         foreach ($msg->getHeaders() as $header) {
-            $temp = new Parser($header->getBuffer());
-            $temp->writeBytes(1, $null);
-            $headers[] = $temp->getBuffer();
+            $headers[] = new Buffer("{$this->headerSerializer->serialize($header)->getBinary()}\x00");
         }
 
-        return $this->getTemplate()->write([$headers]);
+        return new Buffer($this->vectorHeader->write($headers));
     }
 }

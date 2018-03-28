@@ -12,6 +12,7 @@ use BitWasp\Bitcoin\Networking\Services;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
 use BitWasp\Buffertools\Buffer;
+use BitWasp\Buffertools\BufferInterface;
 
 class ConnectionParams
 {
@@ -23,47 +24,47 @@ class ConnectionParams
     protected $defaultLocalPort = 0;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $protocolVersion;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $timestamp;
 
     /**
-     * @var bool
+     * @var bool|null
      */
     private $txRelay;
 
     /**
-     * @var callable
+     * @var callable|null
      */
     private $bestBlockHeightCallback;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $bestBlockHeight;
 
     /**
-     * @var string
+     * @var IpInterface|null
      */
     private $localIp;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $localPort;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $localServices;
 
     /**
-     * @var string
+     * @var BufferInterface|null
      */
     private $userAgent;
 
@@ -148,10 +149,11 @@ class ConnectionParams
      */
     public function setLocalNetAddr(NetworkAddressInterface $networkAddress)
     {
-        return $this
-            ->setLocalIp($networkAddress->getIp())
-            ->setLocalPort($networkAddress->getPort())
-            ->setLocalServices($networkAddress->getServices());
+        // @todo: just set net addr?
+        $this->setLocalIp($networkAddress->getIp());
+        $this->setLocalPort($networkAddress->getPort());
+        $this->setLocalServices($networkAddress->getServices());
+        return $this;
     }
 
     /**
@@ -194,10 +196,10 @@ class ConnectionParams
 
     /**
      * @param MsgFactory $messageFactory
-     * @param NetworkAddressInterface $remoteAddress
+     * @param NetworkAddress $remoteAddress
      * @return Version
      */
-    public function produceVersion(MsgFactory $messageFactory, NetworkAddressInterface $remoteAddress): Version
+    public function produceVersion(MsgFactory $messageFactory, NetworkAddress $remoteAddress): Version
     {
         $protocolVersion = is_null($this->protocolVersion) ? $this->defaultProtocolVersion : $this->protocolVersion;
         $localServices = is_null($this->localServices) ? Services::NONE : $this->localServices;

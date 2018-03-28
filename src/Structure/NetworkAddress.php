@@ -22,7 +22,7 @@ class NetworkAddress extends Serializable implements NetworkAddressInterface
     private $ip;
 
     /**
-     * @var int|string
+     * @var int
      */
     private $port;
 

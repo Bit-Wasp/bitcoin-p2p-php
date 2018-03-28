@@ -20,7 +20,7 @@ class GetHeaders extends AbstractBlockLocator
     }
 
     /**
-     * @return \BitWasp\Buffertools\Buffer
+     * @return BufferInterface
      */
     public function getBuffer(): BufferInterface
     {

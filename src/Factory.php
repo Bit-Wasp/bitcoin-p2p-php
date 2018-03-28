@@ -9,8 +9,6 @@ use BitWasp\Bitcoin\Crypto\Random\Random;
 use BitWasp\Bitcoin\Network\NetworkInterface;
 use BitWasp\Bitcoin\Networking\Ip\IpInterface;
 use BitWasp\Bitcoin\Networking\Settings\NetworkSettings;
-use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
-use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
 use React\EventLoop\LoopInterface;
 
 class Factory
@@ -39,8 +37,10 @@ class Factory
      * @param NetworkInterface $network
      * @param LoopInterface $loop
      */
-    public function __construct(LoopInterface $loop, NetworkInterface $network = null)
-    {
+    public function __construct(
+        LoopInterface $loop,
+        NetworkInterface $network = null
+    ) {
         $this->loop = $loop;
         $this->network = $network ?: Bitcoin::getNetwork();
         $this->settings = new Settings\MainnetSettings();
@@ -113,10 +113,10 @@ class Factory
 
     /**
      * @param Peer\ConnectionParams $params
-     * @param NetworkAddressInterface $serverAddress
+     * @param Structure\NetworkAddressInterface $serverAddress
      * @return Peer\Listener
      */
-    public function getListener(Peer\ConnectionParams $params, NetworkAddressInterface $serverAddress): Peer\Listener
+    public function getListener(Peer\ConnectionParams $params, Structure\NetworkAddressInterface $serverAddress): Peer\Listener
     {
         return new Peer\Listener($params, $this->getMessages(), $serverAddress, $this->loop);
     }
@@ -125,14 +125,14 @@ class Factory
      * @param IpInterface $ipAddress
      * @param int $port
      * @param int $services
-     * @return NetworkAddress
+     * @return Structure\NetworkAddress
      */
-    public function getAddress(IpInterface $ipAddress, $port = null, $services = Services::NONE)
+    public function getAddress(IpInterface $ipAddress, int $port = null, int $services = Services::NONE): Structure\NetworkAddress
     {
         if (null === $port) {
             $port = $this->settings->getDefaultP2PPort();
         }
 
-        return new NetworkAddress($services, $ipAddress, $port);
+        return new Structure\NetworkAddress($services, $ipAddress, $port);
     }
 }

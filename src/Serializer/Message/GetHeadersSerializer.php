@@ -9,7 +9,6 @@ use BitWasp\Bitcoin\Serializer\Chain\BlockLocatorSerializer;
 use BitWasp\Bitcoin\Serializer\Types;
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Buffertools\BufferInterface;
-use BitWasp\Buffertools\Buffertools;
 use BitWasp\Buffertools\Parser;
 
 class GetHeadersSerializer
@@ -60,9 +59,9 @@ class GetHeadersSerializer
      */
     public function serialize(GetHeaders $msg): BufferInterface
     {
-        return Buffertools::concat(
-            new Buffer($this->uint32le->write($msg->getVersion())),
-            $this->locator->serialize($msg->getLocator())
+        return new Buffer(
+            $this->uint32le->write($msg->getVersion()) .
+            $this->locator->serialize($msg->getLocator())->getBinary()
         );
     }
 }

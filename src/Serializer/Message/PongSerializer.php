@@ -37,8 +37,7 @@ class PongSerializer
      */
     public function fromParser(Parser $parser): Pong
     {
-        $nonce = (int) $this->uint64->read($parser);
-        return new Pong((int) $nonce);
+        return new Pong((int) $this->uint64->read($parser));
     }
 
     /**

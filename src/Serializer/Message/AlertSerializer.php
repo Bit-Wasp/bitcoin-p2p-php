@@ -20,6 +20,11 @@ class AlertSerializer
     private $detail;
 
     /**
+     * @var \BitWasp\Buffertools\Types\VarString
+     */
+    private $varstring;
+
+    /**
      * @param AlertDetailSerializer $detail
      */
     public function __construct(AlertDetailSerializer $detail)

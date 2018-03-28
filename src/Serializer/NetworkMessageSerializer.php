@@ -46,6 +46,7 @@ use BitWasp\Bitcoin\Serializer\Block\PartialMerkleTreeSerializer;
 use BitWasp\Bitcoin\Serializer\Chain\BlockLocatorSerializer;
 use BitWasp\Bitcoin\Serializer\Transaction\TransactionSerializer;
 use BitWasp\Bitcoin\Serializer\Types;
+use BitWasp\Buffertools\BufferInterface;
 use BitWasp\Buffertools\Parser;
 use BitWasp\Buffertools\Buffer;
 
@@ -170,6 +171,16 @@ class NetworkMessageSerializer
      * @var AddrSerializer
      */
     private $addrSerializer;
+
+    /**
+     * @var \BitWasp\Buffertools\Types\ByteString
+     */
+    private $bs4le;
+
+    /**
+     * @var HeaderSerializer
+     */
+    private $packetHeaderSerializer;
 
     /**
      * @param NetworkInterface $network
@@ -326,25 +337,23 @@ class NetworkMessageSerializer
 
     /**
      * @param NetworkMessage $object
-     * @return Buffer
+     * @return BufferInterface
      */
-    public function serialize(NetworkMessage $object)
+    public function serialize(NetworkMessage $object): BufferInterface
     {
         $prefix = $this->bs4le->write(Buffer::hex($this->network->getNetMagicBytes(), null, $this->math));
         $header = $this->packetHeaderSerializer->serialize($object->getHeader());
         $payload = $object->getPayload()->getBuffer();
 
-        return new Buffer(
-            "{$prefix}{$header->getBinary()}{$payload->getBinary()}"
-        );
+        return new Buffer("{$prefix}{$header->getBinary()}{$payload->getBinary()}");
     }
 
     /**
-     * @param $data
+     * @param BufferInterface $data
      * @return NetworkMessage
      * @throws \Exception
      */
-    public function parse($data)
+    public function parse(BufferInterface $data): NetworkMessage
     {
         return $this->fromParser(new Parser($data, $this->math));
     }

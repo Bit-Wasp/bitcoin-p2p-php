@@ -6,70 +6,87 @@ namespace BitWasp\Bitcoin\Networking\Structure;
 
 use BitWasp\Bitcoin\Networking\Serializer\Structure\AlertDetailSerializer;
 use BitWasp\Bitcoin\Serializable;
-use BitWasp\Bitcoin\SerializableInterface;
 use BitWasp\Buffertools\BufferInterface;
 
 class AlertDetail extends Serializable
 {
     /**
+     * Alert format version
      * @var int
      */
     private $version;
 
     /**
-     * Timestamp
+     * Timestamp beyond which nodes should stop relaying this alert
      * @var int
      */
     private $relayUntil;
 
     /**
-     * timestamp
+     * Timestamp beyond which this alert can be ignored
      * @var int
      */
     private $expiration;
 
     /**
+     * A unique ID number for this alert
      * @var int
      */
     private $id;
 
     /**
+     * All alerts with an ID number less than or equal to this number
+     * should be cancelled, deleted, not accepted in the future.
+     *
      * @var int
      */
     private $cancel;
 
     /**
+     * All alert IDs contained in this set should be cancelled
      * @var integer[]
      */
     private $setCancel;
 
     /**
+     * This alert only applies to versions greater than or equal
+     * to this version. Other versions should still relay it.
      * @var int
      */
     private $minVer;
 
     /**
+     * This alert only applies to versions less than or equal to
+     * this version. Other versions should still relay it.
      * @var int
      */
     private $maxVer;
 
     /**
+     * If this set contains any elements, then only nodes that
+     * have their subVer contained in this set are affected by
+     * the alert. Other versions should still relay it.
      * @var integer[]
      */
     private $setSubVer;
 
     /**
+     * Relative priority compared to other alerts
      * @var int
      */
     private $priority;
 
     /**
+     * A comment on the alert that is not displayed
      * @var BufferInterface
+     * @todo: make string
      */
     private $comment;
 
     /**
+     * The alert message that is displayed to the user
      * @var BufferInterface
+     * @todo: make string
      */
     private $statusBar;
 
@@ -79,13 +96,13 @@ class AlertDetail extends Serializable
      * @param int $expiration
      * @param int $id
      * @param int $cancel
+     * @param int[] $setCancel
      * @param int $minVer
      * @param int $maxVer
+     * @param int[] $setSubVer
      * @param int $priority
      * @param BufferInterface $comment
      * @param BufferInterface $statusBar
-     * @param integer[] $setCancel
-     * @param SerializableInterface[] $setSubVer
      */
     public function __construct(
         int $version,
@@ -93,26 +110,26 @@ class AlertDetail extends Serializable
         int $expiration,
         int $id,
         int $cancel,
+        array $setCancel,
         int $minVer,
         int $maxVer,
+        array $setSubVer,
         int $priority,
         BufferInterface $comment,
-        BufferInterface $statusBar,
-        array $setCancel = [],
-        array $setSubVer = []
+        BufferInterface $statusBar
     ) {
         $this->version = $version;
         $this->relayUntil = $relayUntil;
         $this->expiration = $expiration;
         $this->id = $id;
         $this->cancel = $cancel;
+        $this->setCancel = $setCancel;
         $this->minVer = $minVer;
         $this->maxVer = $maxVer;
+        $this->setSubVer = $setSubVer;
         $this->priority = $priority;
         $this->comment = $comment;
         $this->statusBar = $statusBar;
-        $this->setCancel = $setCancel;
-        $this->setSubVer = $setSubVer;
     }
 
     /**
@@ -156,6 +173,14 @@ class AlertDetail extends Serializable
     }
 
     /**
+     * @return integer[]
+     */
+    public function getSetCancel(): array
+    {
+        return $this->setCancel;
+    }
+
+    /**
      * @return int
      */
     public function getMinVer(): int
@@ -169,6 +194,14 @@ class AlertDetail extends Serializable
     public function getMaxVer(): int
     {
         return $this->maxVer;
+    }
+
+    /**
+     * @return integer[]
+     */
+    public function getSetSubVer(): array
+    {
+        return $this->setSubVer;
     }
 
     /**
@@ -195,21 +228,6 @@ class AlertDetail extends Serializable
         return $this->statusBar;
     }
 
-    /**
-     * @return integer[]
-     */
-    public function getSetCancel(): array
-    {
-        return $this->setCancel;
-    }
-
-    /**
-     * @return integer[]
-     */
-    public function getSetSubVer(): array
-    {
-        return $this->setSubVer;
-    }
     /**
      * @see \BitWasp\Bitcoin\SerializableInterface::getBuffer()
      * @return BufferInterface

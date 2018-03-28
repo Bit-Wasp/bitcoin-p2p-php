@@ -6,22 +6,33 @@ namespace BitWasp\Bitcoin\Networking\Serializer\Structure;
 
 use BitWasp\Bitcoin\Networking\Serializer\Ip\IpSerializer;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
+use BitWasp\Bitcoin\Serializer\Types;
+use BitWasp\Buffertools\Buffer;
 use BitWasp\Buffertools\BufferInterface;
 use BitWasp\Buffertools\Parser;
-use BitWasp\Buffertools\TemplateFactory;
 
 class NetworkAddressSerializer
 {
     /**
-     * @return \BitWasp\Buffertools\Template
+     * @var \BitWasp\Buffertools\Types\Uint16
      */
-    private function getTemplate()
+    private $uint16;
+
+    /**
+     * @var \BitWasp\Buffertools\Types\Uint64
+     */
+    private $uint64le;
+
+    /**
+     * @var \BitWasp\Buffertools\Types\ByteString
+     */
+    private $bytestring16;
+
+    public function __construct()
     {
-        return (new TemplateFactory())
-            ->uint64le()
-            ->bytestring(16)
-            ->uint16()
-            ->getTemplate();
+        $this->uint16 = Types::uint16();
+        $this->uint64le = Types::uint64le();
+        $this->bytestring16 = Types::bytestring(16);
     }
 
     /**
@@ -30,11 +41,10 @@ class NetworkAddressSerializer
      */
     public function serialize(NetworkAddress $addr): BufferInterface
     {
-        return $this->getTemplate()->write([
-            $addr->getServices(),
-            $addr->getIp()->getBuffer(),
-            (int) $addr->getPort()
-        ]);
+        $services = $this->uint64le->write($addr->getServices());
+        $ip = $addr->getIp()->getBuffer()->getBinary();
+        $port = $this->uint16->write($addr->getPort());
+        return new Buffer("{$services}{$ip}{$port}");
     }
 
     /**
@@ -43,20 +53,20 @@ class NetworkAddressSerializer
      */
     public function fromParser(Parser $parser): NetworkAddress
     {
-        list ($services, $ipBuffer, $port) = $this->getTemplate()->parse($parser);
+        // @todo: move this into constructor param?
         $ipSerializer = new IpSerializer();
         return new NetworkAddress(
-            (int) $services,
-            $ipSerializer->parse($ipBuffer),
-            (int) $port
+            (int) $this->uint64le->read($parser),
+            $ipSerializer->fromParser($parser),
+            (int) $this->uint16->read($parser)
         );
     }
 
     /**
-     * @param $data
+     * @param BufferInterface $data
      * @return NetworkAddress
      */
-    public function parse($data): NetworkAddress
+    public function parse(BufferInterface $data): NetworkAddress
     {
         return $this->fromParser(new Parser($data));
     }

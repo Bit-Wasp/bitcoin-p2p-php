@@ -112,13 +112,13 @@ class AlertDetailTest extends TestCase
             $expiration,
             $id,
             $cancel,
+            $setCancel,
             $minVer,
             $maxVer,
+            $setSubVer,
             $priority,
             $comment,
-            $statusBar,
-            $setCancel,
-            $setSubVer
+            $statusBar
         );
 
         $serializer = new AlertDetailSerializer();

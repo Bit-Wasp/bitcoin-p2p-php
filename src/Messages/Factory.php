@@ -13,7 +13,7 @@ use BitWasp\Bitcoin\Network\NetworkInterface;
 use BitWasp\Bitcoin\Networking\NetworkMessage;
 use BitWasp\Bitcoin\Networking\Structure\AlertDetail;
 use BitWasp\Bitcoin\Networking\Structure\Inventory;
-use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
+use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
 use BitWasp\Bitcoin\Networking\Serializer\NetworkMessageSerializer;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressTimestamp;
 use BitWasp\Bitcoin\Crypto\EcAdapter\Signature\SignatureInterface;
@@ -54,8 +54,8 @@ class Factory
      * @param int $version
      * @param int $services
      * @param int $timestamp
-     * @param NetworkAddressInterface $addrRecv
-     * @param NetworkAddressInterface $addrFrom
+     * @param NetworkAddress $addrRecv
+     * @param NetworkAddress $addrFrom
      * @param BufferInterface $userAgent
      * @param int $startHeight
      * @param bool $relay
@@ -65,8 +65,8 @@ class Factory
         int $version,
         $services,
         $timestamp,
-        NetworkAddressInterface $addrRecv,
-        NetworkAddressInterface $addrFrom,
+        NetworkAddress $addrRecv,
+        NetworkAddress $addrFrom,
         BufferInterface $userAgent,
         $startHeight,
         $relay
@@ -203,7 +203,7 @@ class Factory
      * @param int $feeRate
      * @return FeeFilter
      */
-    public function feefilter($feeRate): FeeFilter
+    public function feefilter(int $feeRate): FeeFilter
     {
         return new FeeFilter($feeRate);
     }

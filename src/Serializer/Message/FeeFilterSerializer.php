@@ -5,48 +5,47 @@ declare(strict_types=1);
 namespace BitWasp\Bitcoin\Networking\Serializer\Message;
 
 use BitWasp\Bitcoin\Networking\Messages\FeeFilter;
+use BitWasp\Bitcoin\Serializer\Types;
+use BitWasp\Buffertools\Buffer;
 use BitWasp\Buffertools\BufferInterface;
 use BitWasp\Buffertools\Parser;
-use BitWasp\Buffertools\TemplateFactory;
 
 class FeeFilterSerializer
 {
     /**
-     * @return \BitWasp\Buffertools\Template
+     * @var \BitWasp\Buffertools\Types\Uint64
      */
-    public function getTemplate()
+    private $uint64;
+
+    public function __construct()
     {
-        return (new TemplateFactory())
-            ->uint64()
-            ->getTemplate();
+        $this->uint64 = Types::uint64();
     }
 
     /**
      * @param Parser $parser
      * @return FeeFilter
      */
-    public function fromParser(Parser $parser)
+    public function fromParser(Parser $parser): FeeFilter
     {
-        list ($feeRate) = $this->getTemplate()->parse($parser);
-
-        return new FeeFilter($feeRate);
+        return new FeeFilter((int) $this->uint64->read($parser));
     }
 
     /**
-     * @param string|BufferInterface $data
+     * @param BufferInterface $data
      * @return FeeFilter
      */
-    public function parse($data)
+    public function parse(BufferInterface $data): FeeFilter
     {
         return $this->fromParser(new Parser($data));
     }
 
     /**
      * @param FeeFilter $feeFilter
-     * @return \BitWasp\Buffertools\BufferInterface
+     * @return BufferInterface
      */
-    public function serialize(FeeFilter $feeFilter)
+    public function serialize(FeeFilter $feeFilter): BufferInterface
     {
-        return $this->getTemplate()->write([$feeFilter->getFeeRate()]);
+        return new Buffer($this->uint64->write($feeFilter->getFeeRate()));
     }
 }

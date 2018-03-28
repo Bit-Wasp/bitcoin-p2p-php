@@ -8,11 +8,12 @@ use BitWasp\Bitcoin\Networking\Messages\Inv;
 use BitWasp\Bitcoin\Networking\Messages\Tx;
 use BitWasp\Bitcoin\Networking\Peer\ConnectionParams;
 use BitWasp\Bitcoin\Networking\Peer\Peer;
+use BitWasp\Bitcoin\Networking\Settings\MainnetSettings;
 
 $loop = React\EventLoop\Factory::create();
 $factory = new \BitWasp\Bitcoin\Networking\Factory($loop);
-
-$factory->getSettings()->setConnectionTimeout(3);
+$settings = (new MainnetSettings())->withConnectionTimeout(3);
+$factory->setSettings($settings);
 
 $params = new ConnectionParams();
 $params->requestTxRelay();

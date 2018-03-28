@@ -329,7 +329,7 @@ class NetworkMessageSerializer
      * @throws \BitWasp\Buffertools\Exceptions\ParserOutOfRange
      * @throws \Exception
      */
-    public function fromParser(Parser $parser)
+    public function fromParser(Parser $parser): NetworkMessage
     {
         $header = $this->parseHeader($parser);
         return $this->parsePacket($header, $parser);

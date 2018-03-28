@@ -15,7 +15,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      */
     public function dataFile(string $filename)
     {
-        return file_get_contents(__DIR__ . "/Data{$filename}/");
+        return file_get_contents(__DIR__ . "/Data/{$filename}/");
     }
 
     /**

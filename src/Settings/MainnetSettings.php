@@ -8,11 +8,10 @@ use BitWasp\Bitcoin\Networking\DnsSeeds\MainNetDnsSeeds;
 
 class MainnetSettings extends NetworkSettings
 {
-    protected function setup()
+    protected $defaultP2PPort = 8333;
+
+    public function __construct()
     {
-        $this
-            ->setDefaultP2PPort(8333)
-            ->setDnsSeeds(new MainNetDnsSeeds())
-        ;
+        $this->dnsSeeds = new MainNetDnsSeeds();
     }
 }

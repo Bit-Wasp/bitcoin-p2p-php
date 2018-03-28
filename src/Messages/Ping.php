@@ -13,7 +13,7 @@ use BitWasp\Buffertools\BufferInterface;
 class Ping extends NetworkSerializable
 {
     /**
-     * @var integer|string
+     * @var int
      */
     private $nonce;
 
@@ -46,7 +46,7 @@ class Ping extends NetworkSerializable
     }
 
     /**
-     * @return integer|string
+     * @return int
      */
     public function getNonce()
     {

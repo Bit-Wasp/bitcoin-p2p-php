@@ -10,15 +10,9 @@ use BitWasp\Bitcoin\Serializer\Types;
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Buffertools\BufferInterface;
 use BitWasp\Buffertools\Parser;
-use BitWasp\Buffertools\TemplateFactory;
 
 class AddrSerializer
 {
-    /**
-     * @var NetworkAddressTimestampSerializer
-     */
-    private $netAddr;
-
     /**
      * @var \BitWasp\Buffertools\Types\Vector
      */
@@ -29,22 +23,7 @@ class AddrSerializer
      */
     public function __construct(NetworkAddressTimestampSerializer $serializer)
     {
-        $this->netAddr = $serializer;
-        $this->vectorNetAddr = Types::vector(function (Parser $parser) {
-            return $this->netAddr->fromParser($parser);
-        });
-    }
-
-    /**
-     * @return \BitWasp\Buffertools\Template
-     */
-    public function getTemplate()
-    {
-        return (new TemplateFactory())
-            ->vector(function (Parser $parser) {
-                return $this->netAddr->fromParser($parser);
-            })
-            ->getTemplate();
+        $this->vectorNetAddr = Types::vector([$serializer, 'fromParser']);
     }
 
     /**

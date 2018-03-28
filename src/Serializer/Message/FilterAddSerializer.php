@@ -5,49 +5,49 @@ declare(strict_types=1);
 namespace BitWasp\Bitcoin\Networking\Serializer\Message;
 
 use BitWasp\Bitcoin\Networking\Messages\FilterAdd;
+use BitWasp\Bitcoin\Serializer\Types;
+use BitWasp\Buffertools\Buffer;
+use BitWasp\Buffertools\BufferInterface;
 use BitWasp\Buffertools\Parser;
-use BitWasp\Buffertools\TemplateFactory;
 
 class FilterAddSerializer
 {
     /**
-     * @return \BitWasp\Buffertools\Template
+     * @var \BitWasp\Buffertools\Types\VarString
      */
-    public function getTemplate()
+    private $varString;
+
+    public function __construct()
     {
-        return (new TemplateFactory())
-            ->varstring()
-            ->getTemplate();
+        $this->varString = Types::varstring();
     }
 
     /**
      * @param Parser $parser
      * @return FilterAdd
      */
-    public function fromParser(Parser $parser)
+    public function fromParser(Parser $parser): FilterAdd
     {
-        list ($data) = $this->getTemplate()->parse($parser);
+        $data = $this->varString->read($parser);
 
         return new FilterAdd($data);
     }
 
     /**
-     * @param $data
+     * @param BufferInterface $data
      * @return FilterAdd
      */
-    public function parse($data)
+    public function parse(BufferInterface $data): FilterAdd
     {
         return $this->fromParser(new Parser($data));
     }
 
     /**
      * @param FilterAdd $filteradd
-     * @return \BitWasp\Buffertools\Buffer
+     * @return BufferInterface
      */
-    public function serialize(FilterAdd $filteradd)
+    public function serialize(FilterAdd $filteradd): BufferInterface
     {
-        return $this->getTemplate()->write([
-            $filteradd->getData()
-        ]);
+        return new Buffer($this->varString->write($filteradd->getData()));
     }
 }

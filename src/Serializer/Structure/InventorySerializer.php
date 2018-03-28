@@ -5,12 +5,30 @@ declare(strict_types=1);
 namespace BitWasp\Bitcoin\Networking\Serializer\Structure;
 
 use BitWasp\Bitcoin\Networking\Structure\Inventory;
+use BitWasp\Bitcoin\Serializer\Types;
+use BitWasp\Buffertools\Buffer;
 use BitWasp\Buffertools\BufferInterface;
 use BitWasp\Buffertools\Parser;
 use BitWasp\Buffertools\TemplateFactory;
 
 class InventorySerializer
 {
+    /**
+     * @var \BitWasp\Buffertools\Types\Uint32
+     */
+    private $uint32le;
+
+    /**
+     * @var \BitWasp\Buffertools\Types\ByteString
+     */
+    private $bytestring32le;
+
+    public function __construct()
+    {
+        $this->uint32le = Types::uint32le();
+        $this->bytestring32le = Types::bytestringle(32);
+    }
+
     /**
      * @return \BitWasp\Buffertools\Template
      */
@@ -28,10 +46,9 @@ class InventorySerializer
      */
     public function serialize(Inventory $inv): BufferInterface
     {
-        return $this->getTemplate()->write([
-            $inv->getType(),
-            $inv->getHash()
-        ]);
+        $flags = $this->uint32le->write($inv->getType());
+        $hash = $this->bytestring32le->write($inv->getHash());
+        return new Buffer("{$flags}{$hash}");
     }
 
     /**
@@ -40,18 +57,17 @@ class InventorySerializer
      */
     public function fromParser(Parser $parser): Inventory
     {
-        list($type, $hash) = $this->getTemplate()->parse($parser);
         return new Inventory(
-            (int) $type,
-            $hash
+            (int) $this->uint32le->read($parser),
+            $this->bytestring32le->read($parser)
         );
     }
 
     /**
-     * @param string|\BitWasp\Buffertools\Buffer $data
+     * @param BufferInterface $data
      * @return Inventory
      */
-    public function parse($data): Inventory
+    public function parse(BufferInterface $data): Inventory
     {
         return $this->fromParser(new Parser($data));
     }

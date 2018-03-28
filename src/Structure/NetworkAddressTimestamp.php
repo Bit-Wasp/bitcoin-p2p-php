@@ -11,7 +11,7 @@ use BitWasp\Buffertools\BufferInterface;
 class NetworkAddressTimestamp extends NetworkAddress
 {
     /**
-     * @var int|string
+     * @var int
      */
     private $time;
 
@@ -21,8 +21,12 @@ class NetworkAddressTimestamp extends NetworkAddress
      * @param IpInterface $ip
      * @param int $port
      */
-    public function __construct(int $time, int $services, IpInterface $ip, int $port)
-    {
+    public function __construct(
+        int $time,
+        int $services,
+        IpInterface $ip,
+        int $port
+    ) {
         $this->time = $time;
         parent::__construct($services, $ip, $port);
     }

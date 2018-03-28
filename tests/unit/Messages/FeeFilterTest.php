@@ -14,7 +14,7 @@ class FeeFilterTest extends TestCase
 {
     public function testNetworkSerializable()
     {
-        $rate = '1';
+        $rate = 1;
         $factory = new Factory(Bitcoin::getDefaultNetwork(), new Random());
         $feeFilter = $factory->feefilter($rate);
 

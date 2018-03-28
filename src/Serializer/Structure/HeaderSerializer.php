@@ -50,10 +50,10 @@ class HeaderSerializer
     }
 
     /**
-     * @param string|BufferInterface $data
+     * @param BufferInterface $data
      * @return Header
      */
-    public function parse($data): Header
+    public function parse(BufferInterface $data): Header
     {
         return $this->fromParser(new Parser($data));
     }

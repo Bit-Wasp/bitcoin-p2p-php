@@ -8,11 +8,10 @@ use BitWasp\Bitcoin\Networking\DnsSeeds\TestNetDnsSeeds;
 
 class Testnet3Settings extends NetworkSettings
 {
-    protected function setup()
+    protected $defaultP2PPort = 18333;
+
+    public function __construct()
     {
-        $this
-            ->setDefaultP2PPort(18333)
-            ->setDnsSeeds(new TestNetDnsSeeds())
-        ;
+        $this->dnsSeeds = new TestNetDnsSeeds();
     }
 }

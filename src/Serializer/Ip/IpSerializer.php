@@ -9,17 +9,18 @@ use BitWasp\Bitcoin\Networking\Ip\IpInterface;
 use BitWasp\Bitcoin\Networking\Ip\Ipv4;
 use BitWasp\Bitcoin\Networking\Ip\Ipv6;
 use BitWasp\Bitcoin\Networking\Ip\Onion;
+use BitWasp\Buffertools\BufferInterface;
 use BitWasp\Buffertools\Parser;
 
 class IpSerializer
 {
     /**
      * @param Parser $parser
-     * @return Ipv4|Ipv6|Onion
+     * @return IpInterface
      * @throws \BitWasp\Buffertools\Exceptions\ParserOutOfRange
      * @throws \Exception
      */
-    public function fromParser(Parser $parser)
+    public function fromParser(Parser $parser): IpInterface
     {
         $buffer = $parser->readBytes(16);
         $binary = $buffer->getBinary();
@@ -44,19 +45,19 @@ class IpSerializer
     }
 
     /**
-     * @param $data
-     * @return Ipv4|Ipv6|Onion
+     * @param BufferInterface $data
+     * @return IpInterface
      */
-    public function parse($data)
+    public function parse(BufferInterface $data): IpInterface
     {
         return $this->fromParser(new Parser($data));
     }
 
     /**
      * @param IpInterface $address
-     * @return \BitWasp\Buffertools\Buffer
+     * @return BufferInterface
      */
-    public function serialize(IpInterface $address)
+    public function serialize(IpInterface $address): BufferInterface
     {
         return $address->getBuffer();
     }

@@ -16,6 +16,7 @@ use BitWasp\Bitcoin\Networking\NetworkSerializable;
 use BitWasp\Bitcoin\Networking\Structure\AlertDetail;
 use BitWasp\Bitcoin\Networking\Structure\Header;
 use BitWasp\Bitcoin\Networking\Structure\Inventory;
+use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressTimestamp;
 use BitWasp\Bitcoin\Crypto\EcAdapter\Signature\SignatureInterface;
@@ -76,7 +77,7 @@ class Peer extends EventEmitter
     private $exchangedVersion = false;
 
     /**
-     * @var Header
+     * @var Header|null
      */
     private $incomingMsgHeader;
 
@@ -220,11 +221,11 @@ class Peer extends EventEmitter
     }
 
     /**
-     * @param NetworkAddressInterface $remotePeer
+     * @param NetworkAddress $remotePeer
      * @param ConnectionParams $params
      * @return \React\Promise\Promise|\React\Promise\PromiseInterface
      */
-    public function outboundHandshake(NetworkAddressInterface $remotePeer, ConnectionParams $params)
+    public function outboundHandshake(NetworkAddress $remotePeer, ConnectionParams $params)
     {
         $deferred = new Deferred();
         
@@ -281,8 +282,8 @@ class Peer extends EventEmitter
      * @param int $protocolVersion
      * @param int $services
      * @param int $timestamp
-     * @param NetworkAddressInterface $remoteAddr
-     * @param NetworkAddressInterface $localAddr
+     * @param NetworkAddress $remoteAddr
+     * @param NetworkAddress $localAddr
      * @param string $userAgent
      * @param int $blockHeight
      * @param bool $relayToUs
@@ -291,8 +292,8 @@ class Peer extends EventEmitter
         $protocolVersion,
         $services,
         $timestamp,
-        NetworkAddressInterface $remoteAddr,
-        NetworkAddressInterface $localAddr,
+        NetworkAddress $remoteAddr,
+        NetworkAddress $localAddr,
         $userAgent,
         $blockHeight,
         $relayToUs

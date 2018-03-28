@@ -19,7 +19,7 @@ class NetworkAddressTimestamp extends NetworkAddress
      * @param int $time
      * @param int $services
      * @param IpInterface $ip
-     * @param int|string $port
+     * @param int $port
      */
     public function __construct(int $time, int $services, IpInterface $ip, int $port)
     {

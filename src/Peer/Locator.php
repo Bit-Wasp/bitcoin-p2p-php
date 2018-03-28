@@ -62,12 +62,10 @@ class Locator
 
         // Connect to $numSeeds peers
         /** @var Peer[] $vNetAddr */
-        $vNetAddr = [];
-        $c = 0;
         foreach ($seeds as $seed) {
             $this->dns
                 ->resolve($seed)
-                ->then(function ($ipList) use (&$vNetAddr, $peerList, &$numSeeds, &$c) {
+                ->then(function ($ipList) use ($peerList) {
                     $peerList->resolve($ipList);
                 }, function ($error) use ($peerList) {
                     $peerList->reject($error);

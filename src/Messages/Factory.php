@@ -137,7 +137,7 @@ class Factory
     }
 
     /**
-     * @param $version
+     * @param int $version
      * @param BlockLocator $blockLocator
      * @return GetBlocks
      */

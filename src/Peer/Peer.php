@@ -236,7 +236,7 @@ class Peer extends EventEmitter
             }
         });
 
-        $this->on(Message::VERSION, function (Peer $peer, Version $version) use ($params) {
+        $this->on(Message::VERSION, function (Peer $peer, Version $version) {
             $this->remoteVersion = $version;
             $this->verack();
         });

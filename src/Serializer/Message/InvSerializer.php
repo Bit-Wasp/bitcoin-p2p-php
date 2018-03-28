@@ -6,6 +6,7 @@ namespace BitWasp\Bitcoin\Networking\Serializer\Message;
 
 use BitWasp\Bitcoin\Networking\Messages\Inv;
 use BitWasp\Bitcoin\Networking\Serializer\Structure\InventorySerializer;
+use BitWasp\Buffertools\BufferInterface;
 use BitWasp\Buffertools\Parser;
 use BitWasp\Buffertools\TemplateFactory;
 
@@ -38,28 +39,28 @@ class InvSerializer
 
     /**
      * @param Parser $parser
-     * @return array
+     * @return Inv
      */
-    public function fromParser(Parser $parser)
+    public function fromParser(Parser $parser): Inv
     {
         list ($items) = $this->getTemplate()->parse($parser);
         return new Inv($items);
     }
 
     /**
-     * @param $data
-     * @return array
+     * @param BufferInterface $data
+     * @return Inv
      */
-    public function parse($data)
+    public function parse(BufferInterface $data): Inv
     {
         return $this->fromParser(new Parser($data));
     }
 
     /**
      * @param Inv $inv
-     * @return \BitWasp\Buffertools\Buffer
+     * @return BufferInterface
      */
-    public function serialize(Inv $inv)
+    public function serialize(Inv $inv): BufferInterface
     {
         return $this->getTemplate()->write([
             $inv->getItems()

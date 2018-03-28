@@ -6,9 +6,11 @@ namespace BitWasp\Bitcoin\Networking\Serializer\Message;
 
 use BitWasp\Bitcoin\Networking\Messages\GetHeaders;
 use BitWasp\Bitcoin\Serializer\Chain\BlockLocatorSerializer;
+use BitWasp\Bitcoin\Serializer\Types;
+use BitWasp\Buffertools\Buffer;
+use BitWasp\Buffertools\BufferInterface;
 use BitWasp\Buffertools\Buffertools;
 use BitWasp\Buffertools\Parser;
-use BitWasp\Buffertools\TemplateFactory;
 
 class GetHeadersSerializer
 {
@@ -18,52 +20,48 @@ class GetHeadersSerializer
     private $locator;
 
     /**
+     * @var \BitWasp\Buffertools\Types\Uint32
+     */
+    private $uint32le;
+
+    /**
      * @param BlockLocatorSerializer $locatorSerializer
      */
     public function __construct(BlockLocatorSerializer $locatorSerializer)
     {
+        $this->uint32le = Types::uint32le();
         $this->locator = $locatorSerializer;
-    }
-
-    /**
-     * @return \BitWasp\Buffertools\Template
-     */
-    public function getVersionTemplate()
-    {
-        return (new TemplateFactory())
-            ->uint32le()
-            ->getTemplate();
     }
 
     /**
      * @param Parser $parser
      * @return GetHeaders
      */
-    public function fromParser(Parser $parser)
+    public function fromParser(Parser $parser): GetHeaders
     {
         return new GetHeaders(
-            (int) $this->getVersionTemplate()->parse($parser)[0],
+            (int) $this->uint32le->read($parser),
             $this->locator->fromParser($parser)
         );
     }
 
     /**
-     * @param $data
+     * @param BufferInterface $data
      * @return GetHeaders
      */
-    public function parse($data)
+    public function parse(BufferInterface $data): GetHeaders
     {
         return $this->fromParser(new Parser($data));
     }
 
     /**
      * @param GetHeaders $msg
-     * @return \BitWasp\Buffertools\Buffer
+     * @return BufferInterface
      */
-    public function serialize(GetHeaders $msg)
+    public function serialize(GetHeaders $msg): BufferInterface
     {
         return Buffertools::concat(
-            $this->getVersionTemplate()->write([$msg->getVersion()]),
+            new Buffer($this->uint32le->write($msg->getVersion())),
             $this->locator->serialize($msg->getLocator())
         );
     }

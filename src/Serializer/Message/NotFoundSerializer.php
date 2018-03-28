@@ -6,8 +6,12 @@ namespace BitWasp\Bitcoin\Networking\Serializer\Message;
 
 use BitWasp\Bitcoin\Networking\Messages\NotFound;
 use BitWasp\Bitcoin\Networking\Serializer\Structure\InventorySerializer;
+use BitWasp\Bitcoin\Networking\Structure\Inventory;
+use BitWasp\Bitcoin\Serializer\Types;
+use BitWasp\Buffertools\Buffer;
+use BitWasp\Buffertools\BufferInterface;
 use BitWasp\Buffertools\Parser;
-use BitWasp\Buffertools\TemplateFactory;
+use BitWasp\Buffertools\Types\Vector;
 
 class NotFoundSerializer
 {
@@ -17,52 +21,46 @@ class NotFoundSerializer
     private $invSerializer;
 
     /**
+     * @var Vector
+     */
+    private $vectorInvSer;
+
+    /**
      * @param InventorySerializer $inv
      */
     public function __construct(InventorySerializer $inv)
     {
         $this->invSerializer = $inv;
-    }
-
-    /**
-     * @return \BitWasp\Buffertools\Template
-     */
-    public function getTemplate()
-    {
-        return (new TemplateFactory())
-            ->vector(function (Parser $parser) {
-                return $this->invSerializer->fromParser($parser);
-            })
-            ->getTemplate();
+        $this->vectorInvSer = Types::vector(function (Parser $parser): Inventory {
+            return $this->invSerializer->fromParser($parser);
+        });
     }
 
     /**
      * @param Parser $parser
-     * @return array
+     * @return NotFound
      */
-    public function fromParser(Parser $parser)
+    public function fromParser(Parser $parser): NotFound
     {
-        list ($items) = $this->getTemplate()->parse($parser);
+        $items = $this->vectorInvSer->read($parser);
         return new NotFound($items);
     }
 
     /**
-     * @param $data
-     * @return array
+     * @param BufferInterface $data
+     * @return NotFound
      */
-    public function parse($data)
+    public function parse(BufferInterface $data): NotFound
     {
         return $this->fromParser(new Parser($data));
     }
 
     /**
      * @param NotFound $notFound
-     * @return \BitWasp\Buffertools\Buffer
+     * @return BufferInterface
      */
-    public function serialize(NotFound $notFound)
+    public function serialize(NotFound $notFound): BufferInterface
     {
-        return $this->getTemplate()->write([
-            $notFound->getItems()
-        ]);
+        return new Buffer($this->vectorInvSer->write($notFound->getItems()));
     }
 }

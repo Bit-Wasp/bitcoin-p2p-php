@@ -219,7 +219,7 @@ class NetworkMessageSerializer
      * @param Parser $parser
      * @return Header
      */
-    public function parseHeader(Parser $parser)
+    public function parseHeader(Parser $parser): Header
     {
         $prefix = $this->bs4le->read($parser);
         if ($prefix->getHex() !== $this->network->getNetMagicBytes()) {

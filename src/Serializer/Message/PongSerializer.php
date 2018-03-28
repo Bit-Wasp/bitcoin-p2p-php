@@ -5,47 +5,47 @@ declare(strict_types=1);
 namespace BitWasp\Bitcoin\Networking\Serializer\Message;
 
 use BitWasp\Bitcoin\Networking\Messages\Pong;
+use BitWasp\Bitcoin\Serializer\Types;
+use BitWasp\Buffertools\Buffer;
+use BitWasp\Buffertools\BufferInterface;
 use BitWasp\Buffertools\Parser;
-use BitWasp\Buffertools\TemplateFactory;
 
 class PongSerializer
 {
     /**
-     * @return \BitWasp\Buffertools\Template
+     * @var \BitWasp\Buffertools\Types\Uint64
      */
-    private function getTemplate()
+    private $uint64;
+
+    public function __construct()
     {
-        return (new TemplateFactory())
-            ->uint64()
-            ->getTemplate();
+        $this->uint64 = Types::uint64();
     }
 
     /**
      * @param Pong $pong
-     * @return \BitWasp\Buffertools\Buffer
+     * @return BufferInterface
      */
-    public function serialize(Pong $pong)
+    public function serialize(Pong $pong): BufferInterface
     {
-        return $this->getTemplate()->write([
-            $pong->getNonce()
-        ]);
+        return new Buffer($this->uint64->write($pong->getNonce()));
     }
 
     /**
      * @param Parser $parser
-     * @return array
+     * @return Pong
      */
-    public function fromParser(Parser $parser)
+    public function fromParser(Parser $parser): Pong
     {
-        list($nonce) = $this->getTemplate()->parse($parser);
+        $nonce = (int) $this->uint64->read($parser);
         return new Pong((int) $nonce);
     }
 
     /**
-     * @param $data
-     * @return array
+     * @param BufferInterface $data
+     * @return Pong
      */
-    public function parse($data)
+    public function parse(BufferInterface $data): Pong
     {
         return $this->fromParser(new Parser($data));
     }

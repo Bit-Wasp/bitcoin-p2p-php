@@ -12,6 +12,7 @@ use BitWasp\Buffertools\BufferInterface;
 class NotFound extends AbstractInventory
 {
     /**
+     * @see https://en.bitcoin.it/wiki/Protocol_documentation#notfound
      * @return string
      */
     public function getNetworkCommand(): string

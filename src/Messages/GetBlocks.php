@@ -12,6 +12,7 @@ use BitWasp\Buffertools\BufferInterface;
 class GetBlocks extends AbstractBlockLocator
 {
     /**
+     * @see https://en.bitcoin.it/wiki/Protocol_documentation#getblocks
      * @return string
      */
     public function getNetworkCommand(): string

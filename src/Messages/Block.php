@@ -26,6 +26,7 @@ class Block extends NetworkSerializable
 
     /**
      * {@inheritdoc}
+     * @see https://en.bitcoin.it/wiki/Protocol_documentation#block
      * @see \BitWasp\Bitcoin\Network\NetworkSerializableInterface::getNetworkCommand()
      */
     public function getNetworkCommand(): string

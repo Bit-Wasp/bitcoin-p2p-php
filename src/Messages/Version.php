@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace BitWasp\Bitcoin\Networking\Messages;
 
 use BitWasp\Bitcoin\Networking\Message;
-use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressTimestamp;
 use BitWasp\Bitcoin\Networking\Serializer\Message\VersionSerializer;
 use BitWasp\Bitcoin\Networking\Serializer\Structure\NetworkAddressSerializer;
@@ -17,49 +16,64 @@ use BitWasp\Buffertools\BufferInterface;
 class Version extends NetworkSerializable
 {
     /**
+     * Identifies protocol version being used by the node
      * @var int
      */
     private $version;
 
     /**
+     * bitfield of features to be enabled for this connection
      * @var int
      */
     private $services;
 
     /**
+     * standard UNIX timestamp in seconds
      * @var int
      */
     private $timestamp;
 
     /**
+     * The network address of the node receiving this message
      * @var NetworkAddress
      */
     private $addrRecv;
 
+    // The fields after this require version >= 106
+
     /**
+     *  The network address of the node emitting this message
      * @var NetworkAddress
      */
     private $addrFrom;
 
     /**
+     * Node random nonce, randomly generated every time a
+     * version packet is sent. This nonce is used to detect
+     * connections to self.
+     * @var int
+     */
+    private $nonce;
+
+    /**
+     * User agent
      * @var BufferInterface
      */
     private $userAgent;
 
     /**
+     * The last block received by the emitting node
      * @var int
      */
     private $startHeight;
 
+    // Fields below require version >= 70001
+
     /**
+     * Whether the remote peer should announce relayed transactions or not.
      * @var bool
      */
     private $relay;
-
-    /**
-     * @var int
-     */
-    private $nonce;
 
     /**
      * Version constructor.
@@ -108,6 +122,7 @@ class Version extends NetworkSerializable
 
     /**
      * {@inheritdoc}
+     * @see https://en.bitcoin.it/wiki/Protocol_documentation#version
      * @see \BitWasp\Bitcoin\Network\NetworkSerializableInterface::getNetworkCommand()
      */
     public function getNetworkCommand(): string

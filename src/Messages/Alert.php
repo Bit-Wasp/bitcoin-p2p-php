@@ -36,6 +36,7 @@ class Alert extends NetworkSerializable
 
     /**
      * @return string
+     * @see https://en.bitcoin.it/wiki/Protocol_documentation#alert
      */
     public function getNetworkCommand(): string
     {

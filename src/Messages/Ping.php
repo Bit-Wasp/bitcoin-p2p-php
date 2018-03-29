@@ -41,6 +41,7 @@ class Ping extends NetworkSerializable
 
     /**
      * @return string
+     * @see https://en.bitcoin.it/wiki/Protocol_documentation#ping
      */
     public function getNetworkCommand(): string
     {

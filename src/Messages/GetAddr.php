@@ -13,6 +13,7 @@ class GetAddr extends NetworkSerializable
 {
     /**
      * @see \BitWasp\Bitcoin\Network\NetworkSerializableInterface::getNetworkCommand()
+     * @see https://en.bitcoin.it/wiki/Protocol_documentation#getaddr
      */
     public function getNetworkCommand(): string
     {

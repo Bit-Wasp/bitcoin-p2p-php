@@ -12,6 +12,8 @@ use BitWasp\Buffertools\BufferInterface;
 class Tx extends NetworkSerializable
 {
     /**
+     * Tx describes a bitcoin transaction, in reply to getdata
+     *
      * @var TransactionInterface
      */
     private $transaction;
@@ -26,6 +28,7 @@ class Tx extends NetworkSerializable
 
     /**
      * {@inheritdoc}
+     * @see https://en.bitcoin.it/wiki/Protocol_documentation#tx
      * @see \BitWasp\Bitcoin\Network\NetworkSerializableInterface::getNetworkCommand()
      */
     public function getNetworkCommand(): string

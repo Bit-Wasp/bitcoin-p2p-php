@@ -90,9 +90,15 @@ class Factory
      * @param Peer\ConnectionParams $params
      * @return Peer\Connector
      */
-    public function getConnector(Peer\ConnectionParams $params): Peer\Connector
-    {
-        return new Peer\Connector($this->getMessages(), $params, $this->loop, $this->settings->getSocketParams());
+    public function getConnector(
+        Peer\ConnectionParams $params
+    ): Peer\Connector {
+        return new Peer\Connector(
+            $this->getMessages(),
+            $params,
+            $this->loop,
+            $this->settings->getSocketParams()
+        );
     }
 
     /**
@@ -117,9 +123,16 @@ class Factory
      * @param Structure\NetworkAddressInterface $serverAddress
      * @return Peer\Listener
      */
-    public function getListener(Peer\ConnectionParams $params, Structure\NetworkAddressInterface $serverAddress): Peer\Listener
-    {
-        return new Peer\Listener($params, $this->getMessages(), $serverAddress, $this->loop);
+    public function getListener(
+        Peer\ConnectionParams $params,
+        Structure\NetworkAddressInterface $serverAddress
+    ): Peer\Listener {
+        return new Peer\Listener(
+            $params,
+            $this->getMessages(),
+            $serverAddress,
+            $this->loop
+        );
     }
 
     /**
@@ -128,8 +141,11 @@ class Factory
      * @param int $services
      * @return Structure\NetworkAddress
      */
-    public function getAddress(IpInterface $ipAddress, int $port = null, int $services = Services::NONE): Structure\NetworkAddress
-    {
+    public function getAddress(
+        IpInterface $ipAddress,
+        int $port = null,
+        int $services = Services::NONE
+    ): Structure\NetworkAddress {
         if (null === $port) {
             $port = $this->settings->getDefaultP2PPort();
         }

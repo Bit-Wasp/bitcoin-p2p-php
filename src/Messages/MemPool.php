@@ -13,6 +13,7 @@ class MemPool extends NetworkSerializable
 {
     /**
      * @see \BitWasp\Bitcoin\Network\NetworkSerializableInterface::getNetworkCommand()
+     * @see https://en.bitcoin.it/wiki/Protocol_documentation#mempool
      */
     public function getNetworkCommand(): string
     {

@@ -10,11 +10,14 @@ use BitWasp\Bitcoin\Networking\NetworkSerializable;
 abstract class AbstractBlockLocator extends NetworkSerializable
 {
     /**
+     * The protocol version
      * @var int
      */
     private $version;
 
     /**
+     * The block locator structure
+     *
      * @var BlockLocator
      */
     private $locator;

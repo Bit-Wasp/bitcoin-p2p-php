@@ -29,6 +29,7 @@ class Pong extends NetworkSerializable
 
     /**
      * @return string
+     * @see https://en.bitcoin.it/wiki/Protocol_documentation#pong
      */
     public function getNetworkCommand(): string
     {

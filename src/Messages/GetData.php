@@ -12,6 +12,7 @@ use BitWasp\Buffertools\BufferInterface;
 class GetData extends AbstractInventory
 {
     /**
+     * @see https://en.bitcoin.it/wiki/Protocol_documentation#getdata
      * @return string
      */
     public function getNetworkCommand(): string

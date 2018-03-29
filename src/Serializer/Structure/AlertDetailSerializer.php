@@ -89,7 +89,7 @@ class AlertDetailSerializer
 
         return new Buffer(
             sprintf(
-                str_repeat("%s", 12),
+                "%s%s%s%s%s%s%s%s%s%s%s%s",
                 $this->uint32le->write($detail->getVersion()),
                 $this->uint64le->write($detail->getRelayUntil()),
                 $this->uint64le->write($detail->getExpiration()),

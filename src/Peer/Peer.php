@@ -17,7 +17,6 @@ use BitWasp\Bitcoin\Networking\Structure\AlertDetail;
 use BitWasp\Bitcoin\Networking\Structure\Header;
 use BitWasp\Bitcoin\Networking\Structure\Inventory;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
-use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressTimestamp;
 use BitWasp\Bitcoin\Crypto\EcAdapter\Signature\SignatureInterface;
 use BitWasp\Bitcoin\Transaction\TransactionInterface;
@@ -62,7 +61,7 @@ class Peer extends EventEmitter
     private $remoteVersion;
 
     /**
-     * @var NetworkAddressInterface
+     * @var NetworkAddress
      */
     private $peerAddress;
 
@@ -94,7 +93,7 @@ class Peer extends EventEmitter
     /**
      * @return Version
      */
-    public function getLocalVersion()
+    public function getLocalVersion(): Version
     {
         return $this->localVersion;
     }
@@ -102,7 +101,7 @@ class Peer extends EventEmitter
     /**
      * @return Version
      */
-    public function getRemoteVersion()
+    public function getRemoteVersion(): Version
     {
         return $this->remoteVersion;
     }
@@ -112,9 +111,9 @@ class Peer extends EventEmitter
      * the connection process. Often better than the data contained
      * in a Version message.
      *
-     * @return NetworkAddressInterface
+     * @return NetworkAddress
      */
-    public function getRemoteAddress()
+    public function getRemoteAddress(): NetworkAddress
     {
         return $this->peerAddress;
     }
@@ -122,7 +121,7 @@ class Peer extends EventEmitter
     /**
      * @return ConnectionParams
      */
-    public function getConnectionParams()
+    public function getConnectionParams(): ConnectionParams
     {
         return $this->connectionParams;
     }
@@ -288,14 +287,14 @@ class Peer extends EventEmitter
      * @param bool $relayToUs
      */
     public function version(
-        $protocolVersion,
-        $services,
-        $timestamp,
+        int $protocolVersion,
+        int $services,
+        int $timestamp,
         NetworkAddress $remoteAddr,
         NetworkAddress $localAddr,
-        $userAgent,
-        $blockHeight,
-        $relayToUs
+        string $userAgent,
+        int $blockHeight,
+        bool $relayToUs
     ) {
         $this->send($this->msgs->version(
             $protocolVersion,
@@ -342,7 +341,7 @@ class Peer extends EventEmitter
     }
 
     /**
-     * @param array $vInv
+     * @param Inventory[] $vInv
      */
     public function notfound(array $vInv)
     {

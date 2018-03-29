@@ -38,6 +38,7 @@ class Headers extends NetworkSerializable implements \Countable
 
     /**
      * @return string
+     * @see https://en.bitcoin.it/wiki/Protocol_documentation#headers
      */
     public function getNetworkCommand(): string
     {
@@ -45,7 +46,7 @@ class Headers extends NetworkSerializable implements \Countable
     }
 
     /**
-     * @return \BitWasp\Bitcoin\Block\BlockHeaderInterface[]
+     * @return BlockHeaderInterface[]
      */
     public function getHeaders(): array
     {

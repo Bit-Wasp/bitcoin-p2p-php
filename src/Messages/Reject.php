@@ -49,7 +49,7 @@ class Reject extends NetworkSerializable
      */
     public function __construct(
         BufferInterface $message,
-        $ccode,
+        int $ccode,
         BufferInterface $reason,
         BufferInterface $data = null
     ) {
@@ -65,6 +65,7 @@ class Reject extends NetworkSerializable
 
     /**
      * @return string
+     * @see https://en.bitcoin.it/wiki/Protocol_documentation#reject
      */
     public function getNetworkCommand(): string
     {
@@ -75,23 +76,20 @@ class Reject extends NetworkSerializable
      * @param int $code
      * @return bool
      */
-    private function checkCCode($code)
+    private function checkCCode(int $code): bool
     {
-        return in_array(
-            $code,
-            [
-                self::REJECT_MALFORMED, self::REJECT_INVALID,
-                self::REJECT_OBSOLETE, self::REJECT_DUPLICATE,
-                self::REJECT_NONSTANDARD, self::REJECT_DUST,
-                self::REJECT_INSUFFICIENTFEE, self::REJECT_CHECKPOINT
-            ]
-        ) === true;
+        return in_array($code, [
+            self::REJECT_MALFORMED, self::REJECT_INVALID,
+            self::REJECT_OBSOLETE, self::REJECT_DUPLICATE,
+            self::REJECT_NONSTANDARD, self::REJECT_DUST,
+            self::REJECT_INSUFFICIENTFEE, self::REJECT_CHECKPOINT
+        ], true);
     }
 
     /**
      * @return BufferInterface
      */
-    public function getMessage()
+    public function getMessage(): BufferInterface
     {
         return $this->message;
     }
@@ -99,7 +97,7 @@ class Reject extends NetworkSerializable
     /**
      * @return int
      */
-    public function getCode()
+    public function getCode(): int
     {
         return $this->ccode;
     }
@@ -107,7 +105,7 @@ class Reject extends NetworkSerializable
     /**
      * @return BufferInterface
      */
-    public function getReason()
+    public function getReason(): BufferInterface
     {
         return $this->reason;
     }
@@ -115,7 +113,7 @@ class Reject extends NetworkSerializable
     /**
      * @return BufferInterface
      */
-    public function getData()
+    public function getData(): BufferInterface
     {
         return $this->data;
     }
@@ -123,7 +121,7 @@ class Reject extends NetworkSerializable
     /**
      * @return BufferInterface
      */
-    public function getBuffer()
+    public function getBuffer(): BufferInterface
     {
         return (new RejectSerializer())->serialize($this);
     }

@@ -13,6 +13,7 @@ class SendHeaders extends NetworkSerializable
 {
     /**
      * {@inheritdoc}
+     * @see https://en.bitcoin.it/wiki/Protocol_documentation#sendheaders
      * @see \BitWasp\Bitcoin\Network\NetworkSerializableInterface::getNetworkCommand()
      */
     public function getNetworkCommand(): string

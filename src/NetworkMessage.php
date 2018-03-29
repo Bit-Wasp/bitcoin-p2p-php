@@ -32,8 +32,10 @@ class NetworkMessage extends Serializable
      * @param NetworkInterface $network
      * @param NetworkSerializableInterface $message
      */
-    public function __construct(NetworkInterface $network, NetworkSerializableInterface $message)
-    {
+    public function __construct(
+        NetworkInterface $network,
+        NetworkSerializableInterface $message
+    ) {
         $this->network = $network;
         $this->payload = $message;
 

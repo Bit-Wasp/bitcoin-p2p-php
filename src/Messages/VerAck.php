@@ -12,8 +12,8 @@ use BitWasp\Buffertools\BufferInterface;
 class VerAck extends NetworkSerializable
 {
     /**
-     * {@inheritdoc}
-     * @see \BitWasp\Bitcoin\Network\NetworkSerializableInterface::getNetworkCommand()
+     * @see https://en.bitcoin.it/wiki/Protocol_documentation#verack
+     * @return string
      */
     public function getNetworkCommand(): string
     {
@@ -21,8 +21,7 @@ class VerAck extends NetworkSerializable
     }
 
     /**
-     * {@inheritdoc}
-     * @see \BitWasp\Bitcoin\SerializableInterface::getBuffer()
+     * @return BufferInterface
      */
     public function getBuffer(): BufferInterface
     {

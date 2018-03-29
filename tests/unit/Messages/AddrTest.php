@@ -30,8 +30,7 @@ class AddrTest extends TestCase
         $netAddr1 = new NetworkAddressTimestamp(time(), Services::NETWORK, $ip, 8333);
         $netAddr2 = new NetworkAddressTimestamp(time(), Services::NETWORK, $ip, 8333);
 
-        $addr->addAddress($netAddr1);
-        $addr->addAddress($netAddr2);
+        $addr = new Addr([$netAddr1, $netAddr2]);
         $this->assertEquals(2, count($addr));
         $this->assertEquals($netAddr1, $addr->getAddress(0));
         $this->assertEquals($netAddr2, $addr->getAddress(1));

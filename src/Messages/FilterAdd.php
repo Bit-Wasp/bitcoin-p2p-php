@@ -26,6 +26,7 @@ class FilterAdd extends NetworkSerializable
 
     /**
      * @return string
+     * @see https://en.bitcoin.it/wiki/Protocol_documentation#filterload.2C_filteradd.2C_filterclear.2C_merkleblock
      */
     public function getNetworkCommand(): string
     {

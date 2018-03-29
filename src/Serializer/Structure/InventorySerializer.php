@@ -9,7 +9,6 @@ use BitWasp\Bitcoin\Serializer\Types;
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Buffertools\BufferInterface;
 use BitWasp\Buffertools\Parser;
-use BitWasp\Buffertools\TemplateFactory;
 
 class InventorySerializer
 {
@@ -30,17 +29,6 @@ class InventorySerializer
     }
 
     /**
-     * @return \BitWasp\Buffertools\Template
-     */
-    public function getTemplate()
-    {
-        return (new TemplateFactory())
-            ->uint32le()
-            ->bytestringle(32)
-            ->getTemplate();
-    }
-
-    /**
      * @param Inventory $inv
      * @return BufferInterface
      */
@@ -57,10 +45,9 @@ class InventorySerializer
      */
     public function fromParser(Parser $parser): Inventory
     {
-        return new Inventory(
-            (int) $this->uint32le->read($parser),
-            $this->bytestring32le->read($parser)
-        );
+        $type = (int) $this->uint32le->read($parser);
+        $hash = $this->bytestring32le->read($parser);
+        return new Inventory($type, $hash);
     }
 
     /**

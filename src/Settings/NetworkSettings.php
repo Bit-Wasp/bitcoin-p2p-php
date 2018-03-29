@@ -19,12 +19,12 @@ abstract class NetworkSettings implements NetworkSettingsInterface, MutableNetwo
     protected $connectionTimeout = 10;
 
     /**
-     * @var string
+     * @var string|null
      */
     protected $dnsServer = '8.8.8.8';
 
     /**
-     * @var DnsSeedList
+     * @var DnsSeedList|null
      */
     protected $dnsSeeds = null;
 
@@ -38,8 +38,8 @@ abstract class NetworkSettings implements NetworkSettingsInterface, MutableNetwo
      */
     public function getDnsSeedList(): DnsSeedList
     {
-        if (null === $this->dnsServer) {
-            throw new \RuntimeException("Missing dns seeds");
+        if (null === $this->dnsSeeds) {
+            throw new \RuntimeException("Missing DNS seed list");
         }
         return $this->dnsSeeds;
     }
@@ -49,6 +49,9 @@ abstract class NetworkSettings implements NetworkSettingsInterface, MutableNetwo
      */
     public function getDnsServer(): string
     {
+        if (null === $this->dnsServer) {
+            throw new \RuntimeException("Missing DNS server");
+        }
         return $this->dnsServer;
     }
 
@@ -90,22 +93,22 @@ abstract class NetworkSettings implements NetworkSettingsInterface, MutableNetwo
      * @param string $server
      * @return $this
      */
-    public function withDnsServer($server): NetworkSettings
+    public function withDnsServer(string $server = null): NetworkSettings
     {
         $clone = clone $this;
         $clone->dnsServer = $server;
-        return $this;
+        return $clone;
     }
 
     /**
      * @param DnsSeedList $list
      * @return $this
      */
-    public function withDnsSeeds(DnsSeedList $list): NetworkSettings
+    public function withDnsSeeds(DnsSeedList $list = null): NetworkSettings
     {
         $clone = clone $this;
         $clone->dnsSeeds = $list;
-        return $this;
+        return $clone;
     }
 
     /**
@@ -116,7 +119,7 @@ abstract class NetworkSettings implements NetworkSettingsInterface, MutableNetwo
     {
         $clone = clone $this;
         $clone->defaultP2PPort = $p2pPort;
-        return $this;
+        return $clone;
     }
 
     /**
@@ -127,7 +130,7 @@ abstract class NetworkSettings implements NetworkSettingsInterface, MutableNetwo
     {
         $clone = clone $this;
         $clone->connectionTimeout = $timeout;
-        return $this;
+        return $clone;
     }
 
     /**
@@ -138,6 +141,6 @@ abstract class NetworkSettings implements NetworkSettingsInterface, MutableNetwo
     {
         $clone = clone $this;
         $clone->maxRetries = $maxRetries;
-        return $this;
+        return $clone;
     }
 }

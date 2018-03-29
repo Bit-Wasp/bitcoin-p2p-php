@@ -12,7 +12,7 @@ interface MutableNetworkSettingsInterface
      * @param string $server
      * @return NetworkSettings
      */
-    public function withDnsServer($server): NetworkSettings;
+    public function withDnsServer(string $server = null): NetworkSettings;
 
     /**
      * @param DnsSeedList $list

@@ -48,6 +48,13 @@ class ConnectionParamsTest extends TestCase
         $this->assertEquals(19199, $version->getStartHeight());
     }
 
+    public function testRequiredServices()
+    {
+        $params = new ConnectionParams();
+        $params->setRequiredServices(Services::NETWORK);
+        $this->assertEquals(Services::NETWORK, $params->getRequiredServices());
+    }
+
     public function testBestHeightCallback()
     {
         $ip = new Ipv4('0.0.0.0');
@@ -55,7 +62,7 @@ class ConnectionParamsTest extends TestCase
         $messages = new MsgFactory(Bitcoin::getNetwork(), new Random());
 
         $params = new ConnectionParams();
-        $params->setBestBlockHeightCallback(function () {
+        $params->setBestBlockHeightCallback(function (): int {
             return 19199;
         });
 

@@ -9,6 +9,7 @@ use BitWasp\Bitcoin\Crypto\Random\Random;
 use BitWasp\Bitcoin\Network\NetworkInterface;
 use BitWasp\Bitcoin\Networking\Ip\IpInterface;
 use BitWasp\Bitcoin\Networking\Settings\NetworkSettings;
+use React\Dns\Resolver\Resolver;
 use React\EventLoop\LoopInterface;
 
 class Factory
@@ -47,11 +48,11 @@ class Factory
     }
 
     /**
-     * @return Dns\Resolver
+     * @return Resolver
      */
-    public function getDns(): Dns\Resolver
+    public function getDns(): Resolver
     {
-        return (new Dns\Factory())->create($this->settings->getDnsServer(), $this->loop);
+        return (new \React\Dns\Resolver\Factory())->create($this->settings->getDnsServer(), $this->loop);
     }
 
     /**

@@ -3,7 +3,7 @@
   "description": "Implementation of the bitcoin protocol using ReactPHP",
   "type": "library",
   "homepage": "https://github.com/bit-wasp/node-php",
-  "license": "Unlicence",
+  "license": "Unlicense",
   "authors": [
     {
       "name": "Thomas Kerin",

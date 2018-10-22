@@ -11,19 +11,33 @@ use BitWasp\Bitcoin\Networking\Peer\ConnectionParams;
 use BitWasp\Bitcoin\Networking\Peer\Peer;
 use React\Promise\Deferred;
 
+if (getenv("TESTNET")) {
+    $net = \BitWasp\Bitcoin\Network\NetworkFactory::bitcoinTestnet();
+    $port = 18333;
+} else {
+    $net = \BitWasp\Bitcoin\Network\NetworkFactory::bitcoin();
+    $port = 8333;
+}
+
+$ip = '127.0.0.1';
+if ($argc > 1) {
+    $ip = $argv[1];
+}
+if  ($argc > 2) {
+    $port = (int) $argv[2];
+}
+
 $loop = React\EventLoop\Factory::create();
-$factory = new Factory($loop);
+
+$factory = new Factory($loop, $net);
 $dns = $factory->getDns();
 $msgs = $factory->getMessages();
-
 $locator = $factory->getLocator();
-$params = new ConnectionParams();
-$connector = $factory->getConnector($params);
-
-$host = $factory->getAddress(new Ipv4('127.0.0.1'));
+$host = $factory->getAddress(new Ipv4($ip), $port);
 $local = $factory->getAddress(new Ipv4('0.0.0.0'));
+$params = new ConnectionParams();
 
-$connector
+$factory->getConnector($params)
     ->rawConnect($host)
     ->then(function (Peer $peer) use ($host, $params) {
         $deferred = new Deferred();

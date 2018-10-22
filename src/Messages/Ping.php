@@ -13,15 +13,15 @@ use BitWasp\Buffertools\BufferInterface;
 class Ping extends NetworkSerializable
 {
     /**
-     * @var int
+     * @var BufferInterface
      */
     private $nonce;
 
     /**
      * Ping constructor.
-     * @param int $nonce
+     * @param BufferInterface $nonce
      */
-    public function __construct(int $nonce)
+    public function __construct(BufferInterface $nonce)
     {
         $this->nonce = $nonce;
     }
@@ -33,8 +33,7 @@ class Ping extends NetworkSerializable
      */
     public static function generate(Random $random): Ping
     {
-        $nonce = (int) $random->bytes(8)->getInt();
-        return new Ping($nonce);
+        return new Ping($random->bytes(8));
     }
 
     /**
@@ -46,9 +45,9 @@ class Ping extends NetworkSerializable
     }
 
     /**
-     * @return int
+     * @return BufferInterface
      */
-    public function getNonce()
+    public function getNonce(): BufferInterface
     {
         return $this->nonce;
     }

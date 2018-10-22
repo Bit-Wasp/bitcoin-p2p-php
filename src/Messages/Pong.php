@@ -12,14 +12,14 @@ use BitWasp\Buffertools\BufferInterface;
 class Pong extends NetworkSerializable
 {
     /**
-     * @var int
+     * @var BufferInterface
      */
     private $nonce;
 
     /**
-     * @param int $nonce
+     * @param BufferInterface $nonce
      */
-    public function __construct(int $nonce)
+    public function __construct(BufferInterface $nonce)
     {
         $this->nonce = $nonce;
     }
@@ -33,9 +33,9 @@ class Pong extends NetworkSerializable
     }
 
     /**
-     * @return int
+     * @return BufferInterface
      */
-    public function getNonce(): int
+    public function getNonce(): BufferInterface
     {
         return $this->nonce;
     }

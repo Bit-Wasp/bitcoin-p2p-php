@@ -158,23 +158,18 @@ class Peer extends EventEmitter
                 while ($pos < $sz) {
                     if (null === $this->incomingMsgHeader) {
                         if ($sz - $pos < 24) {
-                            echo "NOT ENOUGH for header\n";
                             break;
                         }
-                        echo "read header\n";
                         $this->incomingMsgHeader = $this->msgs->getSerializer()->parseHeader($parser);
                         $pos = $parser->getPosition();
                     }
 
                     if ($sz - $pos < $this->incomingMsgHeader->getLength()) {
-                        echo "NOT ENOUGH for msg\n";
                         break;
                     }
 
-                    echo "read msg\n";
                     $message = $this->msgs->getSerializer()->parsePacket($this->incomingMsgHeader, $parser);
                     $this->incomingMsgHeader = null;
-                    echo "emit msg " . microtime(true).PHP_EOL;
                     $this->emit('msg', [$this, $message]);
                     $pos = $parser->getPosition();
                 }
@@ -189,7 +184,6 @@ class Peer extends EventEmitter
         });
 
         $this->on('msg', function (Peer $peer, NetworkMessage $msg) {
-            echo "msg {$msg->getCommand()} " . microtime(true).PHP_EOL;
             $this->emit($msg->getCommand(), [$peer, $msg->getPayload()]);
         });
 

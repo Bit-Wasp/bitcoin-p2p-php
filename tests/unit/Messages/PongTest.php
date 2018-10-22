@@ -35,10 +35,10 @@ class PongTest extends TestCase
     {
         $pong = new Pong($ping->getNonce());
         $this->assertEquals('pong', $pong->getNetworkCommand());
-        $this->assertTrue($ping->getNonce() == $pong->getNonce());
+        $this->assertTrue($ping->getNonce()->equals($pong->getNonce()));
 
         $math = new Math();
-        $this->assertEquals(str_pad($math->decHex($ping->getNonce()), 16, '0', STR_PAD_LEFT), $pong->getHex());
+        $this->assertEquals($ping->getNonce()->getHex(), $pong->getHex());
     }
 
     public function testNetworkSerializer()

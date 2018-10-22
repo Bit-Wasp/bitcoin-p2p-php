@@ -11,6 +11,7 @@ use BitWasp\Bitcoin\Networking\Messages\Factory;
 use BitWasp\Bitcoin\Networking\Messages\Ping;
 use BitWasp\Bitcoin\Networking\Serializer\NetworkMessageSerializer;
 use BitWasp\Bitcoin\Tests\Networking\TestCase;
+use BitWasp\Buffertools\BufferInterface;
 
 class PingTest extends TestCase
 {
@@ -33,10 +34,9 @@ class PingTest extends TestCase
      */
     public function testPing(Ping $ping)
     {
-        $this->assertInternalType('int', $ping->getNonce());
+        $this->assertInstanceOf(BufferInterface::class, $ping->getNonce());
         $this->assertEquals('ping', $ping->getNetworkCommand());
-        $math = new Math();
-        $this->assertEquals(str_pad($math->decHex($ping->getNonce()), 16, '0', STR_PAD_LEFT), $ping->getHex());
+        $this->assertEquals($ping->getNonce()->getHex(), $ping->getHex());
     }
 
     public function testNetworkSerializer()

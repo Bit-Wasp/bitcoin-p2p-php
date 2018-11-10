@@ -10,6 +10,7 @@ use BitWasp\Bitcoin\Crypto\EcAdapter\Impl\PhpEcc\Serializer\Signature\DerSignatu
 use BitWasp\Bitcoin\Crypto\Random\Random;
 use BitWasp\Bitcoin\Math\Math;
 use BitWasp\Bitcoin\Network\NetworkFactory;
+use BitWasp\Bitcoin\Networking\Messages\Alert;
 use BitWasp\Bitcoin\Networking\Messages\Factory;
 use BitWasp\Bitcoin\Networking\Structure\AlertDetail;
 use BitWasp\Bitcoin\Tests\Networking\TestCase;
@@ -22,9 +23,10 @@ class AlertTest extends TestCase
 
     public function testSerializer()
     {
-        $alert = Buffer::hex('f9beb4d9616c65727400000000000000a80000001bf9aaea60010000000000000000000000ffffff7f00000000ffffff7ffeffff7f01ffffff7f00000000ffffff7f00ffffff7f002f555247454e543a20416c657274206b657920636f6d70726f6d697365642c2075706772616465207265717569726564004630440220653febd6410f470f6bae11cad19c48413becb1ac2c17f908fd0fd53bdc3abd5202206d0e9c96fe88d4a0f01ed9dedae2b6f9e00da94cad0fecaae66ecf689bf71b50f9beb4d970696e670000000000000000080000005dc760df51fc4fbe3c9decd9');
+        $alertBuf = Buffer::hex('f9beb4d9616c65727400000000000000a80000001bf9aaea60010000000000000000000000ffffff7f00000000ffffff7ffeffff7f01ffffff7f00000000ffffff7f00ffffff7f002f555247454e543a20416c657274206b657920636f6d70726f6d697365642c2075706772616465207265717569726564004630440220653febd6410f470f6bae11cad19c48413becb1ac2c17f908fd0fd53bdc3abd5202206d0e9c96fe88d4a0f01ed9dedae2b6f9e00da94cad0fecaae66ecf689bf71b50f9beb4d970696e670000000000000000080000005dc760df51fc4fbe3c9decd9');
         $serializer = new NetworkMessageSerializer(NetworkFactory::bitcoin());
-        $serializer->parse($alert);
+        $alert = $serializer->parse($alertBuf);
+        $this->assertInstanceOf(Alert::class, $alert->getPayload());
     }
 
     public function testNetworkSerializer()

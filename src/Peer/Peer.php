@@ -152,7 +152,7 @@ class Peer extends EventEmitter
             $parser = new Parser($data);
 
             $pos = $parser->getPosition();
-            $sz = $parser->getSize();
+            $sz = $data->getSize();
 
             try {
                 while ($pos < $sz) {

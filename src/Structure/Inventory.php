@@ -14,6 +14,8 @@ class Inventory extends Serializable
     const MSG_TX = 1;
     const MSG_BLOCK = 2;
     const MSG_FILTERED_BLOCK = 3;
+    const MSG_WITNESS_TX = (1 << 30) + self::MSG_TX;
+    const MSG_WITNESS_BLOCK = (1 << 30) + self::MSG_BLOCK;
 
     /**
      * @var int
@@ -56,9 +58,27 @@ class Inventory extends Serializable
      * @param BufferInterface $hash
      * @return Inventory
      */
+    public static function witnessTx(BufferInterface $hash): Inventory
+    {
+        return new self(self::MSG_WITNESS_TX, $hash);
+    }
+
+    /**
+     * @param BufferInterface $hash
+     * @return Inventory
+     */
     public static function block(BufferInterface $hash): Inventory
     {
         return new self(self::MSG_BLOCK, $hash);
+    }
+
+    /**
+     * @param BufferInterface $hash
+     * @return Inventory
+     */
+    public static function witnessBlock(BufferInterface $hash): Inventory
+    {
+        return new self(self::MSG_WITNESS_BLOCK, $hash);
     }
 
     /**
@@ -97,9 +117,25 @@ class Inventory extends Serializable
     /**
      * @return bool
      */
+    public function isWitnessTx(): bool
+    {
+        return $this->type === self::MSG_WITNESS_TX;
+    }
+
+    /**
+     * @return bool
+     */
     public function isBlock(): bool
     {
         return $this->type === self::MSG_BLOCK;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isWitnessBlock(): bool
+    {
+        return $this->type === self::MSG_WITNESS_BLOCK;
     }
 
     /**

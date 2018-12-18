@@ -166,12 +166,12 @@ class Factory
     }
 
     /**
-     * @param BlockInterface $block
+     * @param BufferInterface $blockData
      * @return Block
      */
-    public function block(BlockInterface $block): Block
+    public function block(BufferInterface $blockData): Block
     {
-        return new Block($block);
+        return new Block($blockData);
     }
 
     /**

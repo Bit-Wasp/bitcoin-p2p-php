@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace BitWasp\Bitcoin\Networking\Messages;
 
-use BitWasp\Bitcoin\Block\BlockInterface;
 use BitWasp\Bitcoin\Networking\Message;
 use BitWasp\Bitcoin\Networking\NetworkSerializable;
 use BitWasp\Buffertools\BufferInterface;
@@ -12,16 +11,13 @@ use BitWasp\Buffertools\BufferInterface;
 class Block extends NetworkSerializable
 {
     /**
-     * @var BlockInterface
+     * @var BufferInterface
      */
-    private $block;
+    private $blockData;
 
-    /**
-     * @param BlockInterface $block
-     */
-    public function __construct(BlockInterface $block)
+    public function __construct(BufferInterface $blockData)
     {
-        $this->block = $block;
+        $this->blockData = $blockData;
     }
 
     /**
@@ -35,11 +31,11 @@ class Block extends NetworkSerializable
     }
 
     /**
-     * @return BlockInterface
+     * @return BufferInterface
      */
-    public function getBlock(): BlockInterface
+    public function getBlockData(): BufferInterface
     {
-        return $this->block;
+        return $this->blockData;
     }
 
     /**
@@ -48,6 +44,6 @@ class Block extends NetworkSerializable
      */
     public function getBuffer(): BufferInterface
     {
-        return $this->block->getBuffer();
+        return $this->blockData;
     }
 }

@@ -238,7 +238,7 @@ class NetworkMessageSerializer
     {
         $buffer = $header->getLength() > 0
             ? $parser->readBytes($header->getLength())
-            : new Buffer('', 0, $this->math);
+            : new Buffer('', 0);
 
         // Compare payload checksum against header value
         if (!Hash::sha256d($buffer)->slice(0, 4)->equals($header->getChecksum())) {
@@ -341,7 +341,7 @@ class NetworkMessageSerializer
      */
     public function serialize(NetworkMessage $object): BufferInterface
     {
-        $prefix = $this->bs4le->write(Buffer::hex($this->network->getNetMagicBytes(), null, $this->math));
+        $prefix = $this->bs4le->write(Buffer::hex($this->network->getNetMagicBytes()));
         $header = $this->packetHeaderSerializer->serialize($object->getHeader());
         $payload = $object->getPayload()->getBuffer();
 
@@ -355,6 +355,6 @@ class NetworkMessageSerializer
      */
     public function parse(BufferInterface $data): NetworkMessage
     {
-        return $this->fromParser(new Parser($data, $this->math));
+        return $this->fromParser(new Parser($data));
     }
 }

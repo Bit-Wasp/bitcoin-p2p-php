@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace BitWasp\Bitcoin\Networking\Messages;
 
-use BitWasp\Bitcoin\Block\BlockInterface;
 use BitWasp\Bitcoin\Block\FilteredBlock;
 use BitWasp\Bitcoin\Bloom\BloomFilter;
 use BitWasp\Bitcoin\Chain\BlockLocator;
@@ -17,7 +16,6 @@ use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
 use BitWasp\Bitcoin\Networking\Serializer\NetworkMessageSerializer;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressTimestamp;
 use BitWasp\Bitcoin\Crypto\EcAdapter\Signature\SignatureInterface;
-use BitWasp\Bitcoin\Transaction\TransactionInterface;
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Buffertools\BufferInterface;
 use BitWasp\Buffertools\Parser;
@@ -64,7 +62,7 @@ class Factory
     public function version(
         int $version,
         $services,
-        $timestamp,
+        int $timestamp,
         NetworkAddress $addrRecv,
         NetworkAddress $addrFrom,
         BufferInterface $userAgent,
@@ -157,12 +155,12 @@ class Factory
     }
 
     /**
-     * @param TransactionInterface $tx
+     * @param BufferInterface $txData
      * @return Tx
      */
-    public function tx(TransactionInterface $tx): Tx
+    public function tx(BufferInterface $txData): Tx
     {
-        return new Tx($tx);
+        return new Tx($txData);
     }
 
     /**

@@ -7,9 +7,9 @@ namespace BitWasp\Bitcoin\Tests\Networking\Structure;
 use BitWasp\Bitcoin\Networking\Ip\IpInterface;
 use BitWasp\Bitcoin\Networking\Ip\Ipv4;
 use BitWasp\Bitcoin\Networking\Services;
-use BitWasp\Bitcoin\Tests\Networking\TestCase;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressTimestamp;
+use BitWasp\Bitcoin\Tests\Networking\TestCase;
 
 class NetworkAddressTest extends TestCase
 {

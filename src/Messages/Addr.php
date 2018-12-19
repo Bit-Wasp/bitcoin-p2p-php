@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace BitWasp\Bitcoin\Networking\Messages;
 
 use BitWasp\Bitcoin\Networking\Message;
+use BitWasp\Bitcoin\Networking\NetworkSerializable;
 use BitWasp\Bitcoin\Networking\Serializer\Message\AddrSerializer;
 use BitWasp\Bitcoin\Networking\Serializer\Structure\NetworkAddressTimestampSerializer;
-use BitWasp\Bitcoin\Networking\NetworkSerializable;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressTimestamp;
 use BitWasp\Buffertools\BufferInterface;
 

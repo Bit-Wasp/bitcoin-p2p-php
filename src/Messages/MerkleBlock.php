@@ -9,8 +9,8 @@ use BitWasp\Bitcoin\Networking\Message;
 use BitWasp\Bitcoin\Networking\NetworkSerializable;
 use BitWasp\Bitcoin\Networking\Serializer\Message\MerkleBlockSerializer;
 use BitWasp\Bitcoin\Serializer\Block\BlockHeaderSerializer;
-use BitWasp\Bitcoin\Serializer\Block\PartialMerkleTreeSerializer;
 use BitWasp\Bitcoin\Serializer\Block\FilteredBlockSerializer;
+use BitWasp\Bitcoin\Serializer\Block\PartialMerkleTreeSerializer;
 use BitWasp\Buffertools\BufferInterface;
 
 class MerkleBlock extends NetworkSerializable

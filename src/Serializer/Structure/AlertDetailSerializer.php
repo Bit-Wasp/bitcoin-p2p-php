@@ -6,9 +6,9 @@ namespace BitWasp\Bitcoin\Networking\Serializer\Structure;
 
 use BitWasp\Bitcoin\Networking\Structure\AlertDetail;
 use BitWasp\Bitcoin\Serializer\Types;
+use BitWasp\Buffertools\Buffer;
 use BitWasp\Buffertools\BufferInterface;
 use BitWasp\Buffertools\Parser;
-use BitWasp\Buffertools\Buffer;
 
 class AlertDetailSerializer
 {

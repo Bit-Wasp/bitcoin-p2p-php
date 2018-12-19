@@ -10,7 +10,6 @@ use BitWasp\Bitcoin\Networking\Messages\Factory;
 use BitWasp\Bitcoin\Networking\Messages\Tx;
 use BitWasp\Bitcoin\Networking\Serializer\NetworkMessageSerializer;
 use BitWasp\Bitcoin\Tests\Networking\TestCase;
-use BitWasp\Bitcoin\Transaction\TransactionFactory;
 use BitWasp\Buffertools\Buffer;
 
 class TxTest extends TestCase

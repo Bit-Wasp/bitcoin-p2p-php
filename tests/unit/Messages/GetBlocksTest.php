@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace BitWasp\Bitcoin\Tests\Networking\Messages;
 
 use BitWasp\Bitcoin\Bitcoin;
-use BitWasp\Bitcoin\Crypto\Random\Random;
 use BitWasp\Bitcoin\Chain\BlockLocator;
+use BitWasp\Bitcoin\Crypto\Random\Random;
 use BitWasp\Bitcoin\Networking\Messages\Factory;
 use BitWasp\Bitcoin\Tests\Networking\TestCase;
 use BitWasp\Buffertools\Buffer;

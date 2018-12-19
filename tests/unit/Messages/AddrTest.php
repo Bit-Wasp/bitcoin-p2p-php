@@ -7,12 +7,12 @@ namespace BitWasp\Bitcoin\Tests\Networking\Messages;
 use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Crypto\Random\Random;
 use BitWasp\Bitcoin\Networking\Ip\Ipv4;
-use BitWasp\Bitcoin\Networking\Services;
-use BitWasp\Bitcoin\Tests\Networking\TestCase;
+use BitWasp\Bitcoin\Networking\Messages\Addr;
 use BitWasp\Bitcoin\Networking\Messages\Factory;
 use BitWasp\Bitcoin\Networking\Serializer\NetworkMessageSerializer;
-use BitWasp\Bitcoin\Networking\Messages\Addr;
+use BitWasp\Bitcoin\Networking\Services;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressTimestamp;
+use BitWasp\Bitcoin\Tests\Networking\TestCase;
 
 class AddrTest extends TestCase
 {

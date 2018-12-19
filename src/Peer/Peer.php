@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace BitWasp\Bitcoin\Networking\Peer;
 
-use BitWasp\Bitcoin\Block\BlockInterface;
 use BitWasp\Bitcoin\Block\FilteredBlock;
 use BitWasp\Bitcoin\Bloom\BloomFilter;
 use BitWasp\Bitcoin\Chain\BlockLocator;
@@ -411,19 +410,19 @@ class Peer extends EventEmitter
     }
 
     /**
-     * @param BlockInterface $block
+     * @param BufferInterface $blockData
      */
-    public function block(BlockInterface $block)
+    public function block(BufferInterface $blockData)
     {
-        $this->send($this->msgs->block($block));
+        $this->send($this->msgs->block($blockData));
     }
 
     /**
-     * @param array $vHeaders
+     * @param BufferInterface ...$vHeaders
      */
-    public function headers(array $vHeaders)
+    public function headers(BufferInterface ...$vHeaders)
     {
-        $this->send($this->msgs->headers($vHeaders));
+        $this->send($this->msgs->headers(...$vHeaders));
     }
 
     /**

@@ -33,7 +33,7 @@ class Block extends NetworkSerializable
     /**
      * @return BufferInterface
      */
-    public function getBlockData(): BufferInterface
+    public function getBlock(): BufferInterface
     {
         return $this->blockData;
     }

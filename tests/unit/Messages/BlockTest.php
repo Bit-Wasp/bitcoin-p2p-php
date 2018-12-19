@@ -43,7 +43,7 @@ class BlockTest extends TestCase
         $block = $factory->block($newBlock);
 
         $this->assertEquals('block', $block->getNetworkCommand());
-        $this->assertEquals($newBlock->getHex(), $block->getBlockData()->getHex());
+        $this->assertEquals($newBlock->getHex(), $block->getBlock()->getHex());
         $this->assertEquals($newBlock->getHex(), $block->getHex());
     }
 

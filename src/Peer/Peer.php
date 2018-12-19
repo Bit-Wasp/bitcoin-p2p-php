@@ -380,11 +380,11 @@ class Peer extends EventEmitter
     }
 
     /**
-     * @param TransactionInterface $tx
+     * @param BufferInterface $txData
      */
-    public function tx(TransactionInterface $tx)
+    public function tx(BufferInterface $txData)
     {
-        $this->send($this->msgs->tx($tx));
+        $this->send($this->msgs->tx($txData));
     }
 
     /**

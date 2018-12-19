@@ -275,7 +275,7 @@ class NetworkMessageSerializer
                 $payload = $this->getHeadersSerializer->parse($buffer);
                 break;
             case Message::TX:
-                $payload = new Tx($this->txSerializer->parse($buffer));
+                $payload = new Tx($buffer);
                 break;
             case Message::BLOCK:
                 $payload = new Block($buffer);

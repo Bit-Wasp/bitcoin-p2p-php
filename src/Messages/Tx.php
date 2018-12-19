@@ -6,7 +6,6 @@ namespace BitWasp\Bitcoin\Networking\Messages;
 
 use BitWasp\Bitcoin\Networking\Message;
 use BitWasp\Bitcoin\Networking\NetworkSerializable;
-use BitWasp\Bitcoin\Transaction\TransactionInterface;
 use BitWasp\Buffertools\BufferInterface;
 
 class Tx extends NetworkSerializable
@@ -14,14 +13,11 @@ class Tx extends NetworkSerializable
     /**
      * Tx describes a bitcoin transaction, in reply to getdata
      *
-     * @var TransactionInterface
+     * @var BufferInterface
      */
     private $transaction;
 
-    /**
-     * @param TransactionInterface $tx
-     */
-    public function __construct(TransactionInterface $tx)
+    public function __construct(BufferInterface $tx)
     {
         $this->transaction = $tx;
     }
@@ -37,9 +33,9 @@ class Tx extends NetworkSerializable
     }
 
     /**
-     * @return TransactionInterface
+     * @return BufferInterface
      */
-    public function getTransaction(): TransactionInterface
+    public function getTransaction(): BufferInterface
     {
         return $this->transaction;
     }
@@ -50,6 +46,6 @@ class Tx extends NetworkSerializable
      */
     public function getBuffer(): BufferInterface
     {
-        return $this->transaction->getBuffer();
+        return $this->transaction;
     }
 }

@@ -14,17 +14,13 @@ use BitWasp\Buffertools\Parser;
 class HeadersSerializer
 {
     /**
-     * @var \BitWasp\Buffertools\Types\Vector
+     * @var \BitWasp\Buffertools\Types\VarInt
      */
-    private $vectorHeader;
+    private $varint;
 
     public function __construct()
     {
-        $this->vectorHeader = Types::vector(function (Parser $parser): BufferInterface {
-            $header = $parser->readBytes(80);
-            $parser->readBytes(1);
-            return $header;
-        });
+        $this->varint = Types::varint();
     }
 
     /**
@@ -33,7 +29,13 @@ class HeadersSerializer
      */
     public function fromParser(Parser $parser): Headers
     {
-        return new Headers(...$this->vectorHeader->read($parser));
+        $numHeaders = $this->varint->read($parser);
+        $headers = [];
+        for ($i = 0; $i < $numHeaders; $i++) {
+            $headers[] = $parser->readBytes(80);
+            $parser->readBytes(1);
+        }
+        return new Headers(...$headers);
     }
 
     /**

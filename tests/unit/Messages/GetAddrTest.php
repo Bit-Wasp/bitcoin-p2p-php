@@ -7,10 +7,10 @@ namespace BitWasp\Bitcoin\Tests\Networking\Messages;
 use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Crypto\Random\Random;
 use BitWasp\Bitcoin\Networking\Messages\Factory;
-use BitWasp\Bitcoin\Networking\Serializer\NetworkMessageSerializer;
-use BitWasp\Buffertools\Buffer;
 use BitWasp\Bitcoin\Networking\Messages\GetAddr;
+use BitWasp\Bitcoin\Networking\Serializer\NetworkMessageSerializer;
 use BitWasp\Bitcoin\Tests\Networking\TestCase;
+use BitWasp\Buffertools\Buffer;
 
 class GetAddrTest extends TestCase
 {

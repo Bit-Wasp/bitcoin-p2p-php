@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace BitWasp\Bitcoin\Networking;
 
 use BitWasp\Bitcoin\Bitcoin;
-use BitWasp\Bitcoin\Serializable;
 use BitWasp\Bitcoin\Network\NetworkInterface;
+use BitWasp\Bitcoin\Serializable;
 
 abstract class NetworkSerializable extends Serializable implements NetworkSerializableInterface
 {

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace BitWasp\Bitcoin\Tests\Networking\Structure;
 
-use BitWasp\Bitcoin\Tests\Networking\TestCase;
 use BitWasp\Bitcoin\Networking\Serializer\Structure\InventorySerializer;
-use BitWasp\Buffertools\Buffer;
 use BitWasp\Bitcoin\Networking\Structure\Inventory;
+use BitWasp\Bitcoin\Tests\Networking\TestCase;
+use BitWasp\Buffertools\Buffer;
 use BitWasp\Buffertools\Buffertools;
 
 class InventoryVectorTest extends TestCase

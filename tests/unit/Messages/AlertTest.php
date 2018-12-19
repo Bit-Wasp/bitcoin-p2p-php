@@ -12,9 +12,9 @@ use BitWasp\Bitcoin\Math\Math;
 use BitWasp\Bitcoin\Network\NetworkFactory;
 use BitWasp\Bitcoin\Networking\Messages\Alert;
 use BitWasp\Bitcoin\Networking\Messages\Factory;
+use BitWasp\Bitcoin\Networking\Serializer\NetworkMessageSerializer;
 use BitWasp\Bitcoin\Networking\Structure\AlertDetail;
 use BitWasp\Bitcoin\Tests\Networking\TestCase;
-use BitWasp\Bitcoin\Networking\Serializer\NetworkMessageSerializer;
 use BitWasp\Buffertools\Buffer;
 use Mdanter\Ecc\EccFactory;
 

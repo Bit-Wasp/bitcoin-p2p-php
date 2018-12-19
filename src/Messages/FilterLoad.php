@@ -7,8 +7,8 @@ namespace BitWasp\Bitcoin\Networking\Messages;
 use BitWasp\Bitcoin\Bloom\BloomFilter;
 use BitWasp\Bitcoin\Networking\Message;
 use BitWasp\Bitcoin\Networking\NetworkSerializable;
-use BitWasp\Bitcoin\Serializer\Bloom\BloomFilterSerializer;
 use BitWasp\Bitcoin\Networking\Serializer\Message\FilterLoadSerializer;
+use BitWasp\Bitcoin\Serializer\Bloom\BloomFilterSerializer;
 use BitWasp\Buffertools\BufferInterface;
 
 class FilterLoad extends NetworkSerializable

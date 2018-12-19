@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace BitWasp\Bitcoin\Tests\Networking\Structure;
 
+use BitWasp\Bitcoin\Networking\Serializer\Structure\AlertDetailSerializer;
 use BitWasp\Bitcoin\Networking\Structure\AlertDetail;
 use BitWasp\Bitcoin\Tests\Networking\TestCase;
-use BitWasp\Bitcoin\Networking\Serializer\Structure\AlertDetailSerializer;
 use BitWasp\Buffertools\Buffer;
 
 class AlertDetailTest extends TestCase

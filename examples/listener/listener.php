@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 require_once __DIR__ . "/../../vendor/autoload.php";
 
+use BitWasp\Bitcoin\Networking\Factory as NetworkFactory;
+use BitWasp\Bitcoin\Networking\Ip\Ipv4;
+use BitWasp\Bitcoin\Networking\Peer\ConnectionParams;
 use BitWasp\Bitcoin\Networking\Peer\Peer;
+use BitWasp\Bitcoin\Networking\Services;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressTimestamp;
-use BitWasp\Bitcoin\Networking\Factory as NetworkFactory;
-use BitWasp\Bitcoin\Networking\Peer\ConnectionParams;
-use BitWasp\Bitcoin\Networking\Services;
-use BitWasp\Bitcoin\Networking\Ip\Ipv4;
 
 $loop = React\EventLoop\Factory::create();
 $factory = new NetworkFactory($loop);

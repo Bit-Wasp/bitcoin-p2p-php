@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace BitWasp\Bitcoin\Networking\Messages;
 
 use BitWasp\Bitcoin\Networking\Message;
+use BitWasp\Bitcoin\Networking\NetworkSerializable;
 use BitWasp\Bitcoin\Networking\Serializer\Message\RejectSerializer;
 use BitWasp\Buffertools\Buffer;
-use BitWasp\Bitcoin\Networking\NetworkSerializable;
 use BitWasp\Buffertools\BufferInterface;
 
 class Reject extends NetworkSerializable

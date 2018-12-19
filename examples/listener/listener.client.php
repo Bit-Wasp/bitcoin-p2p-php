@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 require_once __DIR__ . "/../../vendor/autoload.php";
 
-use BitWasp\Bitcoin\Networking\Peer\Peer;
+use BitWasp\Bitcoin\Networking\Ip\Ipv4;
 use BitWasp\Bitcoin\Networking\Messages\Addr;
 use BitWasp\Bitcoin\Networking\Peer\ConnectionParams;
-use BitWasp\Bitcoin\Networking\Ip\Ipv4;
+use BitWasp\Bitcoin\Networking\Peer\Peer;
 
 // Override, or make it work with listener.php example
 if (!($serverPort = getenv('LISTENER_CONNECT_PORT'))) {

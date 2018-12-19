@@ -6,8 +6,8 @@ namespace BitWasp\Bitcoin\Networking\Peer;
 
 use BitWasp\Bitcoin\Networking\DnsSeeds\DnsSeedList;
 use BitWasp\Bitcoin\Networking\Ip\Ipv4;
-use BitWasp\Bitcoin\Networking\Settings\NetworkSettings;
 use BitWasp\Bitcoin\Networking\Services;
+use BitWasp\Bitcoin\Networking\Settings\NetworkSettings;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddressInterface;
 use React\Dns\Resolver\Resolver;

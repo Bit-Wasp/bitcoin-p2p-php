@@ -8,13 +8,13 @@ use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Crypto\Random\Random;
 use BitWasp\Bitcoin\Networking\Ip\Ipv4;
 use BitWasp\Bitcoin\Networking\Messages\Factory;
+use BitWasp\Bitcoin\Networking\Messages\Version;
 use BitWasp\Bitcoin\Networking\Serializer\NetworkMessageSerializer;
 use BitWasp\Bitcoin\Networking\Services;
-use BitWasp\Bitcoin\Networking\Structure\NetworkAddressTimestamp;
-use BitWasp\Buffertools\Buffer;
-use BitWasp\Bitcoin\Networking\Messages\Version;
 use BitWasp\Bitcoin\Networking\Structure\NetworkAddress;
+use BitWasp\Bitcoin\Networking\Structure\NetworkAddressTimestamp;
 use BitWasp\Bitcoin\Tests\Networking\TestCase;
+use BitWasp\Buffertools\Buffer;
 
 class VersionTest extends TestCase
 {

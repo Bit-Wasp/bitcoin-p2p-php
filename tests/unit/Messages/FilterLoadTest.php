@@ -8,8 +8,8 @@ use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Bloom\BloomFilter;
 use BitWasp\Bitcoin\Crypto\Random\Random;
 use BitWasp\Bitcoin\Math\Math;
-use BitWasp\Bitcoin\Tests\Networking\TestCase;
 use BitWasp\Bitcoin\Networking\Messages\Factory;
+use BitWasp\Bitcoin\Tests\Networking\TestCase;
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Buffertools\Parser;
 

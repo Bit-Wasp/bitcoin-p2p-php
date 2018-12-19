@@ -4,36 +4,21 @@ declare(strict_types=1);
 
 namespace BitWasp\Bitcoin\Networking\Messages;
 
-use BitWasp\Bitcoin\Block\BlockHeaderInterface;
 use BitWasp\Bitcoin\Networking\Message;
 use BitWasp\Bitcoin\Networking\NetworkSerializable;
-use BitWasp\Bitcoin\Serializer\Block\BlockHeaderSerializer;
 use BitWasp\Bitcoin\Networking\Serializer\Message\HeadersSerializer;
 use BitWasp\Buffertools\BufferInterface;
 
 class Headers extends NetworkSerializable implements \Countable
 {
     /**
-     * @var BlockHeaderInterface[]
+     * @var BufferInterface[]
      */
     private $headers = [];
 
-    /**
-     * @param BlockHeaderInterface[] $headers
-     */
-    public function __construct(array $headers)
+    public function __construct(BufferInterface ...$headers)
     {
-        foreach ($headers as $header) {
-            $this->addHeader($header);
-        }
-    }
-
-    /**
-     * @param BlockHeaderInterface $header
-     */
-    private function addHeader(BlockHeaderInterface $header)
-    {
-        $this->headers[] = $header;
+        $this->headers = $headers;
     }
 
     /**
@@ -46,7 +31,7 @@ class Headers extends NetworkSerializable implements \Countable
     }
 
     /**
-     * @return BlockHeaderInterface[]
+     * @return BufferInterface[]
      */
     public function getHeaders(): array
     {
@@ -62,12 +47,12 @@ class Headers extends NetworkSerializable implements \Countable
     }
 
     /**
-     * @param integer $index
-     * @return BlockHeaderInterface
+     * @param int $index
+     * @return BufferInterface
      */
-    public function getHeader(int $index): BlockHeaderInterface
+    public function getHeader(int $index): BufferInterface
     {
-        if (false === isset($this->headers[$index])) {
+        if (!array_key_exists($index, $this->headers)) {
             throw new \InvalidArgumentException('No header exists at this index');
         }
 
@@ -80,6 +65,6 @@ class Headers extends NetworkSerializable implements \Countable
      */
     public function getBuffer(): BufferInterface
     {
-        return (new HeadersSerializer(new BlockHeaderSerializer()))->serialize($this);
+        return (new HeadersSerializer())->serialize($this);
     }
 }

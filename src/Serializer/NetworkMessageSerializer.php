@@ -194,7 +194,7 @@ class NetworkMessageSerializer
         $this->headerSerializer = new BlockHeaderSerializer();
         $this->blockSerializer = new BlockSerializer($this->math, $this->headerSerializer, $this->txSerializer);
         $this->filteredBlockSerializer = new FilteredBlockSerializer($this->headerSerializer, new PartialMerkleTreeSerializer());
-        $this->headersSerializer = new HeadersSerializer($this->headerSerializer);
+        $this->headersSerializer = new HeadersSerializer();
         $this->filterAddSerializer = new FilterAddSerializer();
         $this->filterLoadSerializer = new FilterLoadSerializer(new BloomFilterSerializer());
         $this->merkleBlockSerializer = new MerkleBlockSerializer($this->filteredBlockSerializer);

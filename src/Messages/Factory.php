@@ -175,12 +175,12 @@ class Factory
     }
 
     /**
-     * @param \BitWasp\Bitcoin\Block\BlockHeaderInterface[] $headers
+     * @param BufferInterface ...$headers
      * @return Headers
      */
-    public function headers(array $headers): Headers
+    public function headers(BufferInterface ...$headers): Headers
     {
-        return new Headers($headers);
+        return new Headers(...$headers);
     }
 
     /**

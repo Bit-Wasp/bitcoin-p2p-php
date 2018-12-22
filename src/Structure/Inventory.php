@@ -160,7 +160,7 @@ class Inventory extends Serializable
      */
     private function checkType(int $type): bool
     {
-        return in_array($type, [self::ERROR, self::MSG_TX, self::MSG_BLOCK, self::MSG_FILTERED_BLOCK]);
+        return in_array($type, [self::ERROR, self::MSG_TX, self::MSG_BLOCK, self::MSG_FILTERED_BLOCK, self::MSG_WITNESS_TX, self::MSG_WITNESS_BLOCK]);
     }
 
     /**

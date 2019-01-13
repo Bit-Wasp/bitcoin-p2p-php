@@ -151,26 +151,25 @@ class Peer extends EventEmitter
             $pos = $parser->getPosition();
             $sz = $data->getSize();
 
-            try {
-                while ($pos < $sz) {
-                    if (null === $this->incomingMsgHeader) {
-                        if ($sz - $pos < 24) {
-                            break;
-                        }
-                        $this->incomingMsgHeader = $this->msgs->getSerializer()->parseHeader($parser);
-                        $pos = $parser->getPosition();
-                    }
-
-                    if ($sz - $pos < $this->incomingMsgHeader->getLength()) {
+            while ($pos < $sz) {
+                if (null === $this->incomingMsgHeader) {
+                    if ($sz - $pos < 24) {
                         break;
                     }
-
-                    $message = $this->msgs->getSerializer()->parsePacket($this->incomingMsgHeader, $parser);
-                    $this->incomingMsgHeader = null;
-                    $this->emit('msg', [$this, $message]);
+                    $this->incomingMsgHeader = $this->msgs->getSerializer()->parseHeader($parser);
                     $pos = $parser->getPosition();
                 }
-            } catch (\Exception $e) {
+
+                if ($sz - $pos < $this->incomingMsgHeader->getLength()) {
+                    break;
+                }
+
+                $message = $this->msgs->getSerializer()->parsePacket($this->incomingMsgHeader, $parser);
+                $this->incomingMsgHeader = null;
+                $this->loop->futureTick(function () use ($message) {
+                    $this->emit('msg', [$this, $message]);
+                });
+                $pos = $parser->getPosition();
             }
 
             $this->buffer = $parser->getBuffer()->slice($pos)->getBinary();
